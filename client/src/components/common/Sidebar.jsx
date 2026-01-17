@@ -1,0 +1,128 @@
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../context/NotificationContext';
+import { 
+  FiHome, FiUsers, FiPackage, FiShoppingCart, FiFileText, 
+  FiSettings, FiLogOut, FiMenu, FiX, FiBell, FiActivity,
+  FiClipboard, FiAlertCircle, FiTruck, FiHeart, FiHelpCircle
+} from 'react-icons/fi';
+import './Sidebar.css';
+
+const Sidebar = () => {
+  const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
+  const { unreadCount } = useNotifications();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(true);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
+  const adminLinks = [
+    { path: '/admin', icon: <FiHome />, label: 'Dashboard' },
+    { path: '/admin/users', icon: <FiUsers />, label: 'User Management' },
+    { path: '/admin/inventory', icon: <FiPackage />, label: 'Inventory' },
+    { path: '/admin/orders', icon: <FiShoppingCart />, label: 'Orders' },
+    { path: '/admin/analytics', icon: <FiActivity />, label: 'Analytics' },
+    { path: '/admin/audit-logs', icon: <FiFileText />, label: 'Audit Logs' },
+    { path: '/admin/settings', icon: <FiSettings />, label: 'Settings' }
+  ];
+
+  const pharmacistLinks = [
+    { path: '/pharmacist', icon: <FiHome />, label: 'Dashboard' },
+    { path: '/pharmacist/dispensing', icon: <FiClipboard />, label: 'Dispensing' },
+    { path: '/pharmacist/prescriptions', icon: <FiFileText />, label: 'Prescriptions' },
+    { path: '/pharmacist/patients', icon: <FiHeart />, label: 'Patients' },
+    { path: '/pharmacist/alerts', icon: <FiAlertCircle />, label: 'Alerts' },
+    { path: '/pharmacist/restock', icon: <FiTruck />, label: 'Restock' }
+  ];
+
+  const userLinks = [
+    { path: '/user', icon: <FiHome />, label: 'Dashboard' },
+    { path: '/user/catalog', icon: <FiPackage />, label: 'Medicine Catalog' },
+    { path: '/user/orders', icon: <FiShoppingCart />, label: 'My Orders' },
+    { path: '/user/prescriptions', icon: <FiFileText />, label: 'Prescriptions' },
+    { path: '/user/profile', icon: <FiUsers />, label: 'Profile' },
+    { path: '/user/support', icon: <FiHelpCircle />, label: 'Support' }
+  ];
+
+  const links = isAdmin ? adminLinks : isPharmacist ? pharmacistLinks : userLinks;
+
+  return (
+    <>
+      {/* Mobile toggle */}
+      <button 
+        className="sidebar-mobile-toggle"
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+      >
+        {isMobileOpen ? <FiX /> : <FiMenu />}
+      </button>
+
+      {/* Overlay for mobile */}
+      {isMobileOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsMobileOpen(false)} />
+      )}
+
+      <aside className={`sidebar ${isOpen ? 'open' : 'collapsed'} ${isMobileOpen ? 'mobile-open' : ''}`}>
+        <div className="sidebar-header">
+          <Link to="/" className="sidebar-logo">
+            <div className="logo-icon">💊</div>
+            {isOpen && <span className="logo-text">PharmaCare</span>}
+          </Link>
+          <button className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <FiX /> : <FiMenu />}
+          </button>
+        </div>
+
+        <div className="sidebar-user">
+          <div className="user-avatar">
+            {user?.name?.charAt(0).toUpperCase() || 'U'}
+          </div>
+          {isOpen && (
+            <div className="user-info">
+              <span className="user-name">{user?.name}</span>
+              <span className="user-role">{user?.role}</span>
+            </div>
+          )}
+        </div>
+
+        <nav className="sidebar-nav">
+          {links.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
+              onClick={() => setIsMobileOpen(false)}
+            >
+              <span className="nav-icon">{link.icon}</span>
+              {isOpen && <span className="nav-label">{link.label}</span>}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="sidebar-footer">
+          <button className="nav-link notification-btn">
+            <span className="nav-icon">
+              <FiBell />
+              {unreadCount > 0 && (
+                <span className="notification-badge">{unreadCount}</span>
+              )}
+            </span>
+            {isOpen && <span className="nav-label">Notifications</span>}
+          </button>
+          
+          <button className="nav-link logout-btn" onClick={handleLogout}>
+            <span className="nav-icon"><FiLogOut /></span>
+            {isOpen && <span className="nav-label">Logout</span>}
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+};
+
+export default Sidebar;
