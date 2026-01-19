@@ -12,7 +12,7 @@ const router = express.Router();
 // @desc    Register a new user
 // @access  Public
 router.post('/register', userValidation.register, asyncHandler(async (req, res) => {
-  const { name, email, password, phone, address } = req.body;
+  const { name, email, password, phone, address, role } = req.body;
 
   // Check if user exists
   const existingUser = await User.findOne({ email });
@@ -23,13 +23,18 @@ router.post('/register', userValidation.register, asyncHandler(async (req, res) 
     });
   }
 
-  // Create user (default role is 'user')
+  // Allow only specific roles
+  const allowedRoles = ['admin', 'pharmacist', 'user'];
+  const userRole = (role && allowedRoles.includes(role)) ? role : 'user';
+
+  // Create user
   const user = await User.create({
     name,
     email,
     password,
     phone,
-    address
+    address,
+    role: userRole
   });
 
   // Generate tokens
