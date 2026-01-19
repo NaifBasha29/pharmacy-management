@@ -6,6 +6,8 @@ import { Toaster } from 'react-hot-toast';
 // Auth Pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import AdminRegister from './pages/auth/AdminRegister';
+import ClinicRegister from './pages/auth/ClinicRegister';
 
 // Landing Page
 import LandingPage from './pages/LandingPage';
@@ -98,6 +100,8 @@ function AppRoutes() {
       {/* Public Routes */}
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+      <Route path="/register/admin" element={<PublicRoute><AdminRegister /></PublicRoute>} />
+      <Route path="/register/clinic" element={<PublicRoute><ClinicRegister /></PublicRoute>} />
 
       {/* Admin Routes */}
       <Route path="/admin" element={
