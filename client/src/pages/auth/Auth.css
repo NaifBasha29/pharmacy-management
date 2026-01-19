@@ -201,3 +201,91 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Admin Toggle Styles */
+.admin-toggle-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-6);
+}
+
+.admin-toggle {
+    position: relative;
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 25px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.toggle-btn {
+    position: relative;
+    z-index: 2;
+    padding: 8px 24px;
+    border: none;
+    background: transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #64748b;
+    transition: color 0.3s ease;
+}
+
+.toggle-btn.active {
+    color: white;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+}
+
+.toggle-slider.slide-right {
+    transform: translateX(100%);
+}
+
+/* Admin Link */
+.admin-link-wrapper {
+    text-align: center;
+    margin-top: var(--space-6);
+}
+
+.admin-link {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.admin-link:hover {
+    color: #64748b;
+}
+
+/* Back to User Button */
+.back-to-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.875rem;
+    cursor: pointer;
+    margin-bottom: var(--space-4);
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.back-to-user-btn:hover {
+    color: #059669;
+}

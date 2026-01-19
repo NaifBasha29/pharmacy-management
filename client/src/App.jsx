@@ -7,8 +7,13 @@ import { Toaster } from 'react-hot-toast';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 
+// Landing Page
+import LandingPage from './pages/LandingPage';
+
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
+import ClinicList from './pages/admin/clinics/ClinicList';
+import UserList from './pages/admin/users/UserList';
 
 // Pharmacist Pages
 import PharmacistDashboard from './pages/pharmacist/Dashboard';
@@ -87,8 +92,8 @@ const HomeRedirect = () => {
 function AppRoutes() {
   return (
     <Routes>
-      {/* Root redirect */}
-      <Route path="/" element={<HomeRedirect />} />
+      {/* Root - Landing Page */}
+      <Route path="/" element={<LandingPage />} />
 
       {/* Public Routes */}
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
@@ -98,6 +103,16 @@ function AppRoutes() {
       <Route path="/admin" element={
         <ProtectedRoute allowedRoles={['admin']}>
           <AdminDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/clinics" element={
+        <ProtectedRoute allowedRoles={['admin']}>
+          <ClinicList />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/users" element={
+        <ProtectedRoute allowedRoles={['admin']}>
+          <UserList />
         </ProtectedRoute>
       } />
       <Route path="/admin/*" element={
@@ -142,7 +157,7 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <AppRoutes />
-          <Toaster 
+          <Toaster
             position="top-right"
             toastOptions={{
               duration: 3000,

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
 import './Auth.css';
 
 const Login = () => {
@@ -9,6 +9,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [adminType, setAdminType] = useState('admin'); // 'admin' or 'clinic'
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ const Login = () => {
     setError('');
 
     const result = await login(formData.email, formData.password);
-    
+
     if (result.success) {
       const { role } = result.user;
       if (role === 'admin') navigate('/admin');
@@ -32,9 +34,27 @@ const Login = () => {
     } else {
       setError(result.error);
     }
-    
+
     setLoading(false);
   };
+
+  const toggleAdminMode = () => {
+    setIsAdminMode(!isAdminMode);
+    setFormData({ email: '', password: '' });
+    setError('');
+  };
+
+  const getHeaderText = () => {
+    if (!isAdminMode) {
+      return { title: 'Welcome Back', subtitle: 'Sign in to your account to continue' };
+    }
+    return {
+      title: adminType === 'admin' ? 'Admin Login' : 'Clinic Admin Login',
+      subtitle: adminType === 'admin' ? 'Access system administration' : 'Access clinic management'
+    };
+  };
+
+  const headerText = getHeaderText();
 
   return (
     <div className="auth-page">
@@ -63,10 +83,39 @@ const Login = () => {
 
         <div className="auth-right">
           <div className="auth-form-container">
+            {isAdminMode && (
+              <button className="back-to-user-btn" onClick={toggleAdminMode}>
+                <FiArrowLeft /> Back to User Login
+              </button>
+            )}
+
             <div className="auth-header">
-              <h2>Welcome Back</h2>
-              <p>Sign in to your account to continue</p>
+              <h2>{headerText.title}</h2>
+              <p>{headerText.subtitle}</p>
             </div>
+
+            {/* Admin/Clinic Toggle - Only visible in admin mode */}
+            {isAdminMode && (
+              <div className="admin-toggle-wrapper">
+                <div className="admin-toggle">
+                  <button
+                    type="button"
+                    className={`toggle-btn ${adminType === 'admin' ? 'active' : ''}`}
+                    onClick={() => setAdminType('admin')}
+                  >
+                    Admin
+                  </button>
+                  <button
+                    type="button"
+                    className={`toggle-btn ${adminType === 'clinic' ? 'active' : ''}`}
+                    onClick={() => setAdminType('clinic')}
+                  >
+                    Clinic
+                  </button>
+                  <div className={`toggle-slider ${adminType === 'clinic' ? 'slide-right' : ''}`} />
+                </div>
+              </div>
+            )}
 
             {error && <div className="auth-error">{error}</div>}
 
@@ -79,7 +128,7 @@ const Login = () => {
                     type="email"
                     name="email"
                     className="form-input"
-                    placeholder="Enter your email"
+                    placeholder={isAdminMode ? `Enter ${adminType} email` : 'Enter your email'}
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -115,16 +164,20 @@ const Login = () => {
               </button>
             </form>
 
-            <div className="auth-footer">
-              <p>Don't have an account? <Link to="/register">Create Account</Link></p>
-            </div>
+            {!isAdminMode && (
+              <div className="auth-footer">
+                <p>Don't have an account? <Link to="/register">Create Account</Link></p>
+              </div>
+            )}
 
-            <div className="demo-credentials">
-              <p><strong>Demo Credentials:</strong></p>
-              <p>Admin: admin@pharmacy.com / Admin@123</p>
-              <p>Pharmacist: pharmacist1@pharmacy.com / Pharma@123</p>
-              <p>User: user1@example.com / User@123</p>
-            </div>
+            {/* Admin link - Only visible in user mode */}
+            {!isAdminMode && (
+              <div className="admin-link-wrapper">
+                <button className="admin-link" onClick={toggleAdminMode}>
+                  Admin?
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
