@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
-import { 
-  FiHome, FiUsers, FiPackage, FiShoppingCart, FiFileText, 
+import {
+  FiHome, FiUsers, FiPackage, FiShoppingCart, FiFileText,
   FiSettings, FiLogOut, FiMenu, FiX, FiBell, FiActivity,
   FiClipboard, FiAlertCircle, FiTruck, FiHeart, FiHelpCircle
 } from 'react-icons/fi';
@@ -24,11 +24,14 @@ const Sidebar = () => {
 
   const adminLinks = [
     { path: '/admin', icon: <FiHome />, label: 'Dashboard' },
-    { path: '/admin/users', icon: <FiUsers />, label: 'User Management' },
+    { path: '/admin/clinics', icon: <FiHeart />, label: 'Clinics' },
+    { path: '/admin/users', icon: <FiUsers />, label: 'Users' },
     { path: '/admin/inventory', icon: <FiPackage />, label: 'Inventory' },
+    { path: '/admin/prescriptions', icon: <FiClipboard />, label: 'Prescriptions' },
     { path: '/admin/orders', icon: <FiShoppingCart />, label: 'Orders' },
-    { path: '/admin/analytics', icon: <FiActivity />, label: 'Analytics' },
-    { path: '/admin/audit-logs', icon: <FiFileText />, label: 'Audit Logs' },
+    { path: '/admin/reports', icon: <FiActivity />, label: 'Reports' },
+    { path: '/admin/compliance', icon: <FiFileText />, label: 'Compliance' },
+    { path: '/admin/support', icon: <FiHelpCircle />, label: 'Support' },
     { path: '/admin/settings', icon: <FiSettings />, label: 'Settings' }
   ];
 
@@ -55,7 +58,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Mobile toggle */}
-      <button 
+      <button
         className="sidebar-mobile-toggle"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
@@ -114,7 +117,7 @@ const Sidebar = () => {
             </span>
             {isOpen && <span className="nav-label">Notifications</span>}
           </button>
-          
+
           <button className="nav-link logout-btn" onClick={handleLogout}>
             <span className="nav-icon"><FiLogOut /></span>
             {isOpen && <span className="nav-label">Logout</span>}
