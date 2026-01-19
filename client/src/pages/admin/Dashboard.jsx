@@ -42,14 +42,9 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-layout">
-        <Sidebar />
-        <main className="dashboard-main">
-          <div className="loading-overlay">
-            <div className="spinner" />
-            <p>Loading dashboard...</p>
-          </div>
-        </main>
+      <div className="full-page-loading">
+        <div className="spinner" />
+        <p>Loading dashboard...</p>
       </div>
     );
   }
