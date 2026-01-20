@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
+import { CartProvider } from './context/CartContext';
 import { Toaster } from 'react-hot-toast';
 
 // Auth Pages
@@ -22,6 +23,11 @@ import PharmacistDashboard from './pages/pharmacist/Dashboard';
 
 // User Pages
 import UserDashboard from './pages/user/Dashboard';
+import Catalog from './pages/user/Catalog';
+import Orders from './pages/user/Orders';
+import Prescriptions from './pages/user/Prescriptions';
+import Profile from './pages/user/Profile';
+import Support from './pages/user/Support';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -143,6 +149,31 @@ function AppRoutes() {
           <UserDashboard />
         </ProtectedRoute>
       } />
+      <Route path="/user/catalog" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Catalog />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/orders" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Orders />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/prescriptions" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Prescriptions />
+        </ProtectedRoute>
+      } />
+       <Route path="/user/profile" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Profile />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/support" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Support />
+        </ProtectedRoute>
+      } />
       <Route path="/user/*" element={
         <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
           <UserDashboard />
@@ -160,6 +191,7 @@ function App() {
     <Router>
       <AuthProvider>
         <NotificationProvider>
+          <CartProvider>
           <AppRoutes />
           <Toaster
             position="top-right"
@@ -183,6 +215,7 @@ function App() {
               },
             }}
           />
+        </CartProvider>
         </NotificationProvider>
       </AuthProvider>
     </Router>
