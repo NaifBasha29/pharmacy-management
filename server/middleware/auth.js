@@ -19,7 +19,7 @@ export const protect = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id).select('-password');
-    
+
     if (!req.user) {
       return res.status(401).json({
         success: false,
@@ -36,6 +36,19 @@ export const protect = async (req, res, next) => {
   }
 };
 
+// Authorize roles
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `User role ${req.user.role} is not authorized to access this route`
+      });
+    }
+    next();
+  };
+};
+
 // Generate JWT Token
 export const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -50,4 +63,4 @@ export const generateRefreshToken = (id) => {
   });
 };
 
-export default { protect, generateToken, generateRefreshToken };
+export default { protect, authorize, generateToken, generateRefreshToken };

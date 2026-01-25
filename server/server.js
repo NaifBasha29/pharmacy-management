@@ -33,6 +33,7 @@ import analyticsRoutes from './routes/analytics.js';
 import settingsRoutes from './routes/settings.js';
 import auditLogRoutes from './routes/auditLogs.js';
 import supportRoutes from './routes/support.js';
+import clinicRoutes from './routes/clinics.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -106,6 +107,7 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/clinics', clinicRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -153,18 +155,20 @@ app.use(errorHandler);
 // Start server
 const PORT = process.env.PORT || 5000;
 
-httpServer.listen(PORT, () => {
-  console.log(`
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║     🏥 Pharmacy Management System API                    ║
-║                                                           ║
-║     Server running on: http://localhost:${PORT}             ║
-║     Environment: ${process.env.NODE_ENV || 'development'}                          ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-  `);
-});
+if (process.env.NODE_ENV !== 'test') {
+  httpServer.listen(PORT, () => {
+    console.log(`
+  ╔═══════════════════════════════════════════════════════════╗
+  ║                                                           ║
+  ║     🏥 Pharmacy Management System API                    ║
+  ║                                                           ║
+  ║     Server running on: http://localhost:${PORT}             ║
+  ║     Environment: ${process.env.NODE_ENV || 'development'}                          ║
+  ║                                                           ║
+  ╚═══════════════════════════════════════════════════════════╝
+    `);
+  });
+}
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {

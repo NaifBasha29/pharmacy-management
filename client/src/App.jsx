@@ -16,6 +16,7 @@ import LandingPage from './pages/LandingPage';
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
 import ClinicList from './pages/admin/clinics/ClinicList';
+import ClinicEnrollment from './pages/admin/clinics/ClinicEnrollment';
 import UserList from './pages/admin/users/UserList';
 
 // Pharmacist Pages
@@ -120,6 +121,11 @@ function AppRoutes() {
           <ClinicList />
         </ProtectedRoute>
       } />
+      <Route path="/admin/clinics/enroll" element={
+        <ProtectedRoute allowedRoles={['admin']}>
+          <ClinicEnrollment />
+        </ProtectedRoute>
+      } />
       <Route path="/admin/users" element={
         <ProtectedRoute allowedRoles={['admin']}>
           <UserList />
@@ -164,7 +170,7 @@ function AppRoutes() {
           <Prescriptions />
         </ProtectedRoute>
       } />
-       <Route path="/user/profile" element={
+      <Route path="/user/profile" element={
         <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
           <Profile />
         </ProtectedRoute>
@@ -192,30 +198,30 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <CartProvider>
-          <AppRoutes />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: '#1f2937',
-                color: '#f9fafb',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#f9fafb',
+            <AppRoutes />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: '#1f2937',
+                  color: '#f9fafb',
                 },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#f9fafb',
+                success: {
+                  iconTheme: {
+                    primary: '#10b981',
+                    secondary: '#f9fafb',
+                  },
                 },
-              },
-            }}
-          />
-        </CartProvider>
+                error: {
+                  iconTheme: {
+                    primary: '#ef4444',
+                    secondary: '#f9fafb',
+                  },
+                },
+              }}
+            />
+          </CartProvider>
         </NotificationProvider>
       </AuthProvider>
     </Router>
