@@ -12,7 +12,7 @@ const auditLogSchema = new mongoose.Schema({
     enum: [
       'CREATE', 'UPDATE', 'DELETE', 'VIEW',
       'LOGIN', 'LOGOUT', 'PASSWORD_CHANGE',
-      'ROLE_CHANGE', 'STATUS_CHANGE',
+      'ROLE_CHANGE', 'STATUS_CHANGE', 'ACTIVATE', 'SEND_CREDENTIALS',
       'DISPENSE', 'RESTOCK', 'PRICE_CHANGE',
       'ORDER_STATUS_CHANGE', 'PRESCRIPTION_VERIFY',
       'SETTINGS_CHANGE', 'EXPORT', 'IMPORT'
@@ -21,7 +21,7 @@ const auditLogSchema = new mongoose.Schema({
   resource: {
     type: String,
     required: true,
-    enum: ['User', 'Medicine', 'Order', 'Prescription', 'Patient', 'Category', 'Supplier', 'Settings', 'System']
+    enum: ['User', 'Medicine', 'Order', 'Prescription', 'Patient', 'Category', 'Supplier', 'Clinic', 'Settings', 'System']
   },
   resourceId: {
     type: mongoose.Schema.Types.ObjectId
@@ -51,7 +51,7 @@ auditLogSchema.index({ resource: 1, createdAt: -1 });
 auditLogSchema.index({ action: 1, createdAt: -1 });
 
 // Static method to create audit log
-auditLogSchema.statics.log = async function(data) {
+auditLogSchema.statics.log = async function (data) {
   return await this.create(data);
 };
 

@@ -214,6 +214,30 @@
     color: #991b1b;
 }
 
+.status-badge.pending-verification {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.inactive {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #0d9488;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0;
+}
+
+.btn-link:hover {
+    color: #0f766e;
+}
+
 /* Action Buttons */
 .action-buttons {
     display: flex;

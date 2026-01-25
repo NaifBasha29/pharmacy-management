@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
 
 // Create axios instance
 const api = axios.create({
@@ -166,6 +166,24 @@ export const supportAPI = {
   getAll: () => api.get('/support'),
   getById: (id) => api.get(`/support/${id}`),
   create: (data) => api.post('/support', data)
+};
+
+// Clinics API
+export const clinicsAPI = {
+  getAll: (params) => api.get('/clinics', { params }),
+  getStats: () => api.get('/clinics/stats'),
+  getById: (id) => api.get(`/clinics/${id}`),
+  create: (data) => api.post('/clinics', data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  update: (id, data) => api.put(`/clinics/${id}`, data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  updateStatus: (id, data) => api.put(`/clinics/${id}/status`, data),
+  verify: (id, data) => api.put(`/clinics/${id}/verify`, data),
+  activate: (id) => api.put(`/clinics/${id}/activate`),
+  sendCredentials: (id) => api.post(`/clinics/${id}/send-credentials`),
+  delete: (id) => api.delete(`/clinics/${id}`)
 };
 
 export default api;
