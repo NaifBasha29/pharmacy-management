@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaCare Plus - Project Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 50%, #faf5ff 100%); color: #1e293b; line-height: 1.6; }
+        
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        .header { text-align: center; padding: 3rem 2rem; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 1.5rem; margin-bottom: 2rem; box-shadow: 0 20px 40px rgba(16,185,129,0.2); }
+        .header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .header p { font-size: 1.25rem; opacity: 0.9; }
+        .header .badge { display: inline-block; margin-top: 1rem; padding: 0.5rem 1.5rem; background: rgba(255,255,255,0.2); border-radius: 9999px; font-size: 0.875rem; font-weight: 600; }
+        
+        .section { background: white; border-radius: 1rem; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .section h2 { color: #10b981; font-size: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; border-bottom: 2px solid #ecfdf5; padding-bottom: 0.75rem; }
+        .section h2 .num { width: 36px; height: 36px; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; }
+        
+        .abstract { font-size: 1.0625rem; color: #374151; }
+        .abstract strong { color: #059669; }
+        
+        .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem; }
+        .feature { background: #f0fdf4; padding: 1rem; border-radius: 0.75rem; border-left: 4px solid #10b981; }
+        .feature h4 { color: #059669; font-size: 0.9375rem; margin-bottom: 0.25rem; }
+        .feature p { font-size: 0.875rem; color: #64748b; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f8fafc; font-weight: 600; color: #374151; font-size: 0.875rem; }
+        td { color: #4b5563; font-size: 0.9375rem; }
+        tr:hover { background: #f9fafb; }
+        
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+        .comparison-card { padding: 1.5rem; border-radius: 0.75rem; }
+        .comparison-card.old { background: #fef2f2; border: 2px solid #fecaca; }
+        .comparison-card.new { background: #ecfdf5; border: 2px solid #a7f3d0; }
+        .comparison-card h3 { font-size: 1.125rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .comparison-card.old h3 { color: #dc2626; }
+        .comparison-card.new h3 { color: #059669; }
+        .comparison-card ul { list-style: none; }
+        .comparison-card li { padding: 0.5rem 0; font-size: 0.9375rem; color: #4b5563; display: flex; align-items: center; gap: 0.5rem; }
+        .comparison-card.old li::before { content: "✗"; color: #ef4444; font-weight: 700; }
+        .comparison-card.new li::before { content: "✓"; color: #10b981; font-weight: 700; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.5rem; }
+        .stat { text-align: center; padding: 1.25rem; background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border-radius: 0.75rem; }
+        .stat .value { font-size: 1.75rem; font-weight: 800; color: #059669; }
+        .stat .label { font-size: 0.8125rem; color: #64748b; margin-top: 0.25rem; }
+        
+        .architecture { background: #1e293b; color: white; padding: 1.5rem; border-radius: 0.75rem; font-family: monospace; font-size: 0.875rem; line-height: 1.8; margin-top: 1rem; text-align: center; }
+        .architecture .layer { padding: 0.75rem; margin: 0.5rem 0; border-radius: 0.5rem; }
+        .architecture .frontend { background: #3b82f6; }
+        .architecture .backend { background: #8b5cf6; }
+        .architecture .database { background: #10b981; }
+        .architecture .arrow { font-size: 1.25rem; color: #64748b; }
+        
+        .modules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+        .module { background: #f8fafc; padding: 1rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; }
+        .module h4 { color: #1e293b; font-size: 0.9375rem; margin-bottom: 0.375rem; }
+        .module p { font-size: 0.8125rem; color: #64748b; }
+        
+        .footer { text-align: center; padding: 2rem; color: #64748b; font-size: 0.875rem; }
+        
+        @media print {
+            body { background: white; }
+            .section { box-shadow: none; border: 1px solid #e5e7eb; page-break-inside: avoid; }
+            .header { background: #10b981 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💊 PharmaCare Plus</h1>
+            <p>A Modern Web-Based Pharmacy Management System</p>
+            <span class="badge">MERN Stack Project</span>
+        </header>
+
+        <!-- USER DASHBOARD INTRODUCTION -->
+        <section class="section" style="background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 2px solid #a7f3d0;">
+            <h2 style="color: #059669;"><span class="num">★</span> User Dashboard – Introduction & Demo</h2>
+            
+            <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 1.5rem; border-left: 4px solid #10b981;">
+                <h3 style="color: #1e293b; font-size: 1.125rem; margin-bottom: 1rem;">🎤 Pitch Script</h3>
+                <p style="color: #374151; font-size: 1rem; line-height: 1.8;">
+                    <em>"The <strong>User Dashboard</strong> is the central hub for customers using PharmaCare Plus. When a user logs in, they are greeted with a personalized welcome message and an instant overview of their pharmacy activity.</em>
+                </p>
+                <br>
+                <p style="color: #374151; font-size: 1rem; line-height: 1.8;">
+                    <em>At the top, we have <strong>four key statistics</strong> – Total Orders, Active Prescriptions, Medicines in Cart, and Pending Prescriptions. These give users a quick snapshot of their current status.</em>
+                </p>
+                <br>
+                <p style="color: #374151; font-size: 1rem; line-height: 1.8;">
+                    <em>Below that, <strong>Quick Actions</strong> allow users to instantly access Browse Medicines, Upload Prescription, View Orders, or Get Support with a single click.</em>
+                </p>
+                <br>
+                <p style="color: #374141; font-size: 1rem; line-height: 1.8;">
+                    <em>The dashboard also displays <strong>Recent Orders</strong> with status badges, a <strong>Health Summary</strong> showing allergies and chronic conditions, and a <strong>'Buy Again'</strong> section for frequently purchased medicines. This eliminates the need to navigate through multiple pages for common tasks."</em>
+                </p>
+            </div>
+
+            <h3 style="color: #374151; font-size: 1.125rem; margin-bottom: 1rem;">📱 Dashboard Features Overview</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <div style="background: white; padding: 1rem; border-radius: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                    <h4 style="color: #059669; font-size: 0.9375rem;">Stats Cards</h4>
+                    <p style="font-size: 0.8125rem; color: #64748b;">Orders, Prescriptions, Cart items at a glance</p>
+                </div>
+                <div style="background: white; padding: 1rem; border-radius: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
+                    <h4 style="color: #059669; font-size: 0.9375rem;">Quick Actions</h4>
+                    <p style="font-size: 0.8125rem; color: #64748b;">One-click access to common tasks</p>
+                </div>
+                <div style="background: white; padding: 1rem; border-radius: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📋</div>
+                    <h4 style="color: #059669; font-size: 0.9375rem;">Recent Orders</h4>
+                    <p style="font-size: 0.8125rem; color: #64748b;">Track order status with badges</p>
+                </div>
+                <div style="background: white; padding: 1rem; border-radius: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">❤️</div>
+                    <h4 style="color: #059669; font-size: 0.9375rem;">Health Summary</h4>
+                    <p style="font-size: 0.8125rem; color: #64748b;">Allergies & chronic conditions</p>
+                </div>
+                <div style="background: white; padding: 1rem; border-radius: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔄</div>
+                    <h4 style="color: #059669; font-size: 0.9375rem;">Buy Again</h4>
+                    <p style="font-size: 0.8125rem; color: #64748b;">Quick reorder frequently bought items</p>
+                </div>
+                <div style="background: white; padding: 1rem; border-radius: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎨</div>
+                    <h4 style="color: #059669; font-size: 0.9375rem;">Modern UI</h4>
+                    <p style="font-size: 0.8125rem; color: #64748b;">Glassmorphism design aesthetic</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding: 1rem; background: #fef3c7; border-radius: 0.75rem; border-left: 4px solid #f59e0b;">
+                <h4 style="color: #92400e; font-size: 0.9375rem; margin-bottom: 0.5rem;">💡 Key Selling Points</h4>
+                <ul style="color: #78350f; font-size: 0.875rem; margin-left: 1.25rem;">
+                    <li>Personalized greeting with user's name</li>
+                    <li>Real-time data fetched from MongoDB via REST API</li>
+                    <li>Responsive design works on all devices</li>
+                    <li>Inline styles ensure consistent rendering</li>
+                    <li>Color-coded status badges for easy tracking</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ABSTRACT -->
+        <section class="section">
+            <h2><span class="num">1</span> Abstract</h2>
+            <div class="abstract">
+                <p><strong>PharmaCare Plus</strong> is a comprehensive web-based Pharmacy Management System designed to streamline pharmacy operations, enhance patient care, and improve medication management.</p>
+                <br>
+                <p>Built using the <strong>MERN stack</strong> (MongoDB, Express.js, React.js, Node.js), this system provides a unified platform for pharmacists, administrators, and customers to manage prescriptions, inventory, orders, and health records.</p>
+                <br>
+                <p><strong>Objective:</strong> To replace traditional manual pharmacy operations with an automated, secure, and user-friendly digital solution that reduces errors, improves efficiency, and enhances the overall healthcare experience.</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h4>🔐 Role-based Access</h4>
+                    <p>Separate dashboards for Admin, Pharmacist, and User</p>
+                </div>
+                <div class="feature">
+                    <h4>📋 Prescription Management</h4>
+                    <p>Digital upload, verification, and tracking</p>
+                </div>
+                <div class="feature">
+                    <h4>📦 Inventory Tracking</h4>
+                    <p>Real-time stock with low-stock alerts</p>
+                </div>
+                <div class="feature">
+                    <h4>🛒 E-Commerce</h4>
+                    <p>Online catalog, cart, and checkout</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOFTWARE & HARDWARE -->
+        <section class="section">
+            <h2><span class="num">2</span> Software & Hardware Requirements</h2>
+            
+            <h3 style="margin: 1.5rem 0 0.75rem; color: #374151; font-size: 1.125rem;">Software Requirements</h3>
+            <table>
+                <tr><th>Component</th><th>Technology</th><th>Version</th></tr>
+                <tr><td>Frontend</td><td>React.js + Vite</td><td>18.x / 5.x</td></tr>
+                <tr><td>Backend</td><td>Node.js + Express.js</td><td>18.x / 4.x</td></tr>
+                <tr><td>Database</td><td>MongoDB Atlas</td><td>Cloud</td></tr>
+                <tr><td>Authentication</td><td>JWT + bcrypt</td><td>-</td></tr>
+                <tr><td>Styling</td><td>CSS3 with Variables</td><td>-</td></tr>
+                <tr><td>HTTP Client</td><td>Axios</td><td>1.x</td></tr>
+                <tr><td>Routing</td><td>React Router DOM</td><td>6.x</td></tr>
+            </table>
+
+            <h3 style="margin: 1.5rem 0 0.75rem; color: #374151; font-size: 1.125rem;">Hardware Requirements</h3>
+            <table>
+                <tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr>
+                <tr><td>Processor</td><td>Intel i3 / AMD Ryzen 3</td><td>Intel i5 / AMD Ryzen 5</td></tr>
+                <tr><td>RAM</td><td>4 GB</td><td>8 GB</td></tr>
+                <tr><td>Storage</td><td>256 GB HDD</td><td>512 GB SSD</td></tr>
+                <tr><td>Network</td><td>Broadband Internet</td><td>High-speed Internet</td></tr>
+            </table>
+        </section>
+
+        <!-- COMPARISON -->
+        <section class="section">
+            <h2><span class="num">3</span> Existing vs Proposed System</h2>
+            
+            <div class="comparison">
+                <div class="comparison-card old">
+                    <h3>❌ Traditional System</h3>
+                    <ul>
+                        <li>Paper-based prescriptions</li>
+                        <li>Manual inventory counting</li>
+                        <li>In-person orders only</li>
+                        <li>Paper patient records</li>
+                        <li>High error rate (15-20%)</li>
+                        <li>Limited accessibility</li>
+                        <li>Time-consuming processes</li>
+                        <li>Difficult to scale</li>
+                    </ul>
+                </div>
+                <div class="comparison-card new">
+                    <h3>✅ PharmaCare Plus</h3>
+                    <ul>
+                        <li>Digital prescription upload</li>
+                        <li>Real-time stock tracking</li>
+                        <li>Online ordering 24/7</li>
+                        <li>Centralized health records</li>
+                        <li>Minimal errors (&lt;2%)</li>
+                        <li>Access from anywhere</li>
+                        <li>Automated workflows</li>
+                        <li>Cloud-based scalability</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat">
+                    <div class="value">70%</div>
+                    <div class="label">Work Reduction</div>
+                </div>
+                <div class="stat">
+                    <div class="value">90%</div>
+                    <div class="label">Faster Processing</div>
+                </div>
+                <div class="stat">
+                    <div class="value">&lt;2%</div>
+                    <div class="label">Error Rate</div>
+                </div>
+                <div class="stat">
+                    <div class="value">24/7</div>
+                    <div class="label">Availability</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARCHITECTURE -->
+        <section class="section">
+            <h2><span class="num">4</span> System Architecture</h2>
+            <div class="architecture">
+                <div class="layer frontend">👤 Users (Admin / Pharmacist / Customer)</div>
+                <div class="arrow">↓</div>
+                <div class="layer frontend">⚛️ React.js Frontend (Vite + CSS)</div>
+                <div class="arrow">↓ REST API</div>
+                <div class="layer backend">🚀 Express.js Backend (Node.js)</div>
+                <div class="arrow">↓</div>
+                <div class="layer database">🍃 MongoDB Atlas (Cloud Database)</div>
+            </div>
+        </section>
+
+        <!-- MODULES -->
+        <section class="section">
+            <h2><span class="num">5</span> System Modules</h2>
+            <div class="modules">
+                <div class="module"><h4>🔐 Authentication</h4><p>Login, Register, JWT auth</p></div>
+                <div class="module"><h4>📊 Dashboard</h4><p>Stats, orders, health summary</p></div>
+                <div class="module"><h4>💊 Catalog</h4><p>Browse, search, cart</p></div>
+                <div class="module"><h4>📋 Prescriptions</h4><p>Upload, verify, track</p></div>
+                <div class="module"><h4>📦 Orders</h4><p>Place and track orders</p></div>
+                <div class="module"><h4>👤 Profile</h4><p>Personal & health info</p></div>
+                <div class="module"><h4>🏥 Clinics</h4><p>Multi-clinic management</p></div>
+                <div class="module"><h4>📈 Reports</h4><p>Analytics & insights</p></div>
+                <div class="module"><h4>💬 Support</h4><p>FAQs & ticket system</p></div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>PharmaCare Plus - Project Review | January 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

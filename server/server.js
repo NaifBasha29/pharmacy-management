@@ -60,7 +60,7 @@ app.use(helmet({
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: '*',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -156,7 +156,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV !== 'test') {
-  httpServer.listen(PORT, () => {
+  httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`
   ╔═══════════════════════════════════════════════════════════╗
   ║                                                           ║
