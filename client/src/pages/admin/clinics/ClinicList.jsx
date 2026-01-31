@@ -148,7 +148,6 @@ const ClinicList = () => {
                                 <tr>
                                     <th>Clinic</th>
                                     <th>Contact</th>
-                                    <th>License</th>
                                     <th>Admin</th>
                                     <th>Staff</th>
                                     <th>Status</th>
@@ -173,7 +172,7 @@ const ClinicList = () => {
                                                 <span><FiMail size={12} /> {clinic.contact?.email}</span>
                                             </div>
                                         </td>
-                                        <td className="license-cell">{clinic.regulatory?.licenseNumber}</td>
+
                                         <td>{clinic.adminAccount?.fullName || 'N/A'}</td>
                                         <td className="staff-count">{clinic.subscription?.maxUsers || 0}</td>
                                         <td>
@@ -182,30 +181,28 @@ const ClinicList = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <div className="action-buttons">
-                                                <button className="action-btn view" title="View Details">
-                                                    <FiEye />
+                                            <div className="action-buttons-text">
+                                                <button
+                                                    className="action-btn-icon view"
+                                                    onClick={() => navigate(`/admin/clinics/${clinic._id}`)}
+                                                    title="View Details"
+                                                >
+                                                    <FiEye size={16} />
                                                 </button>
-                                                <button className="action-btn edit" title="Edit">
-                                                    <FiEdit2 />
-                                                </button>
-                                                {clinic.verification?.clinicStatus === 'active' ? (
+                                                <div className="segmented-toggle">
                                                     <button
-                                                        className="action-btn suspend"
-                                                        title="Suspend"
-                                                        onClick={() => handleStatusChange(clinic._id, 'suspended')}
+                                                        className={`toggle-btn ${clinic.verification?.clinicStatus !== 'active' ? 'active' : ''}`}
+                                                        onClick={() => handleStatusChange(clinic._id, 'inactive')}
                                                     >
-                                                        <FiX />
+                                                        Off
                                                     </button>
-                                                ) : (
                                                     <button
-                                                        className="action-btn activate"
-                                                        title="Activate"
+                                                        className={`toggle-btn ${clinic.verification?.clinicStatus === 'active' ? 'active' : ''}`}
                                                         onClick={() => handleStatusChange(clinic._id, 'active')}
                                                     >
-                                                        <FiCheck />
+                                                        On
                                                     </button>
-                                                )}
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>

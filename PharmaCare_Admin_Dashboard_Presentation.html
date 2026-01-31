@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaCare Admin Dashboard - System Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: #fff;
+        }
+
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 60px;
+            page-break-after: always;
+            background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%);
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        .title-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+        }
+
+        .title-page h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-page h2 {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            color: #a0a0a0;
+        }
+
+        .title-page .meta {
+            margin-top: 100px;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .slide-header {
+            background: linear-gradient(90deg, #1a1a2e, #0f3460);
+            color: white;
+            padding: 20px 30px;
+            margin: -40px -60px 30px -60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-header h2 {
+            font-size: 28px;
+        }
+
+        .slide-number {
+            background: #e94560;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        h3 {
+            color: #0f3460;
+            font-size: 22px;
+            margin: 25px 0 15px 0;
+            border-left: 4px solid #e94560;
+            padding-left: 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+
+        th {
+            background: linear-gradient(90deg, #1a1a2e, #0f3460);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+
+        .diagram-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .diagram-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .diagram-caption {
+            margin-top: 15px;
+            font-style: italic;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .highlight-box h4 {
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #0f3460;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .code-block {
+            background: #1a1a2e;
+            color: #a0e7a0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        ul {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            right: 60px;
+            font-size: 11px;
+            color: #888;
+        }
+
+        @media print {
+            .page {
+                padding: 30px 40px;
+            }
+
+            .slide-header {
+                margin: -30px -40px 20px -40px;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SLIDE 1: Title Page -->
+    <div class="page title-page">
+        <h1>PharmaCare Admin Dashboard</h1>
+        <h2>Complete System Documentation & Flow Analysis</h2>
+        <p style="font-size: 18px; max-width: 600px; color: #ccc;">
+            Comprehensive presentation covering Use Case Diagrams, Class Diagrams,
+            System Architecture, Process Flows, and Strategic Recommendations
+        </p>
+        <div class="meta">
+            <p>Pharmacy Management System</p>
+            <p>PREETHIKA P</p>
+            <p>24IT083 - II - MCA - "C"</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: Executive Summary -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Executive Summary</h2>
+            <span class="slide-number">01</span>
+        </div>
+
+        <h3>System Overview</h3>
+        <p>The <strong>PharmaCare Admin Dashboard</strong> is a centralized command center for Super Administrators
+            to manage the entire pharmacy ecosystem. It provides comprehensive oversight of clinics, users,
+            inventory, and system health.</p>
+
+        <h3>Key Capabilities</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Description</th>
+                    <th>Key Features</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Dashboard Analytics</strong></td>
+                    <td>Real-time KPIs and metrics</td>
+                    <td>Revenue, Orders, Inventory, Users</td>
+                </tr>
+                <tr>
+                    <td><strong>Clinic Management</strong></td>
+                    <td>Full lifecycle management</td>
+                    <td>Enrollment, Verification, Suspension</td>
+                </tr>
+                <tr>
+                    <td><strong>User Management</strong></td>
+                    <td>Role-based access control</td>
+                    <td>Admin, Pharmacist, Customer roles</td>
+                </tr>
+                <tr>
+                    <td><strong>Inventory Oversight</strong></td>
+                    <td>Global stock monitoring</td>
+                    <td>Low stock alerts, Reorder triggers</td>
+                </tr>
+                <tr>
+                    <td><strong>Audit & Compliance</strong></td>
+                    <td>Activity logging</td>
+                    <td>Action tracking, IP logging</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <h4>Document Contents</h4>
+            <p>This presentation includes 8 professional UML diagrams, detailed process flows,
+                data model documentation, API endpoints, and strategic recommendations.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: System Architecture -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>System Architecture Diagram</h2>
+            <span class="slide-number">02</span>
+        </div>
+
+        <h3>Three-Tier Architecture Overview</h3>
+        <p>The system follows a modern three-tier architecture pattern ensuring separation of concerns,
+            scalability, and maintainability.</p>
+
+        <div class="diagram-container">
+            <img src="system_architecture_1769535494779.png" alt="System Architecture Diagram">
+            <p class="diagram-caption">Figure 1: Three-Tier System Architecture</p>
+        </div>
+
+        <h3>Layer Details</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Layer</th>
+                    <th>Technology</th>
+                    <th>Components</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Frontend</strong></td>
+                    <td>React.js</td>
+                    <td>Dashboard, Clinic Management, User Management</td>
+                </tr>
+                <tr>
+                    <td><strong>Backend</strong></td>
+                    <td>Node.js + Express</td>
+                    <td>Auth API, Clinics API, Users API, Analytics API</td>
+                </tr>
+                <tr>
+                    <td><strong>Database</strong></td>
+                    <td>MongoDB</td>
+                    <td>Users, Clinics, Medicines, Orders, AuditLogs</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 4: Use Case Diagram -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Use Case Diagram</h2>
+            <span class="slide-number">03</span>
+        </div>
+
+        <h3>Actor Interactions & System Boundaries</h3>
+        <p>This UML Use Case Diagram illustrates all functional interactions between administrators and the system.</p>
+
+        <div class="diagram-container">
+            <img src="use_case_diagram_1769535450246.png" alt="Use Case Diagram">
+            <p class="diagram-caption">Figure 2: UML Use Case Diagram - Admin Dashboard</p>
+        </div>
+
+        <div class="two-column">
+            <div>
+                <h3>Actor Definitions</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Actor</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Super Admin</strong></td>
+                            <td>Full system access</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Clinic Admin</strong></td>
+                            <td>Clinic-scoped access</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h3>Primary Use Cases</h3>
+                <ul>
+                    <li>View Dashboard Analytics</li>
+                    <li>Manage Clinics</li>
+                    <li>Approve Clinic Registration</li>
+                    <li>Manage Users</li>
+                    <li>Monitor Inventory</li>
+                    <li>Audit System Logs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: Class Diagram -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Class Diagram</h2>
+            <span class="slide-number">04</span>
+        </div>
+
+        <h3>Data Model Structure & Relationships</h3>
+        <p>The UML Class Diagram shows the core entities and their relationships in the MongoDB database.</p>
+
+        <div class="diagram-container">
+            <img src="class_diagram_1769535470455.png" alt="Class Diagram">
+            <p class="diagram-caption">Figure 3: UML Class Diagram - Data Model</p>
+        </div>
+
+        <h3>Entity Specifications</h3>
+        <div class="two-column">
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">User Entity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>name</td>
+                            <td>String</td>
+                        </tr>
+                        <tr>
+                            <td>email</td>
+                            <td>String (unique)</td>
+                        </tr>
+                        <tr>
+                            <td>role</td>
+                            <td>Enum</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>String</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Clinic Entity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>code</td>
+                            <td>String (auto-gen)</td>
+                        </tr>
+                        <tr>
+                            <td>name</td>
+                            <td>String</td>
+                        </tr>
+                        <tr>
+                            <td>type</td>
+                            <td>Enum</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>String</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>Relationships:</strong> User → Order (1:N), Clinic → Medicine (1:N), User → AuditLog (1:N)
+        </div>
+    </div>
+
+    <!-- SLIDE 6: Clinic Enrollment Flow -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Clinic Enrollment Process Flow</h2>
+            <span class="slide-number">05</span>
+        </div>
+
+        <h3>Step-by-Step Enrollment Workflow</h3>
+        <p>This flowchart details the complete process of adding a new clinic to the platform.</p>
+
+        <div class="diagram-container">
+            <img src="clinic_enrollment_flow_1769535522127.png" alt="Clinic Enrollment Flowchart">
+            <p class="diagram-caption">Figure 4: Clinic Enrollment Process Flowchart</p>
+        </div>
+
+        <h3>Process Steps</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Step</th>
+                    <th>Action</th>
+                    <th>System Response</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Admin clicks "Add Clinic"</td>
+                    <td>Open enrollment form</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Fill Basic Information</td>
+                    <td>Validate required fields</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Upload License Documents</td>
+                    <td>Store in filesystem</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Create Admin Account</td>
+                    <td>Generate temporary password</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Validation Check</td>
+                    <td>Server-side schema validation</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>On Success</td>
+                    <td>Generate clinic code</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Email Notification</td>
+                    <td>Send credentials to clinic admin</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 7: User Management Flow -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>User Management Process Flow</h2>
+            <span class="slide-number">06</span>
+        </div>
+
+        <h3>Complete User Lifecycle Management</h3>
+        <p>This diagram shows all user management operations available to the Super Admin.</p>
+
+        <div class="diagram-container">
+            <img src="user_management_flow_1769535557536.png" alt="User Management Flowchart">
+            <p class="diagram-caption">Figure 5: User Management Process Flowchart</p>
+        </div>
+
+        <h3>Available Operations</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Description</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>View Users</strong></td>
+                    <td>Display all users in table</td>
+                    <td>Filterable by role/status</td>
+                </tr>
+                <tr>
+                    <td><strong>Add User</strong></td>
+                    <td>Create new user account</td>
+                    <td>Assign role, send email</td>
+                </tr>
+                <tr>
+                    <td><strong>Edit User</strong></td>
+                    <td>Modify user details</td>
+                    <td>Update database</td>
+                </tr>
+                <tr>
+                    <td><strong>Toggle Status</strong></td>
+                    <td>Activate/Suspend user</td>
+                    <td>Immediate access control</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Role Hierarchy</h3>
+        <div class="code-block">
+            Super Admin (Full Access)
+            ├── Clinic Admin (Clinic-Scoped Access)
+            │ └── Pharmacist (Inventory + Orders)
+            └── Customer (Order Placement Only)
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Data Flow Diagram -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Data Flow Diagram (DFD)</h2>
+            <span class="slide-number">07</span>
+        </div>
+
+        <h3>Complete Data Movement Across System</h3>
+        <p>This Level-1 DFD shows how data flows between external entities, processes, and data stores.</p>
+
+        <div class="diagram-container">
+            <img src="data_flow_diagram_1769535582441.png" alt="Data Flow Diagram">
+            <p class="diagram-caption">Figure 6: Level-1 Data Flow Diagram</p>
+        </div>
+
+        <div class="two-column">
+            <div>
+                <h3>External Entities</h3>
+                <ul>
+                    <li><strong>Super Admin</strong> - Manages platform</li>
+                    <li><strong>Clinic Admin</strong> - Manages pharmacy</li>
+                    <li><strong>Customer</strong> - Places orders</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Data Stores</h3>
+                <ul>
+                    <li>User Database</li>
+                    <li>Clinic Database</li>
+                    <li>Medicine Database</li>
+                    <li>Order Database</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: Sequence Diagram -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Sequence Diagram - Login Flow</h2>
+            <span class="slide-number">08</span>
+        </div>
+
+        <h3>Admin Authentication & Dashboard Access</h3>
+        <p>This UML Sequence Diagram shows the complete login and data retrieval process.</p>
+
+        <div class="diagram-container">
+            <img src="sequence_diagram_1769535617133.png" alt="Sequence Diagram">
+            <p class="diagram-caption">Figure 7: UML Sequence Diagram - Login Flow</p>
+        </div>
+
+        <h3>Interaction Steps</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Admin</td>
+                    <td>Browser</td>
+                    <td>Enter credentials</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Browser</td>
+                    <td>Express API</td>
+                    <td>POST /auth/login</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Express</td>
+                    <td>MongoDB</td>
+                    <td>Query user</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Express</td>
+                    <td>Browser</td>
+                    <td>Return JWT token</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Browser</td>
+                    <td>Express API</td>
+                    <td>GET /analytics</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Express</td>
+                    <td>Browser</td>
+                    <td>Return dashboard data</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 10: State Diagram -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>State Diagram - Clinic Lifecycle</h2>
+            <span class="slide-number">09</span>
+        </div>
+
+        <h3>Clinic Status Transitions</h3>
+        <p>This UML State Diagram shows all possible states a clinic can be in and the transitions between them.</p>
+
+        <div class="diagram-container">
+            <img src="state_diagram_1769535641508.png" alt="State Diagram">
+            <p class="diagram-caption">Figure 8: UML State Diagram - Clinic Lifecycle</p>
+        </div>
+
+        <h3>State Definitions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>State</th>
+                    <th>Description</th>
+                    <th>Allowed Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Draft</strong></td>
+                    <td>Incomplete enrollment</td>
+                    <td>Edit, Submit, Delete</td>
+                </tr>
+                <tr>
+                    <td><strong>Pending Verification</strong></td>
+                    <td>Awaiting approval</td>
+                    <td>Approve, Reject</td>
+                </tr>
+                <tr>
+                    <td><strong>Active</strong></td>
+                    <td>Fully operational</td>
+                    <td>Suspend, Deactivate</td>
+                </tr>
+                <tr>
+                    <td><strong>Suspended</strong></td>
+                    <td>Temporarily disabled</td>
+                    <td>Reactivate</td>
+                </tr>
+                <tr>
+                    <td><strong>Inactive</strong></td>
+                    <td>Permanently closed</td>
+                    <td>Archive</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 11: Dashboard Mockup -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Dashboard UI Mockup</h2>
+            <span class="slide-number">10</span>
+        </div>
+
+        <h3>Admin Interface Design</h3>
+        <p>This mockup represents the Super Admin Dashboard interface with all key components.</p>
+
+        <div class="diagram-container">
+            <img src="admin_dashboard_mockup_1769528157854.png" alt="Dashboard Mockup">
+            <p class="diagram-caption">Figure 9: Admin Dashboard UI Mockup</p>
+        </div>
+
+        <h3>UI Components</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Sidebar</strong></td>
+                    <td>Navigation to Clinics, Users, Inventory, Reports</td>
+                </tr>
+                <tr>
+                    <td><strong>KPI Cards</strong></td>
+                    <td>Today's Revenue, Active Clinics, Pending Approvals, System Health</td>
+                </tr>
+                <tr>
+                    <td><strong>Recent Orders Table</strong></td>
+                    <td>Latest 5 orders with status</td>
+                </tr>
+                <tr>
+                    <td><strong>Low Stock Alerts</strong></td>
+                    <td>Medicines below threshold</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 12: Recommendations -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Technical Recommendations</h2>
+            <span class="slide-number">11</span>
+        </div>
+
+        <h3>Security Improvements</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Recommendation</th>
+                    <th>Implementation</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Multi-Factor Authentication</td>
+                    <td>Add OTP via SMS/Email for admin login</td>
+                    <td>🔴 HIGH</td>
+                </tr>
+                <tr>
+                    <td>Session Management</td>
+                    <td>Implement single-session per admin</td>
+                    <td>🔴 HIGH</td>
+                </tr>
+                <tr>
+                    <td>Rate Limiting</td>
+                    <td>Limit login attempts</td>
+                    <td>🟡 MEDIUM</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Performance Optimizations</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Recommendation</th>
+                    <th>Implementation</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Redis Caching</td>
+                    <td>Cache dashboard stats (5-min TTL)</td>
+                    <td>🔴 HIGH</td>
+                </tr>
+                <tr>
+                    <td>Database Indexing</td>
+                    <td>Add indexes on frequently queried fields</td>
+                    <td>🟡 MEDIUM</td>
+                </tr>
+                <tr>
+                    <td>Lazy Loading</td>
+                    <td>Load dashboard cards asynchronously</td>
+                    <td>🟢 LOW</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Feature Additions</h3>
+        <div class="two-column">
+            <div class="success-box">
+                <strong>Predictive Analytics</strong><br>
+                AI-based low stock forecasting
+            </div>
+            <div class="success-box">
+                <strong>PDF Reports</strong><br>
+                Generate downloadable clinic reports
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 13: API Endpoints -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>API Endpoints Summary</h2>
+            <span class="slide-number">12</span>
+        </div>
+
+        <h3>Authentication Routes</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/auth/login</td>
+                    <td>User login</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/auth/logout</td>
+                    <td>User logout</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/auth/me</td>
+                    <td>Get current user</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Clinic Routes</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/clinics</td>
+                    <td>List all clinics</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/clinics</td>
+                    <td>Create new clinic</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/clinics/:id</td>
+                    <td>Get clinic by ID</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/clinics/:id</td>
+                    <td>Update clinic</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/clinics/:id/status</td>
+                    <td>Update clinic status</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>User Routes</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/users</td>
+                    <td>List all users</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/users</td>
+                    <td>Create new user</td>
+                </tr>
+                <tr>
+                    <td>PUT</td>
+                    <td>/api/users/:id</td>
+                    <td>Update user</td>
+                </tr>
+                <tr>
+                    <td>DELETE</td>
+                    <td>/api/users/:id</td>
+                    <td>Delete user</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 14: Conclusion -->
+    <div class="page">
+        <div class="slide-header">
+            <h2>Conclusion</h2>
+            <span class="slide-number">13</span>
+        </div>
+
+        <h3>Summary</h3>
+        <p>This documentation provides a complete view of the <strong>PharmaCare Admin Dashboard</strong> system.</p>
+
+        <div class="highlight-box">
+            <h4>Document Highlights</h4>
+            <ul style="color: white; margin-top: 10px;">
+                <li>8 Professional UML Diagrams covering all aspects</li>
+                <li>Complete Data Model Documentation</li>
+                <li>Step-by-Step Process Flows</li>
+                <li>API Endpoint Reference</li>
+                <li>Strategic Recommendations</li>
+            </ul>
+        </div>
+
+        <h3>Key Files Referenced</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Dashboard.jsx</td>
+                    <td>Main admin dashboard component</td>
+                </tr>
+                <tr>
+                    <td>ClinicList.jsx</td>
+                    <td>Clinic management interface</td>
+                </tr>
+                <tr>
+                    <td>UserList.jsx</td>
+                    <td>User management interface</td>
+                </tr>
+                <tr>
+                    <td>Clinic.js</td>
+                    <td>Mongoose clinic model schema</td>
+                </tr>
+                <tr>
+                    <td>User.js</td>
+                    <td>Mongoose user model schema</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>

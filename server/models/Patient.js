@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const patientSchema = new mongoose.Schema({
   user: {
@@ -8,6 +9,16 @@ const patientSchema = new mongoose.Schema({
   patientId: {
     type: String,
     unique: true
+  },
+  username: {
+    type: String,
+    unique: true,
+    sparse: true,
+    trim: true
+  },
+  password: {
+    type: String,
+    select: false
   },
   name: {
     type: String,
@@ -75,12 +86,12 @@ const patientSchema = new mongoose.Schema({
 });
 
 // Generate patient ID before saving
-patientSchema.pre('save', async function(next) {
+patientSchema.pre('save', async function (next) {
   if (!this.patientId) {
     const count = await mongoose.model('Patient').countDocuments();
     this.patientId = `PAT${(count + 1).toString().padStart(6, '0')}`;
   }
-  
+
   // Calculate age from date of birth
   if (this.dateOfBirth) {
     const today = new Date();
@@ -92,9 +103,24 @@ patientSchema.pre('save', async function(next) {
     }
     this.age = age;
   }
-  
+
   next();
 });
+
+// Hash password before saving
+patientSchema.pre('save', async function (next) {
+  if (this.isModified('password') && this.password) {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+  next();
+});
+
+// Compare password method
+patientSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password) return false;
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
 const Patient = mongoose.model('Patient', patientSchema);
 

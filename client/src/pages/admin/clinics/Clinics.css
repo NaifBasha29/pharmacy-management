@@ -1,34 +1,34 @@
-/* Clinic Management Styles */
+/* Clinic Management Styles - Compact Layout */
 
-/* Page Header */
+/* Page Header - Compact */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .page-header h1 {
-    font-size: 1.75rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
 }
 
 .page-header p {
     color: #64748b;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
-/* Buttons */
+/* Compact Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    border-radius: 8px;
+    gap: 0.35rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 6px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
@@ -41,7 +41,7 @@
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+    box-shadow: 0 3px 10px rgba(13, 148, 136, 0.25);
 }
 
 .btn-secondary {
@@ -53,33 +53,35 @@
     background: #e2e8f0;
 }
 
-/* Clinic Stats */
+/* Compact Clinic Stats */
 .clinic-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .stat-box {
     background: white;
-    border-radius: 12px;
-    padding: 1.25rem;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
     text-align: center;
     border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .stat-box .stat-number {
     display: block;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 0.25rem;
+    line-height: 1.2;
 }
 
 .stat-box .stat-text {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     color: #64748b;
+    margin-top: 0.15rem;
 }
 
 .stat-box.active .stat-number {
@@ -94,33 +96,34 @@
     color: #dc2626;
 }
 
-/* Filters Bar */
+/* Compact Filters Bar */
 .filters-bar {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .search-box {
     flex: 1;
-    max-width: 400px;
+    max-width: 300px;
     position: relative;
 }
 
 .search-box .search-icon {
     position: absolute;
-    left: 1rem;
+    left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     color: #94a3b8;
+    font-size: 0.85rem;
 }
 
 .search-box input {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
     transition: border-color 0.2s ease;
 }
 
@@ -130,57 +133,74 @@
 }
 
 .filter-select {
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
     background: white;
     cursor: pointer;
 }
 
-/* Table Styles */
+/* Compact Table Styles */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table th,
+.table td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.table th {
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+}
+
 .clinic-info {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.15rem;
 }
 
 .clinic-name {
     font-weight: 600;
     color: #1e293b;
+    font-size: 0.8rem;
 }
 
 .clinic-code {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: #0d9488;
     font-family: monospace;
 }
 
 .clinic-address {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: #64748b;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.2rem;
 }
 
 .contact-info {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.8rem;
+    gap: 0.15rem;
+    font-size: 0.7rem;
     color: #64748b;
 }
 
 .contact-info span {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.25rem;
 }
 
 .license-cell {
     font-family: monospace;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #475569;
 }
 
@@ -290,6 +310,123 @@
 
 .action-btn.activate:hover {
     background: #bbf7d0;
+}
+
+/* Text-based Action Buttons */
+.action-buttons-text {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.action-btn-text {
+    padding: 0.4rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.action-btn-text.view {
+    background: #dbeafe;
+    color: #2563eb;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
+}
+
+.action-btn-text.view:hover {
+    background: #bfdbfe;
+    transform: translateY(-1px);
+}
+
+.action-btn-text.edit {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.action-btn-text.edit:hover {
+    background: #fde68a;
+    transform: translateY(-1px);
+}
+
+.action-btn-text.suspend {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.action-btn-text.suspend:hover {
+    background: #fecaca;
+    transform: translateY(-1px);
+}
+
+.action-btn-text.activate {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.action-btn-text.activate:hover {
+    background: #bbf7d0;
+    transform: translateY(-1px);
+}
+
+/* Icon Button for View */
+.action-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn-icon.view {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.action-btn-icon.view:hover {
+    background: #bfdbfe;
+    transform: scale(1.1);
+}
+
+/* Segmented Toggle Button (Off/On) */
+.segmented-toggle {
+    display: inline-flex;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.segmented-toggle .toggle-btn {
+    padding: 0.35rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+}
+
+.segmented-toggle .toggle-btn:first-child {
+    border-right: 1px solid #e2e8f0;
+}
+
+.segmented-toggle .toggle-btn.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.segmented-toggle .toggle-btn:not(.active):hover {
+    background: #e2e8f0;
 }
 
 /* Modal */
