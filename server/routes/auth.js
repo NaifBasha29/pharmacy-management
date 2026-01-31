@@ -1,10 +1,14 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Clinic from '../models/Clinic.js';
+import Patient from '../models/Patient.js';
 import AuditLog from '../models/AuditLog.js';
-import { protect, generateToken, generateRefreshToken } from '../middleware/auth.js';
+import Session from '../models/Session.js';
+import { protect, generateToken, generateRefreshToken, getDeviceInfo } from '../middleware/auth.js';
 import { userValidation } from '../middleware/validation.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { loginRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -71,68 +75,264 @@ router.post('/register', userValidation.register, asyncHandler(async (req, res) 
   });
 }));
 
-// @route   POST /api/auth/login
-// @desc    Login user
+// @route   POST /api/auth/login/admin
+// @desc    Login admin user (Users collection)
 // @access  Public
-router.post('/login', userValidation.login, asyncHandler(async (req, res) => {
+router.post('/login/admin', loginRateLimiter, asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Find user and include password for comparison
+  // STRICT: Check only Users collection
   const user = await User.findOne({ email }).select('+password');
-  if (!user) {
+
+  if (!user || user.role !== 'admin') {
+    // If not found OR not an admin role (strict separation)
     return res.status(401).json({
       success: false,
-      message: 'Invalid email or password'
+      message: 'Invalid admin credentials'
     });
   }
 
-  // Check if user is active
   if (!user.isActive) {
     return res.status(401).json({
       success: false,
-      message: 'Your account has been deactivated. Please contact admin.'
+      message: 'Account deactivated'
     });
   }
 
-  // Verify password
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
     return res.status(401).json({
       success: false,
-      message: 'Invalid email or password'
+      message: 'Invalid admin credentials'
     });
   }
 
-  // Generate tokens
-  const accessToken = generateToken(user._id);
-  const refreshToken = generateRefreshToken(user._id);
+  const accessToken = generateToken(user._id, 'admin');
+  const refreshToken = generateRefreshToken(user._id, 'admin');
 
-  // Update user with refresh token and last login
+  // Create session (kills existing sessions - single device enforcement)
+  await Session.createSession({
+    userId: user._id,
+    userType: 'User',
+    accessToken,
+    refreshToken,
+    deviceInfo: getDeviceInfo(req),
+    expiresIn: 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
+
   user.refreshToken = refreshToken;
   user.lastLogin = new Date();
   await user.save({ validateBeforeSave: false });
 
-  // Log action
   await AuditLog.log({
     user: user._id,
     action: 'LOGIN',
     resource: 'User',
     resourceId: user._id,
-    description: `User logged in: ${user.email}`,
-    ipAddress: req.ip,
-    userAgent: req.headers['user-agent']
+    description: `Admin logged in: ${user.email}`,
+    ipAddress: req.ip
   });
 
   res.json({
     success: true,
-    message: 'Login successful',
     data: {
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        avatar: user.avatar
+        avatar: user.avatar,
+        type: 'admin'
+      },
+      accessToken,
+      refreshToken
+    }
+  });
+}));
+
+// @route   POST /api/auth/login/clinic
+// @desc    Login clinic admin (Clinics collection)
+// @access  Public
+router.post('/login/clinic', loginRateLimiter, asyncHandler(async (req, res) => {
+  const { email, password, username } = req.body; // Can login with email or username
+
+  console.log('[Clinic Login] Attempting login with:', { email, username, passwordLength: password?.length });
+
+  let clinic;
+
+  // Check if input looks like an email or username
+  const isEmail = email && email.includes('@');
+
+  if (isEmail) {
+    // Try to find by admin account email first, then contact email
+    clinic = await Clinic.findOne({
+      $or: [
+        { 'adminAccount.email': email },
+        { 'contact.email': email }
+      ]
+    }).select('+adminAccount.password +adminAccount.tempPassword');
+    console.log('[Clinic Login] Searched by email, found:', clinic ? clinic.name : 'NOT FOUND');
+  } else if (email) {
+    // Treat as username if no @ symbol
+    clinic = await Clinic.findOne({ 'adminAccount.username': email }).select('+adminAccount.password +adminAccount.tempPassword');
+    console.log('[Clinic Login] Searched by username (from email field), found:', clinic ? clinic.name : 'NOT FOUND');
+  } else if (username) {
+    clinic = await Clinic.findOne({ 'adminAccount.username': username }).select('+adminAccount.password +adminAccount.tempPassword');
+    console.log('[Clinic Login] Searched by username, found:', clinic ? clinic.name : 'NOT FOUND');
+  }
+
+  if (!clinic) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid clinic credentials'
+    });
+  }
+
+  // Check verification status
+  if (clinic.verification?.clinicStatus !== 'active' || clinic.verification?.adminAccountStatus !== 'enabled') {
+    return res.status(401).json({
+      success: false,
+      message: 'Clinic account is not active. Please contact the administrator.'
+    });
+  }
+
+  // Check password - first try hashed password, then tempPassword for first login
+  let isMatch = false;
+  let isFirstLogin = false;
+
+  console.log('[Clinic Login] Checking password...');
+  console.log('[Clinic Login] Has hashed password:', !!clinic.adminAccount.password);
+  console.log('[Clinic Login] Has tempPassword:', !!clinic.adminAccount.tempPassword);
+
+  // First, try the hashed password if it exists
+  if (clinic.adminAccount.password) {
+    isMatch = await clinic.comparePassword(password);
+    console.log('[Clinic Login] Hashed password match:', isMatch);
+  }
+
+  // If no match and tempPassword exists, check against tempPassword
+  if (!isMatch && clinic.adminAccount.tempPassword) {
+    isMatch = (password === clinic.adminAccount.tempPassword);
+    isFirstLogin = isMatch; // If matched tempPassword, it's first login
+    console.log('[Clinic Login] TempPassword match:', isMatch);
+  }
+
+  if (!isMatch) {
+    console.log('[Clinic Login] Login FAILED - password mismatch');
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid clinic credentials'
+    });
+  }
+
+  console.log('[Clinic Login] Login SUCCESS for:', clinic.name);
+
+  // Reuse User Token generation (using clinic ID) - effectively acting as a 'user' in the system
+  // NOTE: protect middleware typically looks up User. We might need to adjust protect middleware or 
+  // ensure we handle 'clinic' type tokens. For now, sending ID.
+  const accessToken = generateToken(clinic._id, 'clinic');
+  const refreshToken = generateRefreshToken(clinic._id, 'clinic');
+
+  // Create session (kills existing sessions - single device enforcement)
+  await Session.createSession({
+    userId: clinic._id,
+    userType: 'Clinic',
+    accessToken,
+    refreshToken,
+    deviceInfo: getDeviceInfo(req),
+    expiresIn: 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
+
+  await AuditLog.log({
+    user: clinic._id,  // Use clinic ID as user for audit logging
+    action: 'LOGIN',
+    resource: 'Clinic',
+    resourceId: clinic._id,
+    description: `Clinic admin logged in: ${clinic.name}`,
+    ipAddress: req.ip
+  });
+
+  res.json({
+    success: true,
+    data: {
+      user: { // Normalized to 'user' for frontend compatibility
+        id: clinic._id,
+        clinicId: clinic._id,  // Explicitly include clinic ID for routing
+        clinicCode: clinic.code,
+        name: clinic.name,
+        email: clinic.adminAccount?.email || clinic.contact?.email,
+        role: 'clinic_admin',
+        type: 'clinic',
+        logo: clinic.logo,
+        isFirstLogin: isFirstLogin
+      },
+      accessToken,
+      refreshToken
+    }
+  });
+}));
+
+// @route   POST /api/auth/login/patient
+// @desc    Login patient (Patient collection)
+// @access  Public
+router.post('/login/patient', loginRateLimiter, asyncHandler(async (req, res) => {
+  const { patientId, password } = req.body;
+
+  const patient = await Patient.findOne({ patientId }).select('+password');
+
+  if (!patient) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid patient credentials'
+    });
+  }
+
+  if (!patient.isActive) {
+    return res.status(401).json({
+      success: false,
+      message: 'Patient account is inactive'
+    });
+  }
+
+  const isMatch = await patient.comparePassword(password);
+  if (!isMatch) {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid patient credentials'
+    });
+  }
+
+  const accessToken = generateToken(patient._id, 'patient');
+  const refreshToken = generateRefreshToken(patient._id, 'patient');
+
+  // Create session (kills existing sessions - single device enforcement)
+  await Session.createSession({
+    userId: patient._id,
+    userType: 'Patient',
+    accessToken,
+    refreshToken,
+    deviceInfo: getDeviceInfo(req),
+    expiresIn: 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
+
+  await AuditLog.log({
+    action: 'LOGIN',
+    resource: 'Patient',
+    resourceId: patient._id,
+    description: `Patient logged in: ${patient.patientId}`,
+    ipAddress: req.ip
+  });
+
+  res.json({
+    success: true,
+    data: {
+      user: {
+        id: patient._id,
+        name: patient.name,
+        email: patient.email,
+        role: 'patient',
+        type: 'patient',
+        patientId: patient.patientId
       },
       accessToken,
       refreshToken
@@ -209,25 +409,32 @@ router.get('/me', protect, asyncHandler(async (req, res) => {
 }));
 
 // @route   POST /api/auth/logout
-// @desc    Logout user
+// @desc    Logout user - destroys session completely
 // @access  Private
 router.post('/logout', protect, asyncHandler(async (req, res) => {
-  // Clear refresh token
-  await User.findByIdAndUpdate(req.user._id, { refreshToken: null });
+  const token = req.token; // Token from protect middleware
+
+  // Destroy session from Session store
+  await Session.destroySession(token, 'manual');
+
+  // Also clear refresh token from User model if user type
+  if (req.user.type !== 'clinic' && req.user.type !== 'patient') {
+    await User.findByIdAndUpdate(req.user._id, { refreshToken: null });
+  }
 
   // Log action
   await AuditLog.log({
     user: req.user._id,
     action: 'LOGOUT',
-    resource: 'User',
+    resource: req.user.type === 'clinic' ? 'Clinic' : req.user.type === 'patient' ? 'Patient' : 'User',
     resourceId: req.user._id,
-    description: `User logged out: ${req.user.email}`,
+    description: `User logged out: ${req.user.email || req.user.name}`,
     ipAddress: req.ip
   });
 
   res.json({
     success: true,
-    message: 'Logged out successfully'
+    message: 'Logged out successfully. All sessions destroyed.'
   });
 }));
 

@@ -5,10 +5,9 @@ import { CartProvider } from './context/CartContext';
 import { Toaster } from 'react-hot-toast';
 
 // Auth Pages
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import AdminRegister from './pages/auth/AdminRegister';
-import ClinicRegister from './pages/auth/ClinicRegister';
+import AdminLogin from './pages/auth/AdminLogin';
+import ClinicLogin from './pages/auth/ClinicLogin';
+import PatientLogin from './pages/auth/PatientLogin';
 
 // Landing Page
 import LandingPage from './pages/LandingPage';
@@ -17,10 +16,15 @@ import LandingPage from './pages/LandingPage';
 import AdminDashboard from './pages/admin/Dashboard';
 import ClinicList from './pages/admin/clinics/ClinicList';
 import ClinicEnrollment from './pages/admin/clinics/ClinicEnrollment';
+import ClinicView from './pages/admin/clinics/ClinicView';
 import UserList from './pages/admin/users/UserList';
 
 // Pharmacist Pages
 import PharmacistDashboard from './pages/pharmacist/Dashboard';
+import Patients from './pages/pharmacist/Patients';
+
+// Clinic Pages
+import ClinicDashboard from './pages/clinic/ClinicDashboard';
 
 // User Pages
 import UserDashboard from './pages/user/Dashboard';
@@ -30,7 +34,7 @@ import Prescriptions from './pages/user/Prescriptions';
 import Profile from './pages/user/Profile';
 import Support from './pages/user/Support';
 
-// Protected Route Component
+// Protected Route Component - Only allows authenticated users
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading, isAuthenticated } = useAuth();
 
@@ -42,13 +46,15 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     );
   }
 
+  // Not authenticated - redirect to landing page
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
     // Redirect to appropriate dashboard based on role
     if (user?.role === 'admin') return <Navigate to="/admin" replace />;
+    if (user?.role === 'clinic_admin') return <Navigate to="/clinic" replace />;
     if (user?.role === 'pharmacist') return <Navigate to="/pharmacist" replace />;
     return <Navigate to="/user" replace />;
   }
@@ -56,7 +62,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-// Public Route - redirect if already logged in
+// Public Route - redirect authenticated users to their dashboard
 const PublicRoute = ({ children }) => {
   const { user, loading, isAuthenticated } = useAuth();
 
@@ -68,8 +74,10 @@ const PublicRoute = ({ children }) => {
     );
   }
 
+  // If authenticated, redirect to appropriate dashboard
   if (isAuthenticated) {
     if (user?.role === 'admin') return <Navigate to="/admin" replace />;
+    if (user?.role === 'clinic_admin') return <Navigate to="/clinic" replace />;
     if (user?.role === 'pharmacist') return <Navigate to="/pharmacist" replace />;
     return <Navigate to="/user" replace />;
   }
@@ -90,10 +98,11 @@ const HomeRedirect = () => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/user/login" replace />; // Default to user login
   }
 
   if (user?.role === 'admin') return <Navigate to="/admin" replace />;
+  if (user?.role === 'clinic_admin') return <Navigate to="/clinic" replace />;
   if (user?.role === 'pharmacist') return <Navigate to="/pharmacist" replace />;
   return <Navigate to="/user" replace />;
 };
@@ -104,37 +113,54 @@ function AppRoutes() {
       {/* Root - Landing Page */}
       <Route path="/" element={<LandingPage />} />
 
-      {/* Public Routes */}
-      <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-      <Route path="/register/admin" element={<PublicRoute><AdminRegister /></PublicRoute>} />
-      <Route path="/register/clinic" element={<PublicRoute><ClinicRegister /></PublicRoute>} />
+      {/* Auth Routes */}
+      <Route path="/admin/login" element={
+        <PublicRoute>
+          <AdminLogin />
+        </PublicRoute>
+      } />
+      <Route path="/clinic/login" element={
+        <PublicRoute>
+          <ClinicLogin />
+        </PublicRoute>
+      } />
+      <Route path="/user/login" element={
+        <PublicRoute>
+          <PatientLogin />
+        </PublicRoute>
+      } />
 
-      {/* Admin Routes */}
-      <Route path="/admin" element={
-        <ProtectedRoute allowedRoles={['admin']}>
-          <AdminDashboard />
-        </ProtectedRoute>
-      } />
+      {/* Legacy Login Redirect */}
+      <Route path="/login" element={<Navigate to="/user/login" replace />} />
+
+      {/* Redirect register to login - patients get credentials from clinic admin */}
+      <Route path="/register" element={<Navigate to="/user/login" replace />} />
+      <Route path="/register/*" element={<Navigate to="/user/login" replace />} />
+
       <Route path="/admin/clinics" element={
-        <ProtectedRoute allowedRoles={['admin']}>
+        < ProtectedRoute allowedRoles={['admin']} >
           <ClinicList />
-        </ProtectedRoute>
+        </ProtectedRoute >
       } />
-      <Route path="/admin/clinics/enroll" element={
-        <ProtectedRoute allowedRoles={['admin']}>
+      < Route path="/admin/clinics/enroll" element={
+        < ProtectedRoute allowedRoles={['admin']} >
           <ClinicEnrollment />
-        </ProtectedRoute>
+        </ProtectedRoute >
       } />
-      <Route path="/admin/users" element={
-        <ProtectedRoute allowedRoles={['admin']}>
+      < Route path="/admin/clinics/:id" element={
+        < ProtectedRoute allowedRoles={['admin']} >
+          <ClinicView />
+        </ProtectedRoute >
+      } />
+      < Route path="/admin/users" element={
+        < ProtectedRoute allowedRoles={['admin']} >
           <UserList />
-        </ProtectedRoute>
+        </ProtectedRoute >
       } />
-      <Route path="/admin/*" element={
-        <ProtectedRoute allowedRoles={['admin']}>
+      < Route path="/admin/*" element={
+        < ProtectedRoute allowedRoles={['admin']} >
           <AdminDashboard />
-        </ProtectedRoute>
+        </ProtectedRoute >
       } />
 
       {/* Pharmacist Routes */}
@@ -143,9 +169,26 @@ function AppRoutes() {
           <PharmacistDashboard />
         </ProtectedRoute>
       } />
+      <Route path="/pharmacist/patients" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <Patients />
+        </ProtectedRoute>
+      } />
       <Route path="/pharmacist/*" element={
         <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
           <PharmacistDashboard />
+        </ProtectedRoute>
+      } />
+
+      {/* Clinic Routes */}
+      <Route path="/clinic" element={
+        <ProtectedRoute allowedRoles={['clinic_admin']}>
+          <ClinicDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/clinic/*" element={
+        <ProtectedRoute allowedRoles={['clinic_admin']}>
+          <ClinicDashboard />
         </ProtectedRoute>
       } />
 
@@ -188,7 +231,7 @@ function AppRoutes() {
 
       {/* Catch all - 404 */}
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    </Routes >
   );
 }
 

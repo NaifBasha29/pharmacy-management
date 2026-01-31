@@ -4,7 +4,7 @@ const auditLogSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false  // Optional - for clinic/patient logins we may not have a User ID
   },
   action: {
     type: String,

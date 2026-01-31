@@ -6,15 +6,29 @@ import {
   FiHeart, FiClipboard, FiShield, FiDatabase
 } from 'react-icons/fi';
 import { analyticsAPI, medicinesAPI, ordersAPI, usersAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/common/Sidebar';
 import './Dashboard.css';
 
 const AdminDashboard = () => {
+  const { isAuthenticated } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
   const [lowStockItems, setLowStockItems] = useState([]);
   const [recentUsers, setRecentUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // BACK BUTTON PROTECTION - Prevent leaving dashboard via browser back button
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => {
+      if (isAuthenticated) {
+        window.history.pushState(null, '', window.location.href);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetchDashboardData();

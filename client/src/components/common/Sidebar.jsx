@@ -19,7 +19,7 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    // AuthContext now handles redirect to landing page
   };
 
   const adminLinks = [
@@ -72,10 +72,10 @@ const Sidebar = () => {
 
       <aside className={`sidebar ${isOpen ? 'open' : 'collapsed'} ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
-          <Link to="/" className="sidebar-logo">
+          <div className="sidebar-logo">
             <div className="logo-icon">💊</div>
             {isOpen && <span className="logo-text">PharmaCare</span>}
-          </Link>
+          </div>
           <button className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <FiX /> : <FiMenu />}
           </button>
@@ -120,7 +120,7 @@ const Sidebar = () => {
 
           <button className="nav-link logout-btn" onClick={handleLogout}>
             <span className="nav-icon"><FiLogOut /></span>
-            {isOpen && <span className="nav-label">Logout</span>}
+            <span className="nav-label">Logout</span>
           </button>
         </div>
       </aside>

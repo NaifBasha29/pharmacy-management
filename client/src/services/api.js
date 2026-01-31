@@ -59,11 +59,15 @@ api.interceptors.response.use(
 
 // Auth API
 export const authAPI = {
-  register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
+  loginAdmin: (credentials) => api.post('/auth/login/admin', credentials),
+  loginClinic: (credentials) => api.post('/auth/login/clinic', credentials),
+  loginPatient: (credentials) => api.post('/auth/login/patient', credentials),
+  register: (userData) => api.post('/auth/register', userData),
+  getCurrentUser: () => api.get('/auth/me'),
+  getMe: () => api.get('/auth/me'),  // Alias for backward compatibility
   logout: () => api.post('/auth/logout'),
-  getMe: () => api.get('/auth/me'),
-  changePassword: (data) => api.put('/auth/change-password', data)
+  changePassword: (data) => api.put('/auth/change-password', data),
+  refreshToken: (token) => api.post('/auth/refresh-token', { refreshToken: token })
 };
 
 // Users API

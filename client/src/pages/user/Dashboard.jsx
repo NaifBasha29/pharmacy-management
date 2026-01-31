@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/common/Sidebar';
 
 const UserDashboard = () => {
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const [stats, setStats] = useState({
         totalOrders: 0,
         pendingOrders: 0,
@@ -17,6 +17,18 @@ const UserDashboard = () => {
     const [recentOrders, setRecentOrders] = useState([]);
     const [featuredMedicines, setFeaturedMedicines] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // BACK BUTTON PROTECTION - Prevent leaving dashboard via browser back button
+    useEffect(() => {
+        window.history.pushState(null, '', window.location.href);
+        const handlePopState = () => {
+            if (isAuthenticated) {
+                window.history.pushState(null, '', window.location.href);
+            }
+        };
+        window.addEventListener('popstate', handlePopState);
+        return () => window.removeEventListener('popstate', handlePopState);
+    }, [isAuthenticated]);
 
     useEffect(() => {
         fetchDashboardData();
