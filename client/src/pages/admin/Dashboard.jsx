@@ -1,329 +1,327 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import {
-  FiUsers, FiPackage, FiShoppingCart, FiDollarSign, FiTrendingUp,
-  FiAlertCircle, FiActivity, FiCheckCircle, FiClock, FiArrowRight,
-  FiHeart, FiClipboard, FiShield, FiDatabase
-} from 'react-icons/fi';
-import { analyticsAPI, medicinesAPI, ordersAPI, usersAPI } from '../../services/api';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiChevronRight, FiGrid, FiAlertTriangle, FiPackage, FiUsers, FiShoppingCart, FiActivity, FiRefreshCw } from 'react-icons/fi';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../../context/AuthContext';
-import Sidebar from '../../components/common/Sidebar';
+import { adminAPI } from '../../services/api';
+import TopNav from '../../components/common/TopNav';
+import { useBackButtonProtection, useNoCacheHeaders, useSessionTimeout } from '../../hooks/useSecurityHooks';
 import './Dashboard.css';
 
 const AdminDashboard = () => {
-  const { isAuthenticated } = useAuth();
-  const [stats, setStats] = useState(null);
-  const [recentOrders, setRecentOrders] = useState([]);
-  const [lowStockItems, setLowStockItems] = useState([]);
-  const [recentUsers, setRecentUsers] = useState([]);
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [stats, setStats] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // BACK BUTTON PROTECTION - Prevent leaving dashboard via browser back button
-  useEffect(() => {
-    window.history.pushState(null, '', window.location.href);
-    const handlePopState = () => {
-      if (isAuthenticated) {
-        window.history.pushState(null, '', window.location.href);
+  // Security hooks
+  useBackButtonProtection();
+  useNoCacheHeaders();
+  useSessionTimeout(30 * 60 * 1000); // 30 minute timeout
+
+  // Fetch dashboard data
+  const fetchDashboardData = async () => {
+    try {
+      setError(null);
+      const response = await adminAPI.getStats();
+      if (response.data.success) {
+        setStats(response.data.data);
       }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [isAuthenticated]);
+    } catch (err) {
+      console.error('[Dashboard] Error fetching stats:', err);
+      setError(err.response?.data?.message || 'Failed to load dashboard data');
+      // Handle session expiry
+      if (err.response?.status === 401) {
+        navigate('/admin/login');
+      }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     fetchDashboardData();
+    // Refresh data every 5 minutes
+    const interval = setInterval(fetchDashboardData, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchDashboardData = async () => {
-    try {
-      const [statsRes, ordersRes, lowStockRes, usersRes] = await Promise.all([
-        analyticsAPI.getDashboard(),
-        ordersAPI.getAll({ limit: 5 }),
-        medicinesAPI.getLowStock(),
-        usersAPI.getAll({ limit: 5, sort: '-createdAt' })
-      ]);
+  // Prevent back navigation after logout
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href);
+    const h = () => { if (isAuthenticated) window.history.pushState(null, '', window.location.href); };
+    window.addEventListener('popstate', h);
+    return () => window.removeEventListener('popstate', h);
+  }, [isAuthenticated]);
 
-      setStats(statsRes.data.data);
-      setRecentOrders(ordersRes.data.data.orders || []);
-      setLowStockItems(lowStockRes.data.data.medicines || []);
-      setRecentUsers(usersRes.data.data.users || []);
-    } catch (error) {
-      console.error('Failed to fetch dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchDashboardData();
   };
 
   if (loading) {
     return (
-      <div className="full-page-loading">
-        <div className="spinner" />
+      <div className="loader-wrap">
+        <div className="loader"></div>
         <p>Loading dashboard...</p>
       </div>
     );
   }
 
+  if (error) {
+    return (
+      <div className="dash">
+        <TopNav />
+        <main className="dash-main">
+          <div className="error-state">
+            <FiAlertTriangle size={48} />
+            <h2>Failed to Load Dashboard</h2>
+            <p>{error}</p>
+            <button onClick={handleRefresh} className="retry-btn">
+              <FiRefreshCw /> Retry
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Stat cards configuration
+  const statCards = [
+    {
+      value: stats?.clinics?.total || 0,
+      label: 'Clinics',
+      icon: <FiActivity />,
+      color: '#f97316',
+      link: '/admin/clinics'
+    },
+    {
+      value: stats?.users?.total || 0,
+      label: 'Users',
+      icon: <FiUsers />,
+      color: '#f97316',
+      link: '/admin/users'
+    },
+    {
+      value: stats?.medicines?.total || 0,
+      label: 'Medicines',
+      icon: <FiPackage />,
+      color: '#8b5cf6',
+      link: '/admin/inventory'
+    },
+    {
+      value: stats?.orders?.total || 0,
+      label: 'Orders',
+      icon: <FiShoppingCart />,
+      color: '#f59e0b',
+      link: '/admin/orders'
+    },
+    {
+      value: stats?.orders?.pending || 0,
+      label: 'Pending',
+      icon: <FiAlertTriangle />,
+      color: '#ef4444',
+      link: '/admin/orders?status=pending'
+    },
+    {
+      value: `₹${(stats?.orders?.totalRevenue || 0).toLocaleString()}`,
+      label: 'Revenue',
+      icon: <FiActivity />,
+      color: '#06b6d4',
+      link: '/admin/reports'
+    }
+  ];
+
   return (
-    <div className="dashboard-layout">
-      <Sidebar />
-      <main className="dashboard-main">
-        <div className="dashboard-header">
-          <div className="header-content">
-            <h1>Super Admin Dashboard</h1>
-            <p>Platform overview and system health monitoring</p>
-          </div>
-          <div className="header-actions">
-            <span className="system-status online">
-              <FiCheckCircle /> System Online
-            </span>
-          </div>
+    <div className="dash">
+      <TopNav />
+
+      <main className="dash-main">
+        <div className="dash-header">
+          <h1 className="welcome">Welcome, {user?.name || 'Super Admin'}!</h1>
+          <button onClick={handleRefresh} className={`refresh-btn ${refreshing ? 'spinning' : ''}`}>
+            <FiRefreshCw /> Refresh
+          </button>
         </div>
 
-        {/* Primary Stats Grid */}
-        <div className="stats-grid primary">
-          <div className="stat-card revenue">
-            <div className="stat-icon"><FiDollarSign /></div>
-            <div className="stat-details">
-              <div className="stat-value">₹{stats?.revenue?.today?.toLocaleString() || 0}</div>
-              <div className="stat-label">Today's Revenue</div>
-              {stats?.revenue?.growth && (
-                <div className={`stat-change ${stats.revenue.growth > 0 ? 'positive' : 'negative'}`}>
-                  <FiTrendingUp /> {stats.revenue.growth}% vs last month
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="stat-card orders">
-            <div className="stat-icon"><FiShoppingCart /></div>
-            <div className="stat-details">
-              <div className="stat-value">{stats?.orders?.today || 0}</div>
-              <div className="stat-label">Today's Orders</div>
-              <div className="stat-change">{stats?.orders?.pending || 0} pending</div>
-            </div>
-          </div>
-
-          <div className="stat-card inventory">
-            <div className="stat-icon"><FiPackage /></div>
-            <div className="stat-details">
-              <div className="stat-value">{stats?.inventory?.total || 0}</div>
-              <div className="stat-label">Total Medicines</div>
-              <div className="stat-change warning">{stats?.inventory?.lowStock || 0} low stock</div>
-            </div>
-          </div>
-
-          <div className="stat-card users">
-            <div className="stat-icon"><FiUsers /></div>
-            <div className="stat-details">
-              <div className="stat-value">{stats?.users?.total || 0}</div>
-              <div className="stat-label">Total Users</div>
-              <div className="stat-change positive">+{stats?.users?.newThisMonth || 0} this month</div>
-            </div>
-          </div>
+        {/* Stats Row */}
+        <div className="stats-row">
+          {statCards.map((s, i) => (
+            <Link to={s.link} key={i} className="stat-box" style={{ '--accent-color': s.color }}>
+              <div className="stat-icon" style={{ background: s.color }}>
+                {s.icon}
+              </div>
+              <div className="stat-content">
+                <span className="stat-val">{s.value.toLocaleString?.() || s.value}</span>
+                <span className="stat-lbl">{s.label}</span>
+              </div>
+              <FiChevronRight className="stat-arrow" />
+            </Link>
+          ))}
         </div>
 
-        {/* Secondary Stats */}
-        <div className="stats-grid secondary">
-          <div className="mini-stat">
-            <FiHeart className="mini-icon clinics" />
-            <div className="mini-content">
-              <span className="mini-value">1</span>
-              <span className="mini-label">Active Clinics</span>
-            </div>
-          </div>
-          <div className="mini-stat">
-            <FiClipboard className="mini-icon prescriptions" />
-            <div className="mini-content">
-              <span className="mini-value">{stats?.prescriptions?.total || 0}</span>
-              <span className="mini-label">Prescriptions</span>
-            </div>
-          </div>
-          <div className="mini-stat">
-            <FiShield className="mini-icon compliance" />
-            <div className="mini-content">
-              <span className="mini-value">98%</span>
-              <span className="mini-label">Compliance Score</span>
-            </div>
-          </div>
-          <div className="mini-stat">
-            <FiDatabase className="mini-icon system" />
-            <div className="mini-content">
-              <span className="mini-value">99.9%</span>
-              <span className="mini-label">Uptime</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="quick-actions">
-          <h3>Quick Actions</h3>
-          <div className="action-cards">
-            <Link to="/admin/clinics" className="action-card">
-              <FiHeart className="action-icon" />
-              <span>Manage Clinics</span>
-              <FiArrowRight className="arrow" />
-            </Link>
-            <Link to="/admin/users" className="action-card">
-              <FiUsers className="action-icon" />
-              <span>User Management</span>
-              <FiArrowRight className="arrow" />
-            </Link>
-            <Link to="/admin/inventory" className="action-card">
-              <FiPackage className="action-icon" />
-              <span>Inventory Overview</span>
-              <FiArrowRight className="arrow" />
-            </Link>
-            <Link to="/admin/reports" className="action-card">
-              <FiActivity className="action-icon" />
-              <span>View Reports</span>
-              <FiArrowRight className="arrow" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Content Grid */}
-        <div className="dashboard-grid">
-          {/* Recent Orders */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">
-                <FiShoppingCart /> Recent Orders
-              </h3>
-              <Link to="/admin/orders" className="card-link">View All</Link>
-            </div>
-            <div className="card-body">
-              {recentOrders.length > 0 ? (
-                <div className="table-container">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentOrders.map((order) => (
-                        <tr key={order._id}>
-                          <td className="order-id">{order.orderNumber}</td>
-                          <td>{order.user?.name || 'N/A'}</td>
-                          <td className="amount">₹{order.total?.toLocaleString()}</td>
-                          <td>
-                            <span className={`badge badge-${getStatusColor(order.status)}`}>
-                              {order.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="empty-state">No recent orders</p>
-              )}
-            </div>
-          </div>
-
-          {/* Low Stock Alerts */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">
-                <FiAlertCircle className="text-warning" /> Low Stock Alerts
-              </h3>
-              <Link to="/admin/inventory" className="card-link">Manage Stock</Link>
-            </div>
-            <div className="card-body">
-              {lowStockItems.length > 0 ? (
-                <div className="alert-list">
-                  {lowStockItems.slice(0, 5).map((item) => (
-                    <div key={item._id} className="alert-item">
-                      <div className="alert-info">
-                        <span className="alert-name">{item.name}</span>
-                        <span className="alert-category">{item.category?.name}</span>
+        {/* Dashboard Grid */}
+        <div className="dash-grid">
+          {/* Left Column */}
+          <div className="col-l">
+            {/* Low Stock Medicines */}
+            <div className="box">
+              <div className="box-head">
+                <span className="box-title">
+                  <FiAlertTriangle className="title-icon warning" /> Low Stock Medicines
+                </span>
+                <Link to="/admin/inventory?filter=low-stock" className="manage-btn">View All →</Link>
+              </div>
+              <div className="box-body">
+                {stats?.lowStockMedicines?.length > 0 ? (
+                  <div className="alert-list">
+                    {stats.lowStockMedicines.map((m, i) => (
+                      <div key={i} className="alert-item">
+                        <div className="alert-dot" style={{ background: m.percentage < 30 ? '#ef4444' : '#f59e0b' }}></div>
+                        <div className="alert-info">
+                          <span className="alert-name">{m.name}</span>
+                          <span className="alert-meta">{m.stock} / {m.minStock} units</span>
+                        </div>
+                        <div className="alert-badge" style={{
+                          background: m.percentage < 30 ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)',
+                          color: m.percentage < 30 ? '#ef4444' : '#f59e0b'
+                        }}>
+                          {m.percentage}%
+                        </div>
                       </div>
-                      <div className="alert-stock">
-                        <span className={`stock-badge ${item.stock === 0 ? 'out' : 'low'}`}>
-                          {item.stock} left
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="empty-state success">
-                  <FiCheckCircle /> All stock levels are healthy!
-                </p>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-state">
+                    <FiPackage size={32} />
+                    <p>All medicines are well stocked</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Revenue Chart */}
+            <div className="box">
+              <div className="box-head">
+                <span className="box-title">Revenue Overview (Last 7 Days)</span>
+                <Link to="/admin/reports" className="manage-btn">Full Report →</Link>
+              </div>
+              <div className="box-body chart-area">
+                {stats?.revenueChart?.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <AreaChart data={stats.revenueChart}>
+                      <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis dataKey="_id" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} />
+                      <Tooltip
+                        contentStyle={{
+                          background: 'rgba(255,255,255,0.95)',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '8px'
+                        }}
+                        formatter={(value) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="revenue"
+                        stroke="#f97316"
+                        fillOpacity={1}
+                        fill="url(#colorRevenue)"
+                        strokeWidth={2}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="empty-state">
+                    <FiActivity size={32} />
+                    <p>No revenue data available</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Recent Users */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">
-                <FiUsers /> Recent Users
-              </h3>
-              <Link to="/admin/users" className="card-link">View All</Link>
-            </div>
-            <div className="card-body">
-              {recentUsers.length > 0 ? (
-                <div className="user-list">
-                  {recentUsers.map((user) => (
-                    <div key={user._id} className="user-item">
-                      <div className="user-avatar">
-                        {user.name?.charAt(0).toUpperCase()}
+          {/* Right Column */}
+          <div className="col-r">
+            {/* Expiring Medicines */}
+            <div className="box">
+              <div className="box-head">
+                <span className="box-title">
+                  <FiAlertTriangle className="title-icon danger" /> Expiring Soon
+                </span>
+                <Link to="/admin/inventory?filter=expiring" className="manage-btn">View All →</Link>
+              </div>
+              <div className="box-body">
+                {stats?.expiringMedicines?.length > 0 ? (
+                  <div className="expiry-list">
+                    {stats.expiringMedicines.map((m, i) => (
+                      <div key={i} className="expiry-item">
+                        <div className="expiry-dot" style={{
+                          background: m.daysUntilExpiry <= 7 ? '#ef4444' :
+                            m.daysUntilExpiry <= 14 ? '#f59e0b' : '#f97316'
+                        }}></div>
+                        <div className="expiry-info">
+                          <span className="expiry-name">{m.name}</span>
+                          <span className="expiry-stock">{m.stock} units</span>
+                        </div>
+                        <div className="expiry-days" style={{
+                          color: m.daysUntilExpiry <= 7 ? '#ef4444' :
+                            m.daysUntilExpiry <= 14 ? '#f59e0b' : '#f97316'
+                        }}>
+                          {m.daysUntilExpiry} days
+                        </div>
                       </div>
-                      <div className="user-info">
-                        <span className="user-name">{user.name}</span>
-                        <span className="user-email">{user.email}</span>
-                      </div>
-                      <span className={`role-badge ${user.role}`}>{user.role}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="empty-state">No users found</p>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-state">
+                    <FiPackage size={32} />
+                    <p>No medicines expiring soon</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* System Health */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">
-                <FiActivity /> System Health
-              </h3>
-            </div>
-            <div className="card-body">
-              <div className="health-metrics">
-                <div className="health-item">
-                  <span className="health-label">Database</span>
-                  <div className="health-bar">
-                    <div className="health-fill" style={{ width: '95%' }}></div>
+            {/* Quick Stats */}
+            <div className="box">
+              <div className="box-head">
+                <span className="box-title">System Overview</span>
+              </div>
+              <div className="box-body">
+                <div className="quick-stats">
+                  <div className="quick-stat">
+                    <span className="qs-label">Active Clinics</span>
+                    <span className="qs-value" style={{ color: '#f97316' }}>{stats?.clinics?.active || 0}</span>
                   </div>
-                  <span className="health-value">Connected</span>
-                </div>
-                <div className="health-item">
-                  <span className="health-label">API Response</span>
-                  <div className="health-bar">
-                    <div className="health-fill" style={{ width: '98%' }}></div>
+                  <div className="quick-stat">
+                    <span className="qs-label">Pending Clinics</span>
+                    <span className="qs-value" style={{ color: '#f59e0b' }}>{stats?.clinics?.pending || 0}</span>
                   </div>
-                  <span className="health-value">45ms</span>
-                </div>
-                <div className="health-item">
-                  <span className="health-label">Server Load</span>
-                  <div className="health-bar">
-                    <div className="health-fill warning" style={{ width: '65%' }}></div>
+                  <div className="quick-stat">
+                    <span className="qs-label">Pharmacists</span>
+                    <span className="qs-value" style={{ color: '#f97316' }}>{stats?.users?.pharmacists || 0}</span>
                   </div>
-                  <span className="health-value">65%</span>
-                </div>
-                <div className="health-item">
-                  <span className="health-label">Storage</span>
-                  <div className="health-bar">
-                    <div className="health-fill" style={{ width: '42%' }}></div>
+                  <div className="quick-stat">
+                    <span className="qs-label">Patients</span>
+                    <span className="qs-value" style={{ color: '#8b5cf6' }}>{stats?.users?.patients || 0}</span>
                   </div>
-                  <span className="health-value">42%</span>
+                  <div className="quick-stat">
+                    <span className="qs-label">Low Stock Items</span>
+                    <span className="qs-value" style={{ color: '#ef4444' }}>{stats?.medicines?.lowStock || 0}</span>
+                  </div>
+                  <div className="quick-stat">
+                    <span className="qs-label">Today's Orders</span>
+                    <span className="qs-value" style={{ color: '#06b6d4' }}>{stats?.orders?.today || 0}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -334,15 +332,8 @@ const AdminDashboard = () => {
   );
 };
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'delivered': return 'success';
-    case 'pending': return 'warning';
-    case 'cancelled': return 'error';
-    case 'processing':
-    case 'dispatched': return 'info';
-    default: return 'neutral';
-  }
-};
-
 export default AdminDashboard;
+
+
+
+

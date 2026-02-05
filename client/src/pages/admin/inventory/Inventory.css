@@ -1,0 +1,161 @@
+/* Inventory Page Styles */
+
+.inventory-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.inventory-stats .stat-box {
+    background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.inventory-stats .stat-box:hover {
+    border-color: rgba(249, 115, 22, 0.4);
+    transform: translateY(-2px);
+}
+
+.inventory-stats .stat-box.selected {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.1);
+}
+
+.inventory-stats .stat-icon {
+    font-size: 24px;
+    color: #f97316;
+}
+
+.inventory-stats .stat-box.warning .stat-icon {
+    color: #f59e0b;
+}
+
+.inventory-stats .stat-box.danger .stat-icon {
+    color: #ef4444;
+}
+
+.inventory-stats .stat-box.expiring .stat-icon {
+    color: #f59e0b;
+}
+
+.inventory-stats .stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #f97316;
+}
+
+.inventory-stats .stat-box.warning .stat-number {
+    color: #f59e0b;
+}
+
+.inventory-stats .stat-box.danger .stat-number {
+    color: #ef4444;
+}
+
+.inventory-stats .stat-box.expiring .stat-number {
+    color: #f59e0b;
+}
+
+.inventory-stats .stat-text {
+    font-size: 12px;
+    color: #9ca3af;
+    text-transform: uppercase;
+}
+
+/* Medicine Info */
+.medicine-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.medicine-name {
+    font-weight: 600;
+    color: #e5e5e5;
+}
+
+.medicine-generic {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.medicine-strength {
+    font-size: 11px;
+    color: #f97316;
+}
+
+/* Stock Badge */
+.stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.stock-badge.ok {
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+}
+
+.stock-badge.low {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.stock-badge.out {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* Status Badge for Stock */
+.status-badge.ok {
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+}
+
+.status-badge.low {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.status-badge.out {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* Large Modal */
+.modal.large {
+    max-width: 700px;
+    width: 90%;
+}
+
+.modal.large .modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .inventory-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .inventory-stats {
+        grid-template-columns: 1fr;
+    }
+}
+

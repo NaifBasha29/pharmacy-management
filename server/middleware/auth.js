@@ -24,15 +24,15 @@ export const protect = async (req, res, next) => {
     // Verify JWT signature
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Validate session is active (optional - can be enabled for strict session tracking)
-    // const session = await Session.validateSession(token);
-    // if (!session) {
-    //   return res.status(401).json({
-    //     success: false,
-    //     message: 'Session expired or invalid',
-    //     code: 'SESSION_INVALID'
-    //   });
-    // }
+    // Validate session is active (STRICT session tracking)
+    const session = await Session.validateSession(token);
+    if (!session) {
+      return res.status(401).json({
+        success: false,
+        message: 'Session expired or invalid. Please login again.',
+        code: 'SESSION_INVALID'
+      });
+    }
 
     // Find user based on type (supports User, Clinic, Patient)
     let user = null;

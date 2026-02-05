@@ -1,6 +1,6 @@
-/* Clinic Management Styles - Compact Layout */
+/* Clinic Management - Black & Orange Theme */
 
-/* Page Header - Compact */
+/* Page Header */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -11,16 +11,16 @@
 .page-header h1 {
     font-size: 1.35rem;
     font-weight: 700;
-    color: #1e293b;
+    color: #f97316;
     margin-bottom: 0.15rem;
 }
 
 .page-header p {
-    color: #64748b;
+    color: #9ca3af;
     font-size: 0.8rem;
 }
 
-/* Compact Buttons */
+/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -35,25 +35,26 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
     color: white;
 }
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(13, 148, 136, 0.25);
+    box-shadow: 0 3px 15px rgba(249, 115, 22, 0.35);
 }
 
 .btn-secondary {
-    background: #f1f5f9;
-    color: #475569;
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.2);
 }
 
 .btn-secondary:hover {
-    background: #e2e8f0;
+    background: rgba(249, 115, 22, 0.2);
 }
 
-/* Compact Clinic Stats */
+/* Clinic Stats */
 .clinic-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -62,41 +63,42 @@
 }
 
 .stat-box {
-    background: white;
+    background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
     border-radius: 8px;
     padding: 0.75rem 1rem;
     text-align: center;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(249, 115, 22, 0.15);
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.05);
 }
 
 .stat-box .stat-number {
     display: block;
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1e293b;
+    color: #f97316;
     line-height: 1.2;
 }
 
 .stat-box .stat-text {
     font-size: 0.7rem;
-    color: #64748b;
+    color: #6b7280;
     margin-top: 0.15rem;
+    text-transform: uppercase;
 }
 
 .stat-box.active .stat-number {
-    color: #16a34a;
+    color: #f97316;
 }
 
 .stat-box.pending .stat-number {
-    color: #d97706;
+    color: #f59e0b;
 }
 
 .stat-box.suspended .stat-number {
-    color: #dc2626;
+    color: #ef4444;
 }
 
-/* Compact Filters Bar */
+/* Filters Bar */
 .filters-bar {
     display: flex;
     gap: 0.75rem;
@@ -114,48 +116,80 @@
     left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #94a3b8;
+    color: #6b7280;
     font-size: 0.85rem;
 }
 
 .search-box input {
     width: 100%;
     padding: 0.5rem 0.75rem 0.5rem 2.25rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(249, 115, 22, 0.2);
     border-radius: 6px;
     font-size: 0.8rem;
+    background: #0a0a0a;
+    color: #e5e5e5;
     transition: border-color 0.2s ease;
+}
+
+.search-box input::placeholder {
+    color: #6b7280;
 }
 
 .search-box input:focus {
     outline: none;
-    border-color: #0d9488;
+    border-color: #f97316;
 }
 
 .filter-select {
     padding: 0.5rem 0.75rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(249, 115, 22, 0.2);
     border-radius: 6px;
     font-size: 0.8rem;
-    background: white;
+    background: #0a0a0a;
+    color: #e5e5e5;
     cursor: pointer;
 }
 
-/* Compact Table Styles */
+.filter-select:focus {
+    outline: none;
+    border-color: #f97316;
+}
+
+/* Card/Table Styles */
 .card {
     border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+    background: #050505;
+    border: 1px solid rgba(249, 115, 22, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .table th,
 .table td {
     padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
+    border-bottom: 1px solid rgba(249, 115, 22, 0.08);
 }
 
 .table th {
     font-size: 0.65rem;
     letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b7280;
+    background: rgba(249, 115, 22, 0.05);
+    text-align: left;
+}
+
+.table td {
+    color: #d1d5db;
+}
+
+.table tbody tr:hover {
+    background: rgba(249, 115, 22, 0.05);
 }
 
 .clinic-info {
@@ -166,19 +200,19 @@
 
 .clinic-name {
     font-weight: 600;
-    color: #1e293b;
+    color: #e5e5e5;
     font-size: 0.8rem;
 }
 
 .clinic-code {
     font-size: 0.65rem;
-    color: #0d9488;
+    color: #f97316;
     font-family: monospace;
 }
 
 .clinic-address {
     font-size: 0.65rem;
-    color: #64748b;
+    color: #9ca3af;
     display: flex;
     align-items: center;
     gap: 0.2rem;
@@ -189,7 +223,7 @@
     flex-direction: column;
     gap: 0.15rem;
     font-size: 0.7rem;
-    color: #64748b;
+    color: #9ca3af;
 }
 
 .contact-info span {
@@ -201,12 +235,13 @@
 .license-cell {
     font-family: monospace;
     font-size: 0.7rem;
-    color: #475569;
+    color: #9ca3af;
 }
 
 .staff-count {
     text-align: center;
     font-weight: 600;
+    color: #f97316;
 }
 
 /* Status Badge */
@@ -220,34 +255,34 @@
 }
 
 .status-badge.active {
-    background: #dcfce7;
-    color: #166534;
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
 }
 
 .status-badge.pending {
-    background: #fef3c7;
-    color: #92400e;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
 }
 
 .status-badge.suspended {
-    background: #fee2e2;
-    color: #991b1b;
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
 }
 
 .status-badge.pending-verification {
-    background: #fef3c7;
-    color: #92400e;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
 }
 
 .status-badge.inactive {
-    background: #f1f5f9;
-    color: #475569;
+    background: rgba(107, 114, 128, 0.15);
+    color: #9ca3af;
 }
 
 .btn-link {
     background: none;
     border: none;
-    color: #0d9488;
+    color: #f97316;
     text-decoration: underline;
     cursor: pointer;
     font-weight: 600;
@@ -255,7 +290,7 @@
 }
 
 .btn-link:hover {
-    color: #0f766e;
+    color: #fb923c;
 }
 
 /* Action Buttons */
@@ -277,42 +312,42 @@
 }
 
 .action-btn.view {
-    background: #dbeafe;
-    color: #2563eb;
+    background: rgba(59, 130, 246, 0.15);
+    color: #f97316;
 }
 
 .action-btn.view:hover {
-    background: #bfdbfe;
+    background: rgba(59, 130, 246, 0.25);
 }
 
 .action-btn.edit {
-    background: #fef3c7;
-    color: #d97706;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
 }
 
 .action-btn.edit:hover {
-    background: #fde68a;
+    background: rgba(245, 158, 11, 0.25);
 }
 
 .action-btn.suspend {
-    background: #fee2e2;
-    color: #dc2626;
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
 }
 
 .action-btn.suspend:hover {
-    background: #fecaca;
+    background: rgba(239, 68, 68, 0.25);
 }
 
 .action-btn.activate {
-    background: #dcfce7;
-    color: #16a34a;
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
 }
 
 .action-btn.activate:hover {
-    background: #bbf7d0;
+    background: rgba(249, 115, 22, 0.25);
 }
 
-/* Text-based Action Buttons */
+/* Text Action Buttons */
 .action-buttons-text {
     display: flex;
     gap: 0.5rem;
@@ -331,48 +366,48 @@
 }
 
 .action-btn-text.view {
-    background: #dbeafe;
-    color: #2563eb;
+    background: rgba(59, 130, 246, 0.15);
+    color: #f97316;
     padding: 0.25rem 0.5rem;
     font-size: 0.65rem;
 }
 
 .action-btn-text.view:hover {
-    background: #bfdbfe;
+    background: rgba(59, 130, 246, 0.25);
     transform: translateY(-1px);
 }
 
 .action-btn-text.edit {
-    background: #fef3c7;
-    color: #d97706;
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
 }
 
 .action-btn-text.edit:hover {
-    background: #fde68a;
+    background: rgba(245, 158, 11, 0.25);
     transform: translateY(-1px);
 }
 
 .action-btn-text.suspend {
-    background: #fee2e2;
-    color: #dc2626;
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
 }
 
 .action-btn-text.suspend:hover {
-    background: #fecaca;
+    background: rgba(239, 68, 68, 0.25);
     transform: translateY(-1px);
 }
 
 .action-btn-text.activate {
-    background: #dcfce7;
-    color: #16a34a;
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
 }
 
 .action-btn-text.activate:hover {
-    background: #bbf7d0;
+    background: rgba(249, 115, 22, 0.25);
     transform: translateY(-1px);
 }
 
-/* Icon Button for View */
+/* Icon Button */
 .action-btn-icon {
     display: inline-flex;
     align-items: center;
@@ -386,29 +421,29 @@
 }
 
 .action-btn-icon.view {
-    background: #dbeafe;
-    color: #2563eb;
+    background: rgba(59, 130, 246, 0.15);
+    color: #f97316;
 }
 
 .action-btn-icon.view:hover {
-    background: #bfdbfe;
+    background: rgba(59, 130, 246, 0.25);
     transform: scale(1.1);
 }
 
-/* Segmented Toggle Button (Off/On) */
+/* Segmented Toggle */
 .segmented-toggle {
     display: inline-flex;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(249, 115, 22, 0.2);
     border-radius: 6px;
     overflow: hidden;
-    background: #f8fafc;
+    background: #0a0a0a;
 }
 
 .segmented-toggle .toggle-btn {
     padding: 0.35rem 0.75rem;
     border: none;
     background: transparent;
-    color: #64748b;
+    color: #6b7280;
     font-size: 0.7rem;
     font-weight: 600;
     cursor: pointer;
@@ -417,16 +452,17 @@
 }
 
 .segmented-toggle .toggle-btn:first-child {
-    border-right: 1px solid #e2e8f0;
+    border-right: 1px solid rgba(249, 115, 22, 0.2);
 }
 
 .segmented-toggle .toggle-btn.active {
-    background: #3b82f6;
+    background: #f97316;
     color: white;
 }
 
 .segmented-toggle .toggle-btn:not(.active):hover {
-    background: #e2e8f0;
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
 }
 
 /* Modal */
@@ -436,7 +472,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -444,13 +480,14 @@
 }
 
 .modal {
-    background: white;
+    background: #0a0a0a;
     border-radius: 16px;
     width: 100%;
     max-width: 600px;
     max-height: 90vh;
     overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(249, 115, 22, 0.15);
 }
 
 .modal-header {
@@ -458,25 +495,25 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid rgba(249, 115, 22, 0.1);
 }
 
 .modal-header h2 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1e293b;
+    color: #f97316;
 }
 
 .modal-close {
     background: none;
     border: none;
     font-size: 1.25rem;
-    color: #64748b;
+    color: #6b7280;
     cursor: pointer;
 }
 
 .modal-close:hover {
-    color: #1e293b;
+    color: #f97316;
 }
 
 .modal-body {
@@ -490,8 +527,8 @@
     justify-content: flex-end;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
-    border-top: 1px solid #e2e8f0;
-    background: #f8fafc;
+    border-top: 1px solid rgba(249, 115, 22, 0.1);
+    background: rgba(249, 115, 22, 0.03);
 }
 
 /* Form Styles */
@@ -516,24 +553,31 @@
 .form-group label {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #475569;
+    color: #9ca3af;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     padding: 0.75rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(249, 115, 22, 0.2);
     border-radius: 8px;
     font-size: 0.9rem;
+    background: #050505;
+    color: #e5e5e5;
     transition: border-color 0.2s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #6b7280;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #0d9488;
+    border-color: #f97316;
 }
 
 .form-group textarea {
@@ -578,7 +622,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: #000000;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -589,15 +633,15 @@
 .full-page-loading .spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid #e2e8f0;
-    border-top-color: #0d9488;
+    border: 4px solid #0a0a0a;
+    border-top-color: #f97316;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-bottom: 1rem;
 }
 
 .full-page-loading p {
-    color: #64748b;
+    color: #f97316;
     font-size: 1rem;
     font-weight: 500;
 }

@@ -69,10 +69,10 @@ function ClinicRegister() {
     <div className="auth-page">
       <div className="auth-container">
         {/* Left Side - Branding (Green for Clinic) */}
-        <div className="auth-left" style={{ background: 'linear-gradient(135deg, #059669 0%, #047857 100%)' }}>
+        <div className="auth-left" style={{ background: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)' }}>
           <div className="auth-brand">
             <div className="brand-logo">🏥</div>
-            <h1>PharmaCare Clinic</h1>
+            <h1>RxHub Clinic</h1>
             <p>Pharmacist & Clinic Portal</p>
           </div>
           <div className="auth-features">
@@ -194,14 +194,14 @@ function ClinicRegister() {
                 type="submit"
                 disabled={loading}
                 className="btn btn-primary w-full"
-                style={{ background: '#059669', borderColor: '#059669' }}
+                style={{ background: '#ea580c', borderColor: '#ea580c' }}
               >
                 {loading ? 'Creating Account...' : 'Register Clinic'}
               </button>
             </form>
 
             <div className="auth-footer">
-              <p>Back to <Link to="/login" style={{ color: '#059669' }}>Login</Link></p>
+              <p>Back to <Link to="/login" style={{ color: '#ea580c' }}>Login</Link></p>
             </div>
           </div>
         </div>
@@ -211,3 +211,8 @@ function ClinicRegister() {
 }
 
 export default ClinicRegister;
+
+
+
+
+

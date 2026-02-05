@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useClearAuthOnMount } from '../../hooks/useSecurityHooks';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import './Auth.css';
+import phamLogo from '../../../assets/phamlogo.png';
 
 const ClinicLogin = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -43,8 +44,8 @@ const ClinicLogin = () => {
             <div className="auth-container">
                 <div className="auth-left">
                     <div className="auth-brand">
-                        <div className="brand-logo">🏥</div>
-                        <h1>PharmaCare Plus</h1>
+                        <img src={phamLogo} alt="RxHub" className="brand-logo-img" />
+                        <h1>RxHub Plus</h1>
                         <p>Clinic Portal</p>
                     </div>
                 </div>
@@ -110,3 +111,8 @@ const ClinicLogin = () => {
 };
 
 export default ClinicLogin;
+
+
+
+
+

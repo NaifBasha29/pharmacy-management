@@ -1,0 +1,136 @@
+/* Top Navigation Bar - Black & Green Theme */
+
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #000000;
+    border-bottom: 1px solid rgba(249, 115, 22, 0.1);
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.top-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 1.5rem;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Brand Section */
+.top-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-icon {
+    width: 24px;
+    height: 24px;
+    background: #f97316;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.brand-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #e5e5e5;
+}
+
+/* Navigation Links */
+.top-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.nav-item {
+    padding: 0.5rem 1rem;
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+    color: #e5e5e5;
+    background: rgba(249, 115, 22, 0.1);
+}
+
+.nav-item.active {
+    background: #f97316;
+    color: white;
+    font-weight: 600;
+}
+
+/* User Section */
+.top-nav-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-name {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .top-nav-container {
+        padding: 0 1rem;
+    }
+
+    .nav-item {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-nav {
+        height: 56px;
+    }
+
+    .top-nav-links {
+        display: none;
+    }
+
+    .brand-text {
+        font-size: 0.9rem;
+    }
+}
+

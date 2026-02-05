@@ -13,9 +13,12 @@ const api = axios.create({
 // Request interceptor - add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    // Check both localStorage and sessionStorage for token
+    const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.warn('[API] No auth token found in storage');
     }
     return config;
   },
@@ -32,24 +35,34 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        // Check both storages for refresh token
+        const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
         if (refreshToken) {
           const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
             refreshToken
           });
 
           const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+          // Sync both storages
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', newRefreshToken);
+          sessionStorage.setItem('accessToken', accessToken);
+          sessionStorage.setItem('refreshToken', newRefreshToken);
 
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return api(originalRequest);
+        } else {
+          console.warn('[API] No refresh token found, redirecting to login');
         }
       } catch (refreshError) {
+        console.error('[API] Token refresh failed:', refreshError.message);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
-        window.location.href = '/login';
+        sessionStorage.removeItem('accessToken');
+        sessionStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('currentUser');
+        window.location.href = '/';
       }
     }
 
@@ -167,9 +180,11 @@ export const auditLogsAPI = {
 
 // Support API
 export const supportAPI = {
-  getAll: () => api.get('/support'),
+  getAll: (params) => api.get('/support', { params }),
   getById: (id) => api.get(`/support/${id}`),
-  create: (data) => api.post('/support', data)
+  create: (data) => api.post('/support', data),
+  updateStatus: (id, data) => api.put(`/support/${id}/status`, data),
+  reply: (id, data) => api.post(`/support/${id}/reply`, data)
 };
 
 // Clinics API
@@ -188,6 +203,12 @@ export const clinicsAPI = {
   activate: (id) => api.put(`/clinics/${id}/activate`),
   sendCredentials: (id) => api.post(`/clinics/${id}/send-credentials`),
   delete: (id) => api.delete(`/clinics/${id}`)
+};
+
+// Admin Dashboard API
+export const adminAPI = {
+  getStats: () => api.get('/admin/stats'),
+  getClinicsOverview: () => api.get('/admin/clinics/overview')
 };
 
 export default api;
