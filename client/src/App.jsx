@@ -17,7 +17,13 @@ import AdminDashboard from './pages/admin/Dashboard';
 import ClinicList from './pages/admin/clinics/ClinicList';
 import ClinicEnrollment from './pages/admin/clinics/ClinicEnrollment';
 import ClinicView from './pages/admin/clinics/ClinicView';
-import UserList from './pages/admin/users/UserList';
+import Inventory from './pages/admin/inventory/Inventory';
+import AdminOrders from './pages/admin/orders/AdminOrders';
+import AdminPrescriptions from './pages/admin/prescriptions/AdminPrescriptions';
+import Reports from './pages/admin/reports/Reports';
+import AuditLogs from './pages/admin/compliance/AuditLogs';
+import AdminSupport from './pages/admin/support/AdminSupport';
+import AdminSettings from './pages/admin/settings/AdminSettings';
 
 // Pharmacist Pages
 import PharmacistDashboard from './pages/pharmacist/Dashboard';
@@ -152,9 +158,39 @@ function AppRoutes() {
           <ClinicView />
         </ProtectedRoute >
       } />
-      < Route path="/admin/users" element={
+      < Route path="/admin/inventory" element={
         < ProtectedRoute allowedRoles={['admin']} >
-          <UserList />
+          <Inventory />
+        </ProtectedRoute >
+      } />
+      < Route path="/admin/orders" element={
+        < ProtectedRoute allowedRoles={['admin']} >
+          <AdminOrders />
+        </ProtectedRoute >
+      } />
+      < Route path="/admin/prescriptions" element={
+        < ProtectedRoute allowedRoles={['admin']} >
+          <AdminPrescriptions />
+        </ProtectedRoute >
+      } />
+      < Route path="/admin/reports" element={
+        < ProtectedRoute allowedRoles={['admin']} >
+          <Reports />
+        </ProtectedRoute >
+      } />
+      < Route path="/admin/audit-logs" element={
+        < ProtectedRoute allowedRoles={['admin']} >
+          <AuditLogs />
+        </ProtectedRoute >
+      } />
+      < Route path="/admin/support" element={
+        < ProtectedRoute allowedRoles={['admin']} >
+          <AdminSupport />
+        </ProtectedRoute >
+      } />
+      < Route path="/admin/settings" element={
+        < ProtectedRoute allowedRoles={['admin']} >
+          <AdminSettings />
         </ProtectedRoute >
       } />
       < Route path="/admin/*" element={
@@ -252,7 +288,7 @@ function App() {
                 },
                 success: {
                   iconTheme: {
-                    primary: '#10b981',
+                    primary: '#f97316',
                     secondary: '#f9fafb',
                   },
                 },
@@ -272,3 +308,7 @@ function App() {
 }
 
 export default App;
+
+
+
+

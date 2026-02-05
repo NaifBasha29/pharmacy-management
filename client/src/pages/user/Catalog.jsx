@@ -85,7 +85,7 @@ const Catalog = () => {
     // Inline styles
     const styles = {
         page: {
-            background: 'linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 50%, #faf5ff 100%)',
+            background: '#000000',
             minHeight: '100vh',
             padding: '2rem'
         },
@@ -95,21 +95,21 @@ const Catalog = () => {
         title: {
             fontSize: '1.875rem',
             fontWeight: '700',
-            color: '#1e293b',
+            color: '#ffffff',
             marginBottom: '0.5rem'
         },
         gradientText: {
-            background: 'linear-gradient(135deg, #10b981, #059669)',
+            background: 'linear-gradient(135deg, #f97316, #ea580c)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'
         },
         subtitle: {
-            color: '#64748b',
+            color: '#9ca3af',
             fontSize: '1rem'
         },
         filterPanel: {
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             padding: '1.5rem',
             marginBottom: '2rem',
@@ -126,7 +126,7 @@ const Catalog = () => {
             display: 'block',
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#374151',
+            color: '#e5e5e5',
             marginBottom: '0.5rem'
         },
         inputWrapper: {
@@ -177,7 +177,7 @@ const Catalog = () => {
             gap: '1.5rem'
         },
         card: {
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             overflow: 'hidden',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -209,20 +209,20 @@ const Catalog = () => {
             letterSpacing: '0.05em',
             padding: '0.25rem 0.625rem',
             background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
-            color: '#2563eb',
+            color: '#ea580c',
             borderRadius: '9999px',
             marginBottom: '0.75rem'
         },
         cardTitle: {
             fontSize: '1.0625rem',
             fontWeight: '700',
-            color: '#1e293b',
+            color: '#ffffff',
             marginBottom: '0.5rem',
             lineHeight: '1.3'
         },
         cardDesc: {
             fontSize: '0.875rem',
-            color: '#64748b',
+            color: '#9ca3af',
             marginBottom: '1rem',
             flex: 1,
             display: '-webkit-box',
@@ -241,7 +241,7 @@ const Catalog = () => {
         price: {
             fontSize: '1.375rem',
             fontWeight: '800',
-            color: '#0f172a'
+            color: '#ffffff'
         },
         addBtn: {
             display: 'flex',
@@ -251,7 +251,7 @@ const Catalog = () => {
             fontSize: '0.875rem',
             fontWeight: '600',
             color: 'white',
-            background: 'linear-gradient(135deg, #10b981, #059669)',
+            background: 'linear-gradient(135deg, #f97316, #ea580c)',
             border: 'none',
             borderRadius: '0.625rem',
             cursor: 'pointer',
@@ -286,7 +286,7 @@ const Catalog = () => {
         emptyState: {
             textAlign: 'center',
             padding: '4rem 2rem',
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
         },
@@ -315,8 +315,8 @@ const Catalog = () => {
             padding: '0.625rem 1.25rem',
             fontSize: '0.875rem',
             fontWeight: '500',
-            color: '#374151',
-            background: 'white',
+            color: '#e5e5e5',
+            background: '#0a0a0a',
             border: '1px solid #e5e7eb',
             borderRadius: '0.625rem',
             cursor: 'pointer',
@@ -339,8 +339,8 @@ const Catalog = () => {
             padding: '0.625rem 1rem',
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#374151',
-            background: 'white',
+            color: '#e5e5e5',
+            background: '#0a0a0a',
             border: '1px solid #e5e7eb',
             borderRadius: '0.625rem'
         }
@@ -424,7 +424,7 @@ const Catalog = () => {
                 {loading ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
                         <div className="spinner" style={{ width: 48, height: 48, marginBottom: '1rem' }} />
-                        <p style={{ color: '#64748b', fontWeight: 500 }}>Loading catalog...</p>
+                        <p style={{ color: '#9ca3af', fontWeight: 500 }}>Loading catalog...</p>
                     </div>
                 ) : medicines.length > 0 ? (
                     <>
@@ -503,10 +503,10 @@ const Catalog = () => {
                 ) : (
                     <div style={styles.emptyState}>
                         <div style={styles.emptyIcon}>🔍</div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.5rem' }}>
                             No medicines found
                         </h3>
-                        <p style={{ color: '#64748b' }}>
+                        <p style={{ color: '#9ca3af' }}>
                             Try adjusting your search or filter criteria
                         </p>
                     </div>
@@ -531,3 +531,7 @@ const Catalog = () => {
 };
 
 export default Catalog;
+
+
+
+

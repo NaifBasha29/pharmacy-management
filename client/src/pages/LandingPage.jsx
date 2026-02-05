@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fa';
 import './LandingPage.css';
 import landingImage from '../../assets/lp.png';
+import phamLogo from '../../assets/phamlogo.png';
 
 const LandingPage = () => {
     const [contactForm, setContactForm] = useState({
@@ -23,11 +24,34 @@ const LandingPage = () => {
         });
     };
 
+    const [activeSection, setActiveSection] = useState('home');
+
     const handleContactSubmit = (e) => {
         e.preventDefault();
         alert('Thank you for contacting us! We will get back to you shortly.');
         setContactForm({ name: '', email: '', message: '' });
     };
+
+    React.useEffect(() => {
+        const handleScroll = () => {
+            const sections = ['home', 'features', 'about', 'contact'];
+            const scrollPosition = window.scrollY + 200; // Offset for header
+
+            for (const section of sections) {
+                const element = document.getElementById(section);
+                if (element) {
+                    const offsetTop = element.offsetTop;
+                    const offsetHeight = element.offsetHeight;
+                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                        setActiveSection(section);
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
         <div className="landing-page">
@@ -35,16 +59,14 @@ const LandingPage = () => {
             <nav className="landing-nav">
                 <div className="nav-container">
                     <Link to="/" className="nav-brand">
-                        <div className="brand-icon-wrapper">
-                            <FaPills />
-                        </div>
-                        <span className="brand-name">PharmaCare</span>
+                        <img src={phamLogo} alt="RxHub" className="brand-logo-img" />
+                        <span className="brand-name">RxHub</span>
                     </Link>
                     <div className="nav-links">
-                        <a href="#home" className="nav-link">Home</a>
-                        <a href="#features" className="nav-link">Features</a>
-                        <a href="#about" className="nav-link">About</a>
-                        <a href="#contact" className="nav-link">Contact</a>
+                        <a href="#home" className={`nav-link ${activeSection === 'home' ? 'active' : ''}`} onClick={() => setActiveSection('home')}>Home</a>
+                        <a href="#features" className={`nav-link ${activeSection === 'features' ? 'active' : ''}`} onClick={() => setActiveSection('features')}>Features</a>
+                        <a href="#about" className={`nav-link ${activeSection === 'about' ? 'active' : ''}`} onClick={() => setActiveSection('about')}>About</a>
+                        <a href="#contact" className={`nav-link ${activeSection === 'contact' ? 'active' : ''}`} onClick={() => setActiveSection('contact')}>Contact</a>
                     </div>
                     <div className="nav-actions">
                         <Link to="/user/login" className="btn-cta">Sign In</Link>
@@ -98,7 +120,7 @@ const LandingPage = () => {
                     </div>
                     <div className="hero-visual">
                         <div className="hero-image-container">
-                            <img src={landingImage} alt="PharmaCare Dashboard" className="hero-image" />
+                            <img src={landingImage} alt="RxHub Dashboard" className="hero-image" />
                         </div>
                         <div className="floating-card card-orders">
                             <div className="card-icon green"><FaCheckCircle /></div>
@@ -183,7 +205,7 @@ const LandingPage = () => {
                             <span className="section-tag">About Us</span>
                             <h2 className="section-title left">Empowering Pharmacies Since 2024</h2>
                             <p className="about-text">
-                                At PharmaCare, we understand the daily challenges of running a pharmacy.
+                                At RxHub, we understand the daily challenges of running a pharmacy.
                                 From managing complex inventories to ensuring patient safety, the demands
                                 are high. That's why we built a solution that puts you back in control.
                             </p>
@@ -245,7 +267,7 @@ const LandingPage = () => {
                             <div className="info-card">
                                 <div className="info-icon"><FaEnvelope /></div>
                                 <h4>Email Us</h4>
-                                <p>support@pharmacare.com</p>
+                                <p>support@RxHub.com</p>
                             </div>
                             <div className="info-card">
                                 <div className="info-icon"><FaClock /></div>
@@ -307,10 +329,8 @@ const LandingPage = () => {
                     <div className="footer-main">
                         <div className="footer-brand">
                             <Link to="/" className="nav-brand">
-                                <div className="brand-icon-wrapper">
-                                    <FaPills />
-                                </div>
-                                <span className="brand-name">PharmaCare</span>
+                                <img src={phamLogo} alt="RxHub" className="brand-logo-img" />
+                                <span className="brand-name">RxHub</span>
                             </Link>
                             <p>Modern pharmacy management for the digital age.</p>
                             <div className="footer-socials">
@@ -344,7 +364,7 @@ const LandingPage = () => {
                         </div>
                     </div>
                     <div className="footer-bottom">
-                        <p>&copy; {new Date().getFullYear()} PharmaCare Solutions. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} RxHub Solutions. All rights reserved.</p>
                         <div className="staff-portal-link">
                             <Link to="/admin/login">Admin</Link>
                             <span className="divider">|</span>
@@ -358,3 +378,8 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
+
+
+
+

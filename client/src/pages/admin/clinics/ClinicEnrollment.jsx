@@ -5,7 +5,7 @@ import {
     FiUser, FiPhone, FiMapPin, FiFileText, FiUserPlus, FiShield, FiCheckCircle
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import Sidebar from '../../../components/common/Sidebar';
+import TopNav from '../../../components/common/TopNav';
 import { clinicsAPI } from '../../../services/api';
 import './ClinicEnrollment.css';
 
@@ -150,7 +150,7 @@ const ClinicEnrollment = () => {
         const uniqueId = `${timestamp}-${randomSuffix}`;
         const shortId = randomSuffix;
 
-        const clinicNames = ['MediCare', 'HealthFirst', 'CureWell', 'PharmaCare', 'LifeLine', 'MedPlus'];
+        const clinicNames = ['MediCare', 'HealthFirst', 'CureWell', 'RxHub', 'LifeLine', 'MedPlus'];
         const clinicSuffixes = ['Pharmacy', 'Medical Center', 'Health Store'];
         const randomClinicName = `${clinicNames[Math.floor(Math.random() * clinicNames.length)]} ${clinicSuffixes[Math.floor(Math.random() * clinicSuffixes.length)]} ${shortId}`;
 
@@ -351,7 +351,7 @@ const ClinicEnrollment = () => {
     if (fetchingClinic) {
         return (
             <div className="dashboard-layout">
-                <Sidebar />
+                <TopNav />
                 <main className="dashboard-main">
                     <div className="full-page-loading">
                         <div className="spinner" />
@@ -364,7 +364,7 @@ const ClinicEnrollment = () => {
 
     return (
         <div className="dashboard-layout">
-            <Sidebar />
+            <TopNav />
             <main className="dashboard-main">
                 <div className="enrollment-container">
                     <div className="enrollment-header">
@@ -637,3 +637,8 @@ const Step6StatusReview = ({ formData, updateFormData, files }) => (
 );
 
 export default ClinicEnrollment;
+
+
+
+
+

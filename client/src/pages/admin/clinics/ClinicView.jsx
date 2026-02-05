@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft, FiUser, FiPhone, FiMapPin, FiFileText, FiUserPlus, FiShield, FiCalendar, FiMail, FiClock } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import Sidebar from '../../../components/common/Sidebar';
+import TopNav from '../../../components/common/TopNav';
 import { clinicsAPI } from '../../../services/api';
 import './ClinicView.css';
 
@@ -44,7 +44,7 @@ const ClinicView = () => {
     if (loading) {
         return (
             <div className="dashboard-layout">
-                <Sidebar />
+                <TopNav />
                 <main className="dashboard-main">
                     <div className="full-page-loading">
                         <div className="spinner" />
@@ -58,7 +58,7 @@ const ClinicView = () => {
     if (!clinic) {
         return (
             <div className="dashboard-layout">
-                <Sidebar />
+                <TopNav />
                 <main className="dashboard-main">
                     <div className="empty-state">
                         <p>Clinic not found</p>
@@ -70,7 +70,7 @@ const ClinicView = () => {
 
     return (
         <div className="dashboard-layout">
-            <Sidebar />
+            <TopNav />
             <main className="dashboard-main">
                 <div className="clinic-view-container">
                     {/* Header */}
@@ -276,3 +276,7 @@ const ClinicView = () => {
 };
 
 export default ClinicView;
+
+
+
+

@@ -34,6 +34,7 @@ import settingsRoutes from './routes/settings.js';
 import auditLogRoutes from './routes/auditLogs.js';
 import supportRoutes from './routes/support.js';
 import clinicRoutes from './routes/clinics.js';
+import adminStatsRoutes from './routes/adminStats.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -108,6 +109,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/clinics', clinicRoutes);
+app.use('/api/admin', adminStatsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

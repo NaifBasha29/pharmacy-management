@@ -8,6 +8,7 @@ import {
   FiClipboard, FiAlertCircle, FiTruck, FiHeart, FiHelpCircle
 } from 'react-icons/fi';
 import './Sidebar.css';
+import phamLogo from '../../../assets/phamlogo.png';
 
 const Sidebar = () => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
@@ -25,7 +26,6 @@ const Sidebar = () => {
   const adminLinks = [
     { path: '/admin', icon: <FiHome />, label: 'Dashboard' },
     { path: '/admin/clinics', icon: <FiHeart />, label: 'Clinics' },
-    { path: '/admin/users', icon: <FiUsers />, label: 'Users' },
     { path: '/admin/inventory', icon: <FiPackage />, label: 'Inventory' },
     { path: '/admin/prescriptions', icon: <FiClipboard />, label: 'Prescriptions' },
     { path: '/admin/orders', icon: <FiShoppingCart />, label: 'Orders' },
@@ -73,8 +73,8 @@ const Sidebar = () => {
       <aside className={`sidebar ${isOpen ? 'open' : 'collapsed'} ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <div className="logo-icon">💊</div>
-            {isOpen && <span className="logo-text">PharmaCare</span>}
+            <img src={phamLogo} alt="RxHub" className="logo-icon" />
+            {isOpen && <span className="logo-text">RxHub</span>}
           </div>
           <button className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <FiX /> : <FiMenu />}
@@ -129,3 +129,8 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
+
+
+

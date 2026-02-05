@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
 import './Auth.css';
+import phamLogo from '../../../assets/phamlogo.png';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -61,8 +62,8 @@ const Login = () => {
       <div className="auth-container">
         <div className="auth-left">
           <div className="auth-brand">
-            <div className="brand-logo">💊</div>
-            <h1>PharmaCare Plus</h1>
+            <img src={phamLogo} alt="RxHub" className="brand-logo-img" />
+            <h1>RxHub Plus</h1>
             <p>Your trusted pharmacy management solution</p>
           </div>
           <div className="auth-features">
@@ -186,3 +187,8 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+

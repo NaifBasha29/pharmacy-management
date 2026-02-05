@@ -53,7 +53,7 @@ const Orders = () => {
     // Styles
     const styles = {
         page: {
-            background: 'linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 50%, #faf5ff 100%)',
+            background: '#000000',
             minHeight: '100vh',
             padding: '2rem'
         },
@@ -63,7 +63,7 @@ const Orders = () => {
         title: {
             fontSize: '1.875rem',
             fontWeight: '700',
-            color: '#1e293b',
+            color: '#ffffff',
             marginBottom: '0.5rem'
         },
         gradientText: {
@@ -73,12 +73,12 @@ const Orders = () => {
             backgroundClip: 'text'
         },
         subtitle: {
-            color: '#64748b',
+            color: '#9ca3af',
             fontSize: '1rem'
         },
         tabs: {
             display: 'inline-flex',
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '0.75rem',
             padding: '0.375rem',
             gap: '0.25rem',
@@ -89,7 +89,7 @@ const Orders = () => {
             padding: '0.625rem 1.25rem',
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: active ? '#2563eb' : '#64748b',
+            color: active ? '#ea580c' : '#9ca3af',
             background: active ? '#eff6ff' : 'transparent',
             border: 'none',
             borderRadius: '0.5rem',
@@ -98,7 +98,7 @@ const Orders = () => {
             textTransform: 'capitalize'
         }),
         orderCard: {
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             marginBottom: '1rem',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -126,13 +126,13 @@ const Orders = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#2563eb',
+            color: '#ea580c',
             fontSize: '1.25rem'
         },
         orderId: {
             fontSize: '1rem',
             fontWeight: '700',
-            color: '#1e293b',
+            color: '#ffffff',
             marginBottom: '0.25rem'
         },
         orderMeta: {
@@ -140,18 +140,18 @@ const Orders = () => {
             alignItems: 'center',
             gap: '1rem',
             fontSize: '0.875rem',
-            color: '#64748b'
+            color: '#9ca3af'
         },
         badge: (status) => {
             const colors = {
                 pending: { bg: '#fef3c7', color: '#d97706' },
-                confirmed: { bg: '#dbeafe', color: '#2563eb' },
+                confirmed: { bg: '#dbeafe', color: '#ea580c' },
                 processing: { bg: '#e0e7ff', color: '#4f46e5' },
                 dispatched: { bg: '#fae8ff', color: '#a855f7' },
                 delivered: { bg: '#dcfce7', color: '#16a34a' },
                 cancelled: { bg: '#fee2e2', color: '#dc2626' }
             };
-            const c = colors[status] || { bg: '#f1f5f9', color: '#64748b' };
+            const c = colors[status] || { bg: '#f1f5f9', color: '#9ca3af' };
             return {
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -203,14 +203,14 @@ const Orders = () => {
         itemsTitle: {
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#374151',
+            color: '#e5e5e5',
             marginBottom: '1rem',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
         },
         itemsList: {
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '0.75rem',
             padding: '1rem',
             border: '1px solid #e5e7eb'
@@ -239,16 +239,16 @@ const Orders = () => {
         },
         itemName: {
             fontWeight: '600',
-            color: '#1e293b',
+            color: '#ffffff',
             marginBottom: '0.125rem'
         },
         itemQty: {
             fontSize: '0.75rem',
-            color: '#64748b'
+            color: '#9ca3af'
         },
         itemPrice: {
             fontWeight: '700',
-            color: '#1e293b'
+            color: '#ffffff'
         },
         totalRow: {
             display: 'flex',
@@ -261,7 +261,7 @@ const Orders = () => {
         emptyState: {
             textAlign: 'center',
             padding: '4rem 2rem',
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
         },
@@ -319,7 +319,7 @@ const Orders = () => {
                 {loading ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
                         <div className="spinner" style={{ width: 48, height: 48, marginBottom: '1rem' }} />
-                        <p style={{ color: '#64748b', fontWeight: 500 }}>Loading orders...</p>
+                        <p style={{ color: '#9ca3af', fontWeight: 500 }}>Loading orders...</p>
                     </div>
                 ) : filteredOrders.length > 0 ? (
                     <div>
@@ -340,7 +340,7 @@ const Orders = () => {
                                                     <FiCalendar size={14} />
                                                     {new Date(order.createdAt).toLocaleDateString()}
                                                 </span>
-                                                <span style={{ fontWeight: 600, color: '#1e293b' }}>
+                                                <span style={{ fontWeight: 600, color: '#ffffff' }}>
                                                     ₹{order.total?.toLocaleString()}
                                                 </span>
                                                 <span style={styles.badge(order.status)}>
@@ -386,8 +386,8 @@ const Orders = () => {
                                                 </div>
                                             ))}
                                             <div style={styles.totalRow}>
-                                                <span style={{ fontSize: '0.875rem', fontWeight: 500, color: '#64748b' }}>Order Total</span>
-                                                <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1e293b' }}>₹{order.total?.toLocaleString()}</span>
+                                                <span style={{ fontSize: '0.875rem', fontWeight: 500, color: '#9ca3af' }}>Order Total</span>
+                                                <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>₹{order.total?.toLocaleString()}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -398,10 +398,10 @@ const Orders = () => {
                 ) : (
                     <div style={styles.emptyState}>
                         <div style={styles.emptyIcon}>📦</div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.5rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.5rem' }}>
                             No orders found
                         </h3>
-                        <p style={{ color: '#64748b' }}>
+                        <p style={{ color: '#9ca3af' }}>
                             {activeTab !== 'all' ? `You have no ${activeTab} orders` : "You haven't placed any orders yet"}
                         </p>
                     </div>
@@ -412,3 +412,7 @@ const Orders = () => {
 };
 
 export default Orders;
+
+
+
+

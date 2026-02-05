@@ -1,0 +1,135 @@
+/* Admin Settings Styles */
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.settings-card {
+    background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.settings-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.settings-card-header svg {
+    color: #f97316;
+    font-size: 20px;
+}
+
+.settings-card-header h3 {
+    color: #f9fafb;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.settings-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.settings-card-body .form-group {
+    margin-bottom: 0;
+}
+
+.settings-card-body label {
+    display: block;
+    color: #9ca3af;
+    font-size: 12px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.settings-card-body input[type="text"],
+.settings-card-body input[type="email"],
+.settings-card-body input[type="number"],
+.settings-card-body select {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #f9fafb;
+    font-size: 14px;
+}
+
+.settings-card-body input:focus,
+.settings-card-body select:focus {
+    border-color: #f97316;
+    outline: none;
+}
+
+/* Toggle Groups */
+.toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.toggle-group:last-child {
+    border-bottom: none;
+}
+
+.toggle-group label {
+    margin-bottom: 0;
+    color: #e5e5e5;
+    font-size: 14px;
+    text-transform: none;
+}
+
+.toggle-group input[type="checkbox"] {
+    width: 44px;
+    height: 24px;
+    appearance: none;
+    background: rgba(107, 114, 128, 0.3);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.toggle-group input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #f9fafb;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s;
+}
+
+.toggle-group input[type="checkbox"]:checked {
+    background: #f97316;
+}
+
+.toggle-group input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+}
+
+.toggle-group.danger input[type="checkbox"]:checked {
+    background: #ef4444;
+}
+
+@media (max-width: 900px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
