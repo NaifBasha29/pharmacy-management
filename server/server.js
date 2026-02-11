@@ -61,7 +61,12 @@ app.use(helmet({
 
 // CORS configuration
 app.use(cors({
-  origin: '*',
+  origin: [
+    'http://localhost:5173', // Vite client
+    'http://localhost:8081', // Expo
+    'http://192.168.6.88:8081', // Expo LAN
+    'http://localhost:5005' // Self
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

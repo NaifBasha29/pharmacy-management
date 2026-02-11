@@ -167,7 +167,7 @@ clinicSchema.statics.findActive = function () {
 
 // Index for efficient queries
 clinicSchema.index({ 'verification.clinicStatus': 1 });
-clinicSchema.index({ code: 1 });
+
 clinicSchema.index({ 'contact.email': 1 });
 
 // Hash password before saving

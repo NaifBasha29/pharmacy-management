@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { CartProvider } from './context/CartContext';
 import { Toaster } from 'react-hot-toast';
+import LoadingScreen from './components/common/LoadingScreen';
 
 // Auth Pages
 import AdminLogin from './pages/auth/AdminLogin';
@@ -45,11 +46,9 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
-    return (
-      <div className="loading-overlay">
-        <div className="spinner" />
-      </div>
-    );
+  if (loading) {
+    return <LoadingScreen />;
+  }
   }
 
   // Not authenticated - redirect to landing page
@@ -73,11 +72,9 @@ const PublicRoute = ({ children }) => {
   const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
-    return (
-      <div className="loading-overlay">
-        <div className="spinner" />
-      </div>
-    );
+  if (loading) {
+    return <LoadingScreen />;
+  }
   }
 
   // If authenticated, redirect to appropriate dashboard
@@ -96,11 +93,9 @@ const HomeRedirect = () => {
   const { user, loading, isAuthenticated } = useAuth();
 
   if (loading) {
-    return (
-      <div className="loading-overlay">
-        <div className="spinner" />
-      </div>
-    );
+  if (loading) {
+    return <LoadingScreen />;
+  }
   }
 
   if (!isAuthenticated) {

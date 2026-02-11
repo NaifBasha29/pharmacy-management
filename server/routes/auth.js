@@ -330,7 +330,7 @@ router.post('/login/patient', loginRateLimiter, asyncHandler(async (req, res) =>
         id: patient._id,
         name: patient.name,
         email: patient.email,
-        role: 'patient',
+        role: 'user',
         type: 'patient',
         patientId: patient.patientId
       },
@@ -411,7 +411,7 @@ router.get('/me', protect, asyncHandler(async (req, res) => {
           email: patient.email,
           patientId: patient.patientId,
           phone: patient.phone,
-          role: 'patient',
+          role: 'user',
           type: 'patient',
           createdAt: patient.createdAt
         }

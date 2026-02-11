@@ -12,6 +12,7 @@ import { colors } from './src/theme/colors';
 
 // Screens
 import LoginScreen from './src/screens/LoginScreen';
+import DashboardScreen from './src/screens/DashboardScreen';
 import CatalogScreen from './src/screens/CatalogScreen';
 import CartScreen from './src/screens/CartScreen';
 import OrdersScreen from './src/screens/OrdersScreen';
@@ -48,6 +49,16 @@ const TabNavigator = () => {
         },
       }}
     >
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="view-dashboard-outline" size={size} color={color} />
+          ),
+        }}
+      />
       <Tab.Screen
         name="Catalog"
         component={CatalogScreen}

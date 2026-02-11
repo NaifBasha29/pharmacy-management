@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView, 
   Platform, 
   ActivityIndicator,
-  Image
+  StatusBar
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../theme/colors';
@@ -26,6 +26,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
@@ -38,7 +39,13 @@ export default function LoginScreen({ navigation }) {
 
           {error && (
             <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
+              <Text style={styles.errorText}>
+                {error.includes('401') 
+                  ? 'Invalid Patient ID or Password' 
+                  : error.includes('Network Error') 
+                    ? 'Cannot connect to server. Check your internet connection.' 
+                    : error}
+              </Text>
             </View>
           )}
 
@@ -124,18 +131,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.inputBackground,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
     color: colors.textPrimary,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
   },
   button: {
     backgroundColor: colors.primary,
@@ -155,10 +157,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   errorContainer: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)', // Red with opacity
     padding: 12,
     borderRadius: 8,
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.2)',
   },
   errorText: {
     color: colors.error,
