@@ -329,7 +329,7 @@ const LandingPage = () => {
                     <div className="footer-main">
                         <div className="footer-brand">
                             <Link to="/" className="nav-brand">
-                                <img src={phamLogo} alt="RxHub" className="brand-logo-img" />
+                                <span className="brand-logo-img" style={{ fontSize: '24px', marginRight: '8px' }}>🏥</span>
                                 <span className="brand-name">RxHub</span>
                             </Link>
                             <p>Modern pharmacy management for the digital age.</p>

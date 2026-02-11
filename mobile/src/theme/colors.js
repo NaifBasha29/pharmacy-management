@@ -1,23 +1,28 @@
 export const colors = {
-  primary: '#006270', // Teal/Deep Blue - Medical & Trust
-  secondary: '#009394', // Lighter Teal
-  accent: '#E0F7FA', // Light Cyan - Backgrounds
+  // Primary - Orange (matching --primary-500 from client)
+  primary: '#f97316', 
+  primaryDark: '#ea580c', // --primary-600
+  primaryLight: '#fb923c', // --primary-400
   
-  background: '#F5F7FA', // Light Gray-Blue - Global Background
-  surface: '#FFFFFF', // Cards & input backgrounds
+  // Backgrounds - Dark Theme
+  background: '#000000', // --bg-primary
+  surface: '#0a0a0a', // --surface / --bg-tertiary
+  surfaceHighlight: '#1a1a1a',
+
+  // Text
+  textPrimary: '#ffffff', // --text-primary
+  textSecondary: '#9ca3af', // --text-secondary
+  textLight: '#6b7280', // --text-tertiary
   
-  textPrimary: '#1F2937', // Dark Gray - Headings
-  textSecondary: '#6B7280', // Medium Gray - Body
-  textLight: '#9CA3AF', // Light Gray - Placeholders
-  
-  success: '#10B981', // Green - Success states
-  error: '#EF4444', // Red - Errors
-  warning: '#F59E0B', // Amber - Warnings
-  info: '#3B82F6', // Blue - Information
-  
-  border: '#E5E7EB', // Light border
-  
-  // Gradients or specific UI elements
+  // Status
+  success: '#10B981', 
+  error: '#ef4444', 
+  warning: '#f59e0b', 
+  info: '#3b82f6', 
+
+  // UI Elements
+  border: '#333333', // Darker border for dark theme
   buttonText: '#FFFFFF',
-  inputBackground: '#F9FAFB',
+  inputBackground: '#171717', // Dark input background
+  placeholder: '#525252',
 };

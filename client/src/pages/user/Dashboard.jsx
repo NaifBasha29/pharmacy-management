@@ -8,6 +8,7 @@ import Sidebar from '../../components/common/Sidebar';
 
 const UserDashboard = () => {
     const { user, isAuthenticated } = useAuth();
+
     const [stats, setStats] = useState({
         totalOrders: 0,
         pendingOrders: 0,

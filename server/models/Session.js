@@ -55,7 +55,7 @@ const sessionSchema = new mongoose.Schema({
 
 // Indexes for efficient queries
 sessionSchema.index({ userId: 1, isActive: 1 });
-sessionSchema.index({ sessionId: 1 });
+
 sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL index
 
 // Hash a token for storage
