@@ -15,13 +15,13 @@ import { colors } from '../theme/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
+  const [patientId, setPatientId] = useState('');
   const [password, setPassword] = useState('');
   const { login, loading, error } = useAuth();
 
   const handleLogin = async () => {
-    if (!email || !password) return;
-    await login(email, password);
+    if (!patientId || !password) return;
+    await login(patientId, password);
   };
 
   return (
@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.content}>
           <View style={styles.header}>
             <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to your account</Text>
+            <Text style={styles.subtitle}>Sign in to your patient account</Text>
           </View>
 
           {error && (
@@ -44,15 +44,14 @@ export default function LoginScreen({ navigation }) {
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Patient ID</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Enter your email"
+                placeholder="Enter your patient ID"
                 placeholderTextColor={colors.textLight}
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
+                value={patientId}
+                onChangeText={setPatientId}
+                autoCapitalize="characters"
               />
             </View>
 

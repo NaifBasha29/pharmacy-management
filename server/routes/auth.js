@@ -389,7 +389,69 @@ router.post('/refresh-token', asyncHandler(async (req, res) => {
 // @desc    Get current user
 // @access  Private
 router.get('/me', protect, asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  // req.user is already populated by protect middleware for all user types
+  // (User, Clinic, Patient)
+  const userData = req.user;
+
+  // If it's a patient type, get fresh data from Patient collection
+  if (userData.type === 'patient') {
+    const patient = await Patient.findById(userData._id);
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: 'Patient not found'
+      });
+    }
+    return res.json({
+      success: true,
+      data: {
+        user: {
+          id: patient._id,
+          name: patient.name,
+          email: patient.email,
+          patientId: patient.patientId,
+          phone: patient.phone,
+          role: 'patient',
+          type: 'patient',
+          createdAt: patient.createdAt
+        }
+      }
+    });
+  }
+
+  // If it's a clinic type, get fresh data from Clinic collection
+  if (userData.type === 'clinic') {
+    const clinic = await Clinic.findById(userData._id);
+    if (!clinic) {
+      return res.status(404).json({
+        success: false,
+        message: 'Clinic not found'
+      });
+    }
+    return res.json({
+      success: true,
+      data: {
+        user: {
+          id: clinic._id,
+          name: clinic.name,
+          email: clinic.adminAccount?.email || clinic.contact?.email,
+          role: 'clinic_admin',
+          type: 'clinic',
+          clinicId: clinic._id,
+          createdAt: clinic.createdAt
+        }
+      }
+    });
+  }
+
+  // Default: User collection
+  const user = await User.findById(userData._id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
 
   res.json({
     success: true,

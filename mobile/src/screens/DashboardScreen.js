@@ -16,7 +16,7 @@ import api from '../config/api';
 import io from 'socket.io-client';
 import { Alert, Platform } from 'react-native';
 
-const SOCKET_URL = Platform.OS === 'android' ? 'http://192.168.0.96:5000' : 'http://localhost:5000';
+const SOCKET_URL = Platform.OS === 'android' ? 'http://192.168.29.174:5005' : 'http://localhost:5005';
 
 
 const StatCard = ({ title, value, icon, color }) => (

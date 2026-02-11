@@ -24,22 +24,30 @@ export const AuthProvider = ({ children }) => {
         if (response.data.success) {
           setUser(response.data.data.user);
         } else {
-          await logout();
+          // Token invalid, clear it
+          await SecureStore.deleteItemAsync('userToken');
+          await SecureStore.deleteItemAsync('refreshToken');
+          setUser(null);
         }
       }
     } catch (e) {
       console.log('Failed to restore token', e);
-      // Optional: Try to refresh token here
+      // Token expired or invalid - clear stored tokens
+      await SecureStore.deleteItemAsync('userToken');
+      await SecureStore.deleteItemAsync('refreshToken');
+      setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (patientId, password) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.post('/auth/login', { email, password });
+      // Use /auth/login/patient for end-user mobile app
+      // Patient login uses patientId instead of email
+      const response = await api.post('/auth/login/patient', { patientId, password });
       
       if (response.data.success) {
         const { user, accessToken, refreshToken } = response.data.data;
