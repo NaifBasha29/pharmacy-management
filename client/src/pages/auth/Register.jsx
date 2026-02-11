@@ -61,7 +61,7 @@ const Register = () => {
         <div className="auth-left">
           <div className="auth-brand">
             <div className="brand-logo">💊</div>
-            <h1>PharmaCare Plus</h1>
+            <h1>RxHub Plus</h1>
             <p>Your trusted pharmacy management solution</p>
           </div>
           <div className="auth-features">
@@ -84,7 +84,7 @@ const Register = () => {
           <div className="auth-form-container">
             <div className="auth-header">
               <h2>Create Account</h2>
-              <p>Join PharmaCare Plus today</p>
+              <p>Join RxHub Plus today</p>
             </div>
 
             {error && <div className="auth-error">{error}</div>}
@@ -194,3 +194,8 @@ const Register = () => {
 };
 
 export default Register;
+
+
+
+
+

@@ -5,7 +5,7 @@
 /* Main Layout */
 .user-dashboard {
     padding: 2rem;
-    background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 50%, #fdf4ff 100%);
+    background: #000000;
     min-height: 100vh;
 }
 
@@ -17,13 +17,13 @@
 .welcome-section h1 {
     font-size: 2rem;
     font-weight: 800;
-    color: #0f172a;
+    color: #ffffff;
     margin-bottom: 0.5rem;
     letter-spacing: -0.03em;
 }
 
 .welcome-section h1 .user-name {
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    background: linear-gradient(135deg, #f97316, #ea580c);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -31,7 +31,7 @@
 
 .welcome-section .subtitle {
     font-size: 1rem;
-    color: #64748b;
+    color: #9ca3af;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -43,7 +43,7 @@
     gap: 0.375rem;
     padding: 0.375rem 0.75rem;
     background: rgba(255(255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(249, 115, 22, 0.1);
             border-radius: 9999px;
             font-size: 0.875rem;
             font-weight: 500;
@@ -72,10 +72,10 @@
     }
 
     .stat-box {
-        background: rgba(255, 255, 255, 0.85);
+        background: #0a0a0a;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(249, 115, 22, 0.1);
         border-radius: 1.25rem;
         padding: 1.5rem;
         display: flex;
@@ -108,7 +108,7 @@
     }
 
     .stat-box--blue {
-        --stat-accent: linear-gradient(135deg, #3b82f6, #60a5fa);
+        --stat-accent: linear-gradient(135deg, #f97316, #fb923c);
     }
 
     .stat-box--orange {
@@ -116,7 +116,7 @@
     }
 
     .stat-box--green {
-        --stat-accent: linear-gradient(135deg, #10b981, #34d399);
+        --stat-accent: linear-gradient(135deg, #f97316, #fb923c);
     }
 
     .stat-box--purple {
@@ -140,7 +140,7 @@
     .stat-content .stat-number {
         font-size: 1.875rem;
         font-weight: 800;
-        color: #0f172a;
+        color: #ffffff;
         line-height: 1;
         margin-bottom: 0.25rem;
     }
@@ -148,7 +148,7 @@
     .stat-content .stat-title {
         font-size: 0.875rem;
         font-weight: 500;
-        color: #64748b;
+        color: #9ca3af;
     }
 
     .stat-content .stat-trend {
@@ -188,9 +188,9 @@
 
     /* Cards */
     .dashboard-card {
-        background: rgba(255, 255, 255, 0.9);
+        background: #0a0a0a;
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(249, 115, 22, 0.1);
         border-radius: 1.25rem;
         overflow: hidden;
         transition: all 0.3s;
@@ -211,7 +211,7 @@
     .card-head h3 {
         font-size: 1rem;
         font-weight: 700;
-        color: #1e293b;
+        color: #ffffff;
         display: flex;
         align-items: center;
         gap: 0.625rem;
@@ -224,7 +224,7 @@
     .card-head .view-all {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #3b82f6;
+        color: #f97316;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -288,7 +288,7 @@
     }
 
     .action-tile--catalog {
-        --tile-color: #3b82f6;
+        --tile-color: #f97316;
     }
 
     .action-tile--orders {
@@ -300,7 +300,7 @@
     }
 
     .action-tile--profile {
-        --tile-color: #10b981;
+        --tile-color: #f97316;
     }
 
     .tile-icon {
@@ -319,7 +319,7 @@
     }
 
     .action-tile--catalog .tile-icon {
-        background: linear-gradient(135deg, #3b82f6, #60a5fa); box-shadow: 0 6px 12px -3px rgba(59, 130, 246, 0.4);
+        background: linear-gradient(135deg, #f97316, #ea580c); box-shadow: 0 6px 12px -3px rgba(249, 115, 22, 0.4);
     }
 
     .action-tile--orders .tile-icon {
@@ -331,13 +331,13 @@
     }
 
     .action-tile--profile .tile-icon {
-        background: linear-gradient(135deg, #10b981, #34d399); box-shadow: 0 6px 12px -3px rgba(16, 185, 129, 0.4);
+        background: linear-gradient(135deg, #f97316, #fb923c); box-shadow: 0 6px 12px -3px rgba(249, 115, 22, 0.4);
     }
 
     .tile-label {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #334155;
+        color: #e5e5e5;
         position: relative;
         z-index: 1;
     }
@@ -370,7 +370,7 @@
     .health-item .label {
         font-size: 0.875rem;
         font-weight: 500;
-        color: #64748b;
+        color: #9ca3af;
     }
 
     .health-item .value {
@@ -426,7 +426,7 @@
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        color: #64748b;
+        color: #9ca3af;
         text-align: left;
     }
 
@@ -441,13 +441,13 @@
     .orders-table td {
         padding: 1rem 1.25rem;
         font-size: 0.875rem;
-        color: #334155;
+        color: #e5e5e5;
         border-bottom: 1px solid rgba(0, 0, 0, 0.04);
     }
 
     .orders-table .order-id {
         font-weight: 700;
-        color: #0f172a;
+        color: #ffffff;
     }
 
     .orders-table .order-total {
@@ -471,7 +471,7 @@
     }
 
     .order-badge--processing {
-        background: #dbeafe; color: #2563eb;
+        background: #dbeafe; color: #ea580c;
     }
 
     .order-badge--dispatched {
@@ -503,7 +503,7 @@
     }
 
     .buy-again-item:hover {
-        background: rgba(59, 130, 246, 0.04);
+        background: rgba(249, 115, 22, 0.04);
     }
 
     .buy-again-item .med-icon {
@@ -524,7 +524,7 @@
 
     .buy-again-item .med-name {
         font-weight: 600;
-        color: #1e293b;
+        color: #ffffff;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -533,7 +533,7 @@
 
     .buy-again-item .med-price {
         font-size: 0.875rem;
-        color: #64748b;
+        color: #9ca3af;
     }
 
     .buy-again-item .add-btn {
@@ -541,7 +541,7 @@
         height: 32px;
         border-radius: 9999px;
         border: none;
-        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        background: linear-gradient(135deg, #f97316, #ea580c);
         color: white;
         font-size: 1.25rem;
         font-weight: 700;
@@ -552,7 +552,7 @@
         opacity: 0;
         transform: scale(0.8);
         transition: all 0.2s;
-        box-shadow: 0 4px 8px -2px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 4px 8px -2px rgba(249, 115, 22, 0.4);
     }
 
     .buy-again-item:hover .add-btn {
@@ -570,14 +570,14 @@
         padding: 1rem;
         font-size: 0.875rem;
         font-weight: 600;
-        color: #3b82f6;
+        color: #f97316;
         text-decoration: none;
         border-top: 1px solid rgba(0, 0, 0, 0.04);
         transition: background 0.2s;
     }
 
     .browse-all-link:hover {
-        background: rgba(59, 130, 246, 0.04);
+        background: rgba(249, 115, 22, 0.04);
     }
 
     /* Empty State */
@@ -600,7 +600,7 @@
 
     .empty-state h4 {
         font-weight: 600;
-        color: #334155;
+        color: #e5e5e5;
         margin-bottom: 0.375rem;
     }
 
@@ -615,17 +615,19 @@
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        background: linear-gradient(135deg, #f97316, #ea580c);
         color: white;
         font-weight: 600;
         font-size: 0.875rem;
         border-radius: 0.75rem;
         text-decoration: none;
-        box-shadow: 0 4px 12px -3px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 4px 12px -3px rgba(249, 115, 22, 0.4);
         transition: all 0.2s;
     }
 
     .empty-state .btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px -5px rgba(59, 130, 246, 0.5);
+        box-shadow: 0 8px 20px -5px rgba(249, 115, 22, 0.5);
     }
+
+

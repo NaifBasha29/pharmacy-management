@@ -54,8 +54,8 @@ const Prescriptions = () => {
         }
     };
 
-    const page = { background: 'linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 50%, #faf5ff 100%)', minHeight: '100vh', padding: '2rem' };
-    const card = { background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', overflow: 'hidden' };
+    const page = { background: '#000000', minHeight: '100vh', padding: '2rem' };
+    const card = { background: '#0a0a0a', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', overflow: 'hidden' };
     const badge = (s) => ({ padding: '0.25rem 0.625rem', fontSize: '0.7rem', fontWeight: 600, borderRadius: '9999px', background: s === 'approved' ? '#dcfce7' : s === 'rejected' ? '#fee2e2' : '#fef3c7', color: s === 'approved' ? '#16a34a' : s === 'rejected' ? '#dc2626' : '#d97706' });
 
     return (
@@ -63,8 +63,8 @@ const Prescriptions = () => {
             <Sidebar />
             <main className="dashboard-main" style={page}>
                 <div style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: '#1e293b' }}>My <span style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Prescriptions</span></h1>
-                    <p style={{ color: '#64748b' }}>Upload and manage your prescriptions</p>
+                    <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: '#ffffff' }}>My <span style={{ background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Prescriptions</span></h1>
+                    <p style={{ color: '#9ca3af' }}>Upload and manage your prescriptions</p>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: '2rem' }}>
@@ -72,7 +72,7 @@ const Prescriptions = () => {
                     <div style={card}>
                         <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                             <div style={{ width: 40, height: 40, background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', borderRadius: '0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}><FiUpload /></div>
-                            <span style={{ fontWeight: 700, color: '#1e293b' }}>Upload New</span>
+                            <span style={{ fontWeight: 700, color: '#ffffff' }}>Upload New</span>
                         </div>
                         <form onSubmit={handleUpload} style={{ padding: '1.5rem' }}>
                             <div style={{ border: '2px dashed #e5e7eb', borderRadius: '0.75rem', padding: previewUrl ? 0 : '2rem', textAlign: 'center', background: '#f9fafb', position: 'relative', cursor: 'pointer' }}>
@@ -85,12 +85,12 @@ const Prescriptions = () => {
                                 ) : (
                                     <>
                                         <div style={{ width: 56, height: 56, background: '#f3e8ff', borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8b5cf6', fontSize: '1.5rem' }}><FiImage /></div>
-                                        <div style={{ fontWeight: 600, color: '#374151' }}>Click to upload</div>
+                                        <div style={{ fontWeight: 600, color: '#e5e5e5' }}>Click to upload</div>
                                         <div style={{ fontSize: '0.8rem', color: '#9ca3af' }}>Images or PDF (Max 5MB)</div>
                                     </>
                                 )}
                             </div>
-                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#374151', margin: '1rem 0 0.5rem' }}>Note (Optional)</label>
+                            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#e5e5e5', margin: '1rem 0 0.5rem' }}>Note (Optional)</label>
                             <textarea name="note" style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.75rem', minHeight: 70, background: '#f9fafb' }} placeholder="Instructions..." />
                             <button type="submit" disabled={!selectedFile || uploading} style={{ width: '100%', marginTop: '1rem', padding: '0.875rem', fontWeight: 600, color: 'white', background: (!selectedFile || uploading) ? '#d1d5db' : 'linear-gradient(135deg, #8b5cf6, #7c3aed)', border: 'none', borderRadius: '0.75rem', cursor: (!selectedFile || uploading) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                                 {uploading ? 'Uploading...' : <><FiUpload /> Upload</>}
@@ -116,7 +116,7 @@ const Prescriptions = () => {
                                                 <span style={badge(p.status)}>{p.status === 'approved' ? <FiCheckCircle /> : p.status === 'rejected' ? <FiXCircle /> : <FiClock />} {p.status}</span>
                                                 <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{new Date(p.createdAt).toLocaleDateString()}</span>
                                             </div>
-                                            {p.pharmacistNote && <div style={{ fontSize: '0.8rem', background: '#eff6ff', padding: '0.5rem', borderRadius: '0.5rem', borderLeft: '3px solid #3b82f6' }}>{p.pharmacistNote}</div>}
+                                            {p.pharmacistNote && <div style={{ fontSize: '0.8rem', background: '#eff6ff', padding: '0.5rem', borderRadius: '0.5rem', borderLeft: '3px solid #f97316' }}>{p.pharmacistNote}</div>}
                                         </div>
                                     </div>
                                 ))}
@@ -124,7 +124,7 @@ const Prescriptions = () => {
                         ) : (
                             <div style={{ textAlign: 'center', padding: '4rem' }}>
                                 <div style={{ fontSize: '3rem', opacity: 0.3, marginBottom: '1rem' }}>📄</div>
-                                <p style={{ color: '#64748b' }}>No prescriptions yet</p>
+                                <p style={{ color: '#9ca3af' }}>No prescriptions yet</p>
                             </div>
                         )}
                     </div>
@@ -135,3 +135,7 @@ const Prescriptions = () => {
 };
 
 export default Prescriptions;
+
+
+
+

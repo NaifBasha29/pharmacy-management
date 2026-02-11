@@ -55,16 +55,16 @@ const Profile = () => {
 
     const removeArrayItem = (field, index) => setMedicalData(prev => ({ ...prev, [field]: prev[field].filter((_, i) => i !== index) }));
 
-    const page = { background: 'linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 50%, #faf5ff 100%)', minHeight: '100vh', padding: '2rem' };
-    const card = { background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', overflow: 'hidden' };
+    const page = { background: '#000000', minHeight: '100vh', padding: '2rem' };
+    const card = { background: '#0a0a0a', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', overflow: 'hidden' };
     const input = { width: '100%', padding: '0.75rem 1rem', border: '1px solid #e5e7eb', borderRadius: '0.75rem', background: '#f9fafb', outline: 'none' };
-    const label = { display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#374151', marginBottom: '0.5rem' };
-    const btn = { padding: '0.75rem 1.5rem', fontWeight: 600, color: 'white', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', border: 'none', borderRadius: '0.75rem', cursor: 'pointer' };
+    const label = { display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#e5e5e5', marginBottom: '0.5rem' };
+    const btn = { padding: '0.75rem 1.5rem', fontWeight: 600, color: 'white', background: 'linear-gradient(135deg, #f97316, #ea580c)', border: 'none', borderRadius: '0.75rem', cursor: 'pointer' };
     
     const tabs = [
-        { id: 'personal', label: 'Personal Details', icon: <FiUser />, color: '#3b82f6' },
+        { id: 'personal', label: 'Personal Details', icon: <FiUser />, color: '#f97316' },
         { id: 'medical', label: 'Health Profile', icon: <FiActivity />, color: '#ef4444' },
-        { id: 'security', label: 'Security', icon: <FiShield />, color: '#10b981' }
+        { id: 'security', label: 'Security', icon: <FiShield />, color: '#f97316' }
     ];
 
     return (
@@ -72,8 +72,8 @@ const Profile = () => {
             <Sidebar />
             <main className="dashboard-main" style={page}>
                 <div style={{ marginBottom: '2rem' }}>
-                    <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: '#1e293b' }}>My <span style={{ background: 'linear-gradient(135deg, #10b981, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Profile</span></h1>
-                    <p style={{ color: '#64748b' }}>Manage your account and health information</p>
+                    <h1 style={{ fontSize: '1.875rem', fontWeight: 700, color: '#ffffff' }}>My <span style={{ background: 'linear-gradient(135deg, #f97316, #ea580c)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Profile</span></h1>
+                    <p style={{ color: '#9ca3af' }}>Manage your account and health information</p>
                 </div>
 
                 <div style={{ display: 'flex', gap: '2rem' }}>
@@ -82,7 +82,7 @@ const Profile = () => {
                         <div style={card}>
                             <div style={{ padding: '1rem' }}>
                                 {tabs.map(tab => (
-                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', marginBottom: '0.5rem', border: 'none', borderRadius: '0.75rem', cursor: 'pointer', background: activeTab === tab.id ? 'linear-gradient(135deg, #3b82f6, #2563eb)' : 'transparent', color: activeTab === tab.id ? 'white' : '#64748b', fontWeight: 600, transition: 'all 0.2s' }}>
+                                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', marginBottom: '0.5rem', border: 'none', borderRadius: '0.75rem', cursor: 'pointer', background: activeTab === tab.id ? 'linear-gradient(135deg, #f97316, #ea580c)' : 'transparent', color: activeTab === tab.id ? 'white' : '#9ca3af', fontWeight: 600, transition: 'all 0.2s' }}>
                                         <span style={{ fontSize: '1.25rem' }}>{tab.icon}</span>
                                         {tab.label}
                                     </button>
@@ -90,9 +90,9 @@ const Profile = () => {
                             </div>
                         </div>
                         <div style={{ ...card, marginTop: '1rem', padding: '1.5rem', textAlign: 'center' }}>
-                            <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg, #3b82f6, #2563eb)', borderRadius: '1rem', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.5rem', fontWeight: 700 }}>{user?.name?.charAt(0)}</div>
-                            <div style={{ fontWeight: 700, color: '#1e293b' }}>{user?.name}</div>
-                            <div style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '0.75rem' }}>{user?.role}</div>
+                            <div style={{ width: 64, height: 64, background: 'linear-gradient(135deg, #f97316, #ea580c)', borderRadius: '1rem', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.5rem', fontWeight: 700 }}>{user?.name?.charAt(0)}</div>
+                            <div style={{ fontWeight: 700, color: '#ffffff' }}>{user?.name}</div>
+                            <div style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.75rem' }}>{user?.role}</div>
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', background: '#dcfce7', color: '#16a34a', padding: '0.25rem 0.625rem', borderRadius: '9999px', fontWeight: 600 }}>
                                 <span style={{ width: 6, height: 6, background: '#16a34a', borderRadius: '50%' }}></span> Active
                             </span>
@@ -105,7 +105,7 @@ const Profile = () => {
                             {activeTab === 'personal' && (
                                 <form onSubmit={handlePersonalSubmit}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #f1f5f9' }}>
-                                        <div style={{ width: 40, height: 40, background: '#eff6ff', borderRadius: '0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}><FiUser /></div>
+                                        <div style={{ width: 40, height: 40, background: '#eff6ff', borderRadius: '0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}><FiUser /></div>
                                         <span style={{ fontSize: '1.125rem', fontWeight: 700 }}>Personal Details</span>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
@@ -164,7 +164,7 @@ const Profile = () => {
                             {activeTab === 'security' && (
                                 <form onSubmit={handlePasswordSubmit}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #f1f5f9' }}>
-                                        <div style={{ width: 40, height: 40, background: '#ecfdf5', borderRadius: '0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}><FiShield /></div>
+                                        <div style={{ width: 40, height: 40, background: '#fff7ed', borderRadius: '0.625rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f97316' }}><FiShield /></div>
                                         <span style={{ fontSize: '1.125rem', fontWeight: 700 }}>Change Password</span>
                                     </div>
                                     <div style={{ maxWidth: 400 }}>
@@ -186,3 +186,7 @@ const Profile = () => {
 };
 
 export default Profile;
+
+
+
+

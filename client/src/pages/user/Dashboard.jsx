@@ -66,7 +66,7 @@ const UserDashboard = () => {
     // Inline styles for guaranteed rendering
     const styles = {
         page: {
-            background: 'linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 50%, #faf5ff 100%)',
+            background: '#000000',
             minHeight: '100vh',
             padding: '2rem'
         },
@@ -76,17 +76,17 @@ const UserDashboard = () => {
         title: {
             fontSize: '1.875rem',
             fontWeight: '700',
-            color: '#1e293b',
+            color: '#ffffff',
             marginBottom: '0.5rem'
         },
         gradientText: {
-            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+            background: 'linear-gradient(135deg, #f97316, #8b5cf6)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text'
         },
         subtitle: {
-            color: '#64748b',
+            color: '#9ca3af',
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
@@ -97,7 +97,7 @@ const UserDashboard = () => {
             alignItems: 'center',
             gap: '0.375rem',
             padding: '0.375rem 0.75rem',
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '9999px',
             fontSize: '0.875rem',
             fontWeight: '500',
@@ -111,7 +111,7 @@ const UserDashboard = () => {
             marginBottom: '2rem'
         },
         statCard: {
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             padding: '1.5rem',
             display: 'flex',
@@ -137,19 +137,19 @@ const UserDashboard = () => {
         statValue: {
             fontSize: '2rem',
             fontWeight: '800',
-            color: '#0f172a',
+            color: '#ffffff',
             lineHeight: '1'
         },
         statLabel: {
             fontSize: '0.875rem',
             fontWeight: '500',
-            color: '#64748b',
+            color: '#9ca3af',
             marginTop: '0.25rem'
         },
         sectionTitle: {
             fontSize: '1.125rem',
             fontWeight: '700',
-            color: '#1e293b',
+            color: '#ffffff',
             marginBottom: '1rem',
             display: 'flex',
             alignItems: 'center',
@@ -162,7 +162,7 @@ const UserDashboard = () => {
             marginBottom: '2rem'
         },
         actionCard: {
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             padding: '1.5rem',
             display: 'flex',
@@ -198,7 +198,7 @@ const UserDashboard = () => {
             gap: '1.5rem'
         },
         card: {
-            background: 'white',
+            background: '#0a0a0a',
             borderRadius: '1rem',
             overflow: 'hidden',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -214,7 +214,7 @@ const UserDashboard = () => {
         viewAllLink: {
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#3b82f6',
+            color: '#f97316',
             textDecoration: 'none',
             display: 'flex',
             alignItems: 'center',
@@ -230,7 +230,7 @@ const UserDashboard = () => {
             fontWeight: '600',
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
-            color: '#64748b',
+            color: '#9ca3af',
             textAlign: 'left',
             background: '#f8fafc'
         },
@@ -243,12 +243,12 @@ const UserDashboard = () => {
         badge: (type) => {
             const colors = {
                 pending: { bg: '#fef3c7', color: '#d97706' },
-                processing: { bg: '#dbeafe', color: '#2563eb' },
+                processing: { bg: '#dbeafe', color: '#ea580c' },
                 dispatched: { bg: '#e0e7ff', color: '#4f46e5' },
                 delivered: { bg: '#dcfce7', color: '#16a34a' },
                 cancelled: { bg: '#fee2e2', color: '#dc2626' }
             };
-            const c = colors[type] || { bg: '#f1f5f9', color: '#64748b' };
+            const c = colors[type] || { bg: '#f1f5f9', color: '#9ca3af' };
             return {
                 display: 'inline-block',
                 padding: '0.25rem 0.75rem',
@@ -312,7 +312,7 @@ const UserDashboard = () => {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh' }}>
                         <div style={{ textAlign: 'center' }}>
                             <div className="spinner" style={{ width: 48, height: 48, margin: '0 auto 1rem' }} />
-                            <p style={{ color: '#64748b', fontWeight: 500 }}>Loading your dashboard...</p>
+                            <p style={{ color: '#9ca3af', fontWeight: 500 }}>Loading your dashboard...</p>
                         </div>
                     </div>
                 </main>
@@ -340,7 +340,7 @@ const UserDashboard = () => {
                 {/* Stats Grid */}
                 <div style={styles.statsGrid}>
                     <div style={styles.statCard}>
-                        <div style={styles.statIcon('linear-gradient(135deg, #3b82f6, #60a5fa)')}>
+                        <div style={styles.statIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
                             <FiShoppingCart />
                         </div>
                         <div>
@@ -360,7 +360,7 @@ const UserDashboard = () => {
                     </div>
 
                     <div style={styles.statCard}>
-                        <div style={styles.statIcon('linear-gradient(135deg, #10b981, #34d399)')}>
+                        <div style={styles.statIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
                             <FiPackage />
                         </div>
                         <div>
@@ -385,7 +385,7 @@ const UserDashboard = () => {
                     <h3 style={styles.sectionTitle}><FiActivity /> Quick Actions</h3>
                     <div style={styles.quickActionsGrid}>
                         <Link to="/user/catalog" style={styles.actionCard}>
-                            <div style={styles.actionIcon('linear-gradient(135deg, #3b82f6, #60a5fa)')}>
+                            <div style={styles.actionIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
                                 <FiPackage />
                             </div>
                             <span style={styles.actionLabel}>Browse Medicines</span>
@@ -403,7 +403,7 @@ const UserDashboard = () => {
                             <span style={styles.actionLabel}>Upload Rx</span>
                         </Link>
                         <Link to="/user/profile" style={styles.actionCard}>
-                            <div style={styles.actionIcon('linear-gradient(135deg, #10b981, #34d399)')}>
+                            <div style={styles.actionIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
                                 <FiUser />
                             </div>
                             <span style={styles.actionLabel}>My Profile</span>
@@ -469,11 +469,11 @@ const UserDashboard = () => {
                             </div>
                             <div style={{ padding: '0.5rem 0' }}>
                                 <div style={styles.healthItem}>
-                                    <span style={{ fontSize: '0.875rem', color: '#64748b' }}>Blood Group</span>
+                                    <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>Blood Group</span>
                                     <span style={{ fontWeight: 700, padding: '0.25rem 0.75rem', background: '#fee2e2', color: '#dc2626', borderRadius: '9999px', fontSize: '0.875rem' }}>B+</span>
                                 </div>
                                 <div style={styles.healthItem}>
-                                    <span style={{ fontSize: '0.875rem', color: '#64748b' }}>Allergies</span>
+                                    <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>Allergies</span>
                                     <span style={{ fontWeight: 600, padding: '0.25rem 0.75rem', background: '#fef3c7', color: '#d97706', borderRadius: '9999px', fontSize: '0.75rem' }}>None</span>
                                 </div>
                             </div>
@@ -488,7 +488,7 @@ const UserDashboard = () => {
                         <div style={styles.card}>
                             <div style={styles.cardHeader}>
                                 <h3 style={{ ...styles.sectionTitle, marginBottom: 0 }}>
-                                    <FiRefreshCcw style={{ color: '#3b82f6' }} /> Buy Again
+                                    <FiRefreshCcw style={{ color: '#f97316' }} /> Buy Again
                                 </h3>
                             </div>
                             <div style={{ padding: '0.5rem' }}>
@@ -498,10 +498,10 @@ const UserDashboard = () => {
                                             💊
                                         </div>
                                         <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.9rem' }}>{medicine.name}</div>
-                                            <div style={{ fontSize: '0.875rem', color: '#64748b' }}>₹{medicine.price}</div>
+                                            <div style={{ fontWeight: 600, color: '#ffffff', fontSize: '0.9rem' }}>{medicine.name}</div>
+                                            <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>₹{medicine.price}</div>
                                         </div>
-                                        <button style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: 'linear-gradient(135deg, #3b82f6, #60a5fa)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <button style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: 'linear-gradient(135deg, #f97316, #fb923c)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <FiPlus />
                                         </button>
                                     </div>
@@ -533,3 +533,7 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+
+
+
+

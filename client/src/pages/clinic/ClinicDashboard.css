@@ -139,7 +139,7 @@
 }
 
 .clinic-header p {
-    color: #64748b;
+    color: #9ca3af;
     margin: 0;
 }
 
@@ -174,7 +174,7 @@
 
 .stat-icon.patients {
     background: #dbeafe;
-    color: #2563eb;
+    color: #ea580c;
 }
 
 .stat-icon.medicines {
@@ -205,7 +205,7 @@
 
 .stat-label {
     font-size: 0.875rem;
-    color: #64748b;
+    color: #9ca3af;
 }
 
 /* Welcome Card */
@@ -225,7 +225,7 @@
 }
 
 .welcome-card p {
-    color: #64748b;
+    color: #9ca3af;
     margin: 0 0 1rem;
 }
 
@@ -267,3 +267,4 @@
         grid-template-columns: 1fr;
     }
 }
+
