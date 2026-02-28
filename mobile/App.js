@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { CartProvider, useCart } from './src/context/CartContext';
@@ -12,12 +13,14 @@ import { colors } from './src/theme/colors';
 
 // Screens
 import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import CatalogScreen from './src/screens/CatalogScreen';
 import CartScreen from './src/screens/CartScreen';
 import OrdersScreen from './src/screens/OrdersScreen';
 import PrescriptionsScreen from './src/screens/PrescriptionsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import SupportScreen from './src/screens/SupportScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -99,6 +102,16 @@ const TabNavigator = () => {
           ),
         }}
       />
+      <Tab.Screen
+        name="Support"
+        component={SupportScreen}
+        options={{
+          tabBarLabel: 'Support',
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="help-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
@@ -131,6 +144,11 @@ const Navigation = () => {
       {user ? <MainNavigator /> : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen
+            name="Register"
+            component={RegisterScreen}
+            options={{ animation: 'slide_from_right' }}
+          />
         </Stack.Navigator>
       )}
     </NavigationContainer>
@@ -142,8 +160,9 @@ export default function App() {
     <SafeAreaProvider>
       <AuthProvider>
         <CartProvider>
-          <StatusBar style="dark" backgroundColor={colors.background} />
+          <StatusBar style="light" backgroundColor={colors.background} />
           <Navigation />
+          <Toast />
         </CartProvider>
       </AuthProvider>
     </SafeAreaProvider>

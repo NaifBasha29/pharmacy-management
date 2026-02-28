@@ -3,8 +3,10 @@ import api from '../config/api';
 // Auth API
 export const authAPI = {
   loginPatient: (credentials) => api.post('/auth/login/patient', credentials),
+  registerPatient: (data) => api.post('/auth/register/patient', data),
   getCurrentUser: () => api.get('/auth/me'),
   logout: () => api.post('/auth/logout'),
+  changePassword: (data) => api.put('/auth/change-password', data),
 };
 
 // Orders API
@@ -44,11 +46,17 @@ export const analyticsAPI = {
   getDashboard: () => api.get('/analytics/dashboard'),
 };
 
+// Categories API (for catalog filters)
+export const categoriesAPI = {
+  getAll: () => api.get('/categories'),
+};
+
 export default {
   authAPI,
   ordersAPI,
   prescriptionsAPI,
   patientsAPI,
   medicinesAPI,
-  analyticsAPI
+  analyticsAPI,
+  categoriesAPI,
 };

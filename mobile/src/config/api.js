@@ -1,32 +1,40 @@
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+// Metro automatically resolves tokenStorage.native.js on iOS/Android
+// and tokenStorage.web.js on web — no conditional requires needed.
+import TokenStorage from '../utils/tokenStorage';
 
-// Replace with your machine's LAN IP address for physical device testing
-// e.g., http://192.168.1.5:5005
-const SERVER_IP = '192.168.6.88'; 
-const PORT = '5005';
+export { TokenStorage };
 
-export const SERVER_URL = Platform.OS === 'android' 
-  ? `http://${SERVER_IP}:${PORT}` 
-  : `http://localhost:${PORT}`;
+// ── Server URL ─────────────────────────────────────────────────────────────────
+// Update SERVER_IP to your machine's LAN IP when testing on a physical device.
+const SERVER_IP = '192.168.29.190';
+const PORT      = '5005';
+
+export const SERVER_URL =
+  Platform.OS === 'web'
+    ? `http://localhost:${PORT}`       // browser dev → always localhost
+    : `http://${SERVER_IP}:${PORT}`;   // Android / iOS physical device
 
 const BASE_URL = `${SERVER_URL}/api`;
+// ──────────────────────────────────────────────────────────────────────────────
 
 const api = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 10000, // 10 second timeout
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 10000,
 });
 
-// Add a request interceptor to add the auth token
+// ── Request interceptor: attach stored auth token ─────────────────────────────
 api.interceptors.request.use(
   async (config) => {
-    const token = await SecureStore.getItemAsync('userToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = await TokenStorage.get('userToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch {
+      // If token retrieval fails, continue without auth header
     }
     console.log(`📡 API Request: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
@@ -37,43 +45,28 @@ api.interceptors.request.use(
   }
 );
 
-// Add a response interceptor to log errors in detail
+// ── Response interceptor: detailed error logging ──────────────────────────────
 api.interceptors.response.use(
   (response) => {
-    console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
+    console.log(
+      `✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`
+    );
     return response;
   },
   (error) => {
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('❌ API ERROR DETAILS:');
-    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    
     if (error.response) {
-      // Server responded with error status
       console.error('Status:', error.response.status);
-      console.error('Status Text:', error.response.statusText);
       console.error('URL:', error.config?.url);
-      console.error('Method:', error.config?.method?.toUpperCase());
-      console.error('Response Data:', JSON.stringify(error.response.data, null, 2));
-      console.error('Headers:', JSON.stringify(error.response.headers, null, 2));
+      console.error('Data:', JSON.stringify(error.response.data, null, 2));
     } else if (error.request) {
-      // Request was made but no response received
-      console.error('No Response Received');
+      console.error('No response — server not running, wrong IP, or CORS issue');
       console.error('URL:', error.config?.url);
-      console.error('Method:', error.config?.method?.toUpperCase());
-      console.error('Request:', error.request._response || 'Network Error');
-      console.error('Possible causes:');
-      console.error('  - Server is not running');
-      console.error('  - Wrong IP address or port');
-      console.error('  - Network connectivity issues');
-      console.error('  - CORS issues');
     } else {
-      // Error setting up the request
       console.error('Request Setup Error:', error.message);
     }
-    
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    
     return Promise.reject(error);
   }
 );

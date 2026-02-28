@@ -12,6 +12,115 @@ import { loginRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
+// @route   POST /api/auth/register/patient
+// @desc    Self-register a new patient account (from mobile app)
+// @access  Public
+router.post('/register/patient', asyncHandler(async (req, res) => {
+  const {
+    name, email, phone, password,
+    dateOfBirth, bloodGroup, allergies, chronicConditions, address
+  } = req.body;
+
+  // Basic validation
+  if (!name || !phone || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Name, phone, and password are required'
+    });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: 'Password must be at least 6 characters'
+    });
+  }
+
+  // Check duplicate phone or email
+  const existingPhone = await Patient.findOne({ phone });
+  if (existingPhone) {
+    return res.status(400).json({
+      success: false,
+      message: 'An account with this phone number already exists'
+    });
+  }
+  if (email) {
+    const existingEmail = await Patient.findOne({ email: email.toLowerCase().trim() });
+    if (existingEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'An account with this email already exists'
+      });
+    }
+  }
+
+  // Build patient document
+  const patientData = {
+    name,
+    phone,
+    password,
+    gender: 'other',
+    isActive: true,
+  };
+  if (email) {
+    patientData.email = email.toLowerCase().trim();
+  }
+  // Only set dateOfBirth if it's a real, parseable date string
+  if (dateOfBirth && dateOfBirth.trim()) {
+    const parsed = new Date(dateOfBirth.trim());
+    if (!isNaN(parsed.getTime())) {
+      patientData.dateOfBirth = parsed;
+    }
+    // otherwise skip it — don't send an Invalid Date to Mongoose
+  }
+  if (bloodGroup && bloodGroup !== 'unknown') patientData.bloodGroup = bloodGroup;
+  if (allergies?.length)         patientData.allergies         = Array.isArray(allergies) ? allergies : [allergies];
+  if (chronicConditions?.length) patientData.chronicConditions = Array.isArray(chronicConditions) ? chronicConditions : [chronicConditions];
+  if (address && address.trim()) patientData.address = { street: address.trim() };
+
+  const patient = await Patient.create(patientData);
+
+  // Generate tokens
+  const accessToken  = generateToken(patient._id, 'patient');
+  const refreshToken = generateRefreshToken(patient._id, 'patient');
+
+  // Create session
+  await Session.createSession({
+    userId: patient._id,
+    userType: 'Patient',
+    accessToken,
+    refreshToken,
+    deviceInfo: getDeviceInfo(req),
+    expiresIn: 7 * 24 * 60 * 60 * 1000
+  });
+
+  await AuditLog.log({
+    action: 'CREATE',
+    resource: 'Patient',
+    resourceId: patient._id,
+    description: `New patient self-registered: ${patient.patientId}`,
+    ipAddress: req.ip
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'Account created successfully',
+    data: {
+      user: {
+        id:        patient._id,
+        name:      patient.name,
+        email:     patient.email,
+        patientId: patient.patientId,
+        phone:     patient.phone,
+        role:      'user',
+        type:      'patient'
+      },
+      patientId: patient.patientId, // show user their login ID
+      accessToken,
+      refreshToken
+    }
+  });
+}));
+
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
@@ -74,6 +183,7 @@ router.post('/register', userValidation.register, asyncHandler(async (req, res) 
     }
   });
 }));
+
 
 // @route   POST /api/auth/login/admin
 // @desc    Login admin user (Users collection)
@@ -273,12 +383,26 @@ router.post('/login/clinic', loginRateLimiter, asyncHandler(async (req, res) => 
 }));
 
 // @route   POST /api/auth/login/patient
-// @desc    Login patient (Patient collection)
+// @desc    Login patient by email + password (patientId as fallback)
 // @access  Public
 router.post('/login/patient', loginRateLimiter, asyncHandler(async (req, res) => {
-  const { patientId, password } = req.body;
+  const { email, patientId, password } = req.body;
 
-  const patient = await Patient.findOne({ patientId }).select('+password');
+  if (!password || (!email && !patientId)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email and password are required'
+    });
+  }
+
+  // Primary: look up by email. Fallback: patientId (for legacy/admin-created accounts)
+  let patient;
+  if (email) {
+    patient = await Patient.findOne({ email: email.toLowerCase().trim() }).select('+password');
+  }
+  if (!patient && patientId) {
+    patient = await Patient.findOne({ patientId }).select('+password');
+  }
 
   if (!patient) {
     return res.status(401).json({

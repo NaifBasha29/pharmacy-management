@@ -1,439 +1,274 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  RefreshControl,
-  ActivityIndicator,
-  Alert,
-  Modal
+  View, Text, ScrollView, StyleSheet, TouchableOpacity,
+  Image, Alert, StatusBar, Pressable, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { colors } from '../theme/colors';
-import api from '../config/api';
+import { prescriptionsAPI } from '../services/mobileApi';
+import Toast from 'react-native-toast-message';
 
 const STATUS_CONFIG = {
-  pending: { color: '#f59e0b', icon: 'clock-outline', label: 'Pending' },
-  approved: { color: '#10b981', icon: 'check-circle-outline', label: 'Approved' },
-  rejected: { color: '#ef4444', icon: 'close-circle-outline', label: 'Rejected' },
+  approved: { label: 'Approved', bg: '#dcfce7', text: '#16a34a', icon: 'check-circle' },
+  pending:  { label: 'Pending',  bg: '#fef9c3', text: '#d97706', icon: 'schedule' },
+  rejected: { label: 'Rejected', bg: '#fee2e2', text: '#dc2626', icon: 'cancel' },
 };
 
-export default function PrescriptionsScreen() {
+export default function PrescriptionsScreen({ navigation }) {
   const [prescriptions, setPrescriptions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [previewVisible, setPreviewVisible] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUri, setPreviewUri] = useState(null);
 
-  useEffect(() => {
-    fetchPrescriptions();
-  }, []);
-
-  const fetchPrescriptions = async () => {
+  const fetchPrescriptions = useCallback(async () => {
     try {
-      const res = await api.get('/prescriptions');
-      setPrescriptions(res.data.data.prescriptions || []);
-    } catch (error) {
-      console.log('Error fetching prescriptions:', error);
+      const res = await prescriptionsAPI.getAll();
+      setPrescriptions(res.data?.data?.prescriptions || []);
+    } catch (err) {
+      Toast.show({ type: 'error', text1: 'Failed to load prescriptions' });
     } finally {
       setLoading(false);
     }
-  };
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchPrescriptions().then(() => setRefreshing(false));
   }, []);
 
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission needed', 'Please grant camera roll permissions to upload prescriptions.');
-      return;
-    }
+  useEffect(() => { fetchPrescriptions(); }, []);
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.8,
-    });
-
+  const pickFromCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') { Alert.alert('Permission Required', 'Camera permission is needed.'); return; }
+    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.85 });
     if (!result.canceled) {
-      setSelectedImage(result.assets[0]);
+      setPreviewUri(result.assets[0].uri);
+      setSelectedFile({ uri: result.assets[0].uri, name: 'prescription.jpg', type: 'image/jpeg' });
     }
   };
 
-  const takePhoto = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission needed', 'Please grant camera permissions to take photos.');
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.8,
-    });
-
+  const pickFromGallery = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.85 });
     if (!result.canceled) {
-      setSelectedImage(result.assets[0]);
+      setPreviewUri(result.assets[0].uri);
+      setSelectedFile({ uri: result.assets[0].uri, name: 'prescription.jpg', type: 'image/jpeg' });
     }
   };
 
   const handleUpload = async () => {
-    if (!selectedImage) return;
-
+    if (!selectedFile) return;
     try {
       setUploading(true);
       const formData = new FormData();
-      formData.append('prescription', {
-        uri: selectedImage.uri,
-        type: 'image/jpeg',
-        name: 'prescription.jpg',
-      });
-
-      await api.post('/prescriptions/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      Alert.alert('Success', 'Prescription uploaded successfully!');
-      setSelectedImage(null);
+      formData.append('prescription', selectedFile);
+      await prescriptionsAPI.upload(formData);
+      Toast.show({ type: 'success', text1: 'Prescription uploaded!', text2: 'Our pharmacists will review it shortly.' });
+      setSelectedFile(null);
+      setPreviewUri(null);
       fetchPrescriptions();
-    } catch (error) {
-      console.log('Upload error:', error);
-      Alert.alert('Error', 'Failed to upload prescription. Please try again.');
+    } catch (err) {
+      Toast.show({ type: 'error', text1: 'Upload failed', text2: 'Please try again.' });
     } finally {
       setUploading(false);
     }
   };
 
-  const showImageOptions = () => {
-    Alert.alert(
-      'Upload Prescription',
-      'Choose an option',
-      [
-        { text: 'Take Photo', onPress: takePhoto },
-        { text: 'Choose from Gallery', onPress: pickImage },
-        { text: 'Cancel', style: 'cancel' },
-      ]
-    );
-  };
-
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const renderPrescription = ({ item }) => {
-    const status = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
-    const imageUrl = item.image?.startsWith('http') 
-      ? item.image 
-      : `${api.defaults.baseURL?.replace('/api', '')}/${item.image}`;
-
+  const renderPrescriptionCard = (rx) => {
+    const sc = STATUS_CONFIG[rx.status] || STATUS_CONFIG.pending;
     return (
-      <TouchableOpacity
-        style={styles.prescriptionCard}
-        onPress={() => {
-          setPreviewImage(imageUrl);
-          setPreviewVisible(true);
-        }}
-      >
-        <Image
-          source={{ uri: imageUrl }}
-          style={styles.prescriptionImage}
-          resizeMode="cover"
-        />
-        <View style={styles.prescriptionInfo}>
-          <View style={[styles.statusBadge, { backgroundColor: `${status.color}20` }]}>
-            <Icon name={status.icon} size={14} color={status.color} />
-            <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+      <View key={rx._id} style={styles.rxCard}>
+        <View style={styles.rxRow}>
+          {/* Thumbnail */}
+          <View style={styles.rxThumbWrap}>
+            {rx.imageUrl
+              ? <Image source={{ uri: rx.imageUrl }} style={styles.rxThumb} resizeMode="cover" />
+              : <View style={[styles.rxThumb, styles.rxThumbFallback]}><Text style={{ fontSize: 28 }}>📄</Text></View>}
+            {rx.status === 'rejected' && (
+              <View style={styles.rxBlurOverlay}>
+                <MaterialIcons name="visibility-off" size={20} color="#ffffff70" />
+              </View>
+            )}
           </View>
-          <Text style={styles.prescriptionDate}>{formatDate(item.createdAt)}</Text>
-          {item.note && (
-            <Text style={styles.prescriptionNote} numberOfLines={2}>{item.note}</Text>
-          )}
+
+          {/* Info */}
+          <View style={styles.rxInfo}>
+            <View style={styles.rxTopRow}>
+              <Text style={styles.rxName} numberOfLines={1}>{rx.note || 'Prescription'}</Text>
+              <View style={[styles.rxStatusBadge, { backgroundColor: sc.bg }]}>
+                <Text style={[styles.rxStatusText, { color: sc.text }]}>{sc.label}</Text>
+              </View>
+            </View>
+            <Text style={styles.rxDate}>
+              {new Date(rx.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </Text>
+
+            {rx.pharmacistNote && (
+              <View style={[styles.rxNote, rx.status === 'rejected' ? styles.rxNoteRed : styles.rxNoteBlue]}>
+                <Text style={styles.rxNoteLabel}>{rx.status === 'rejected' ? '⚠ Issue: ' : '💬 Note: '}</Text>
+                <Text style={styles.rxNoteText}>{rx.pharmacistNote}</Text>
+              </View>
+            )}
+            {rx.status === 'pending' && !rx.pharmacistNote && (
+              <Text style={styles.rxPending}>Review in progress...</Text>
+            )}
+          </View>
         </View>
-        <Icon name="chevron-right" size={24} color={colors.textLight} />
-      </TouchableOpacity>
+      </View>
     );
   };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar barStyle="light-content" backgroundColor="#23170f" />
+
+      {/* ── Header ── */}
       <View style={styles.header}>
-        <Text style={styles.title}>Prescriptions</Text>
+        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+          <MaterialIcons name="arrow-back" size={22} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.pageTitle}>Prescriptions</Text>
+        <View style={{ width: 36 }} />
       </View>
 
-      {/* Upload Section */}
-      <View style={styles.uploadSection}>
-        {selectedImage ? (
-          <View style={styles.previewContainer}>
-            <Image source={{ uri: selectedImage.uri }} style={styles.previewImage} />
-            <View style={styles.previewActions}>
-              <TouchableOpacity
-                style={styles.cancelPreviewButton}
-                onPress={() => setSelectedImage(null)}
-              >
-                <Icon name="close" size={20} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity
-              style={[styles.uploadButton, uploading && styles.uploadButtonDisabled]}
-              onPress={handleUpload}
-              disabled={uploading}
-            >
-              {uploading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <>
-                  <Icon name="cloud-upload-outline" size={20} color="#fff" />
-                  <Text style={styles.uploadButtonText}>Upload</Text>
-                </>
-              )}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+
+        {/* ── Upload Section ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Upload New</Text>
+
+          {/* Drop zone */}
+          <Pressable
+            style={styles.dropZone}
+            onPress={pickFromGallery}
+          >
+            {previewUri ? (
+              <View style={{ position: 'relative' }}>
+                <Image source={{ uri: previewUri }} style={styles.previewImg} resizeMode="contain" />
+                <TouchableOpacity
+                  style={styles.removePreviewBtn}
+                  onPress={() => { setSelectedFile(null); setPreviewUri(null); }}
+                >
+                  <MaterialIcons name="close" size={14} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <>
+                <View style={styles.uploadIconWrap}>
+                  <MaterialIcons name="upload-file" size={36} color="#f97415" />
+                </View>
+                <Text style={styles.dropZoneTitle}>Upload Prescription</Text>
+                <Text style={styles.dropZoneSub}>Tap to browse or drag & drop</Text>
+              </>
+            )}
+          </Pressable>
+
+          {/* Pick options */}
+          <View style={styles.pickOptionsRow}>
+            <TouchableOpacity style={styles.pickOptionBtn} onPress={pickFromGallery}>
+              <MaterialIcons name="photo-library" size={18} color="#f97415" />
+              <Text style={styles.pickOptionText}>Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.pickOptionBtn} onPress={pickFromCamera}>
+              <MaterialIcons name="camera-alt" size={18} color="#f97415" />
+              <Text style={styles.pickOptionText}>Camera</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <TouchableOpacity style={styles.uploadCard} onPress={showImageOptions}>
-            <View style={styles.uploadIconContainer}>
-              <Icon name="camera-plus-outline" size={32} color={colors.primary} />
-            </View>
-            <Text style={styles.uploadTitle}>Upload Prescription</Text>
-            <Text style={styles.uploadSubtitle}>Take a photo or choose from gallery</Text>
-          </TouchableOpacity>
-        )}
-      </View>
 
-      {/* Prescriptions List */}
-      <Text style={styles.sectionTitle}>Your Prescriptions</Text>
-      
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      ) : (
-        <FlatList
-          data={prescriptions}
-          renderItem={renderPrescription}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.prescriptionsList}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Icon name="file-document-outline" size={64} color={colors.textLight} />
-              <Text style={styles.emptyText}>No prescriptions uploaded yet</Text>
-            </View>
-          }
-        />
-      )}
-
-      {/* Image Preview Modal */}
-      <Modal
-        visible={previewVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setPreviewVisible(false)}
-      >
-        <View style={styles.modalContainer}>
+          {/* Upload button */}
           <TouchableOpacity
-            style={styles.modalClose}
-            onPress={() => setPreviewVisible(false)}
+            style={[styles.uploadBtn, (!selectedFile || uploading) && styles.uploadBtnDisabled]}
+            onPress={handleUpload}
+            disabled={!selectedFile || uploading}
           >
-            <Icon name="close" size={28} color="#fff" />
+            {uploading
+              ? <ActivityIndicator color="#fff" />
+              : <>
+                  <MaterialIcons name="cloud-upload" size={18} color="#fff" />
+                  <Text style={styles.uploadBtnText}>Upload File</Text>
+                </>}
           </TouchableOpacity>
-          <Image
-            source={{ uri: previewImage }}
-            style={styles.modalImage}
-            resizeMode="contain"
-          />
         </View>
-      </Modal>
+
+        {/* ── History ── */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>History</Text>
+            <Text style={styles.countBadge}>{prescriptions.length} Records</Text>
+          </View>
+
+          {loading ? (
+            <View style={styles.loadingWrap}><ActivityIndicator color="#f97415" /></View>
+          ) : prescriptions.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={{ fontSize: 40, opacity: 0.3, marginBottom: 8 }}>📄</Text>
+              <Text style={styles.emptyText}>No prescriptions yet</Text>
+            </View>
+          ) : (
+            <View style={styles.rxList}>
+              {prescriptions.map(renderPrescriptionCard)}
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  uploadSection: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  uploadCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 24,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: colors.primary + '40',
-  },
-  uploadIconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: colors.primary + '20',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  uploadTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    marginBottom: 4,
-  },
-  uploadSubtitle: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  previewContainer: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  previewImage: {
-    width: '100%',
-    height: 200,
-  },
-  previewActions: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-  },
-  cancelPreviewButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primary,
-    padding: 16,
-    gap: 8,
-  },
-  uploadButtonDisabled: {
-    opacity: 0.7,
-  },
-  uploadButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-    paddingHorizontal: 16,
-    marginBottom: 12,
-  },
-  prescriptionsList: {
-    padding: 16,
-    paddingTop: 0,
-    paddingBottom: 100,
-  },
-  prescriptionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 12,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-  },
-  prescriptionImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    backgroundColor: '#f3f4f6',
-  },
-  prescriptionInfo: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
-    marginBottom: 4,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  prescriptionDate: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  prescriptionNote: {
-    fontSize: 12,
-    color: colors.textLight,
-    marginTop: 4,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingTop: 40,
-  },
-  emptyText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: colors.textSecondary,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalClose: {
-    position: 'absolute',
-    top: 50,
-    right: 20,
-    zIndex: 10,
-  },
-  modalImage: {
-    width: '90%',
-    height: '70%',
-  },
+  container: { flex: 1, backgroundColor: '#23170f' },
+
+  // Header
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#f9741520' },
+  backBtn: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', backgroundColor: '#352418' },
+  pageTitle: { flex: 1, color: '#fff', fontWeight: '800', fontSize: 17, textAlign: 'center' },
+
+  // Sections
+  section: { padding: 20, paddingBottom: 0 },
+  sectionTitle: { color: '#fff', fontWeight: '800', fontSize: 22, letterSpacing: -0.5, marginBottom: 14 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
+  countBadge: { backgroundColor: '#352418', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 99, color: '#cca88e', fontSize: 12, fontWeight: '600' },
+
+  // Drop Zone
+  dropZone: { borderWidth: 2, borderStyle: 'dashed', borderColor: '#6a482f', borderRadius: 16, backgroundColor: '#2e1f16', padding: 32, alignItems: 'center', gap: 10 },
+  uploadIconWrap: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#4a322180', justifyContent: 'center', alignItems: 'center' },
+  dropZoneTitle: { color: '#fff', fontWeight: '700', fontSize: 17 },
+  dropZoneSub: { color: '#9ca3af', fontSize: 13 },
+  previewImg: { width: 260, height: 180, borderRadius: 12 },
+  removePreviewBtn: { position: 'absolute', top: 8, right: 8, width: 28, height: 28, borderRadius: 14, backgroundColor: '#ef4444', justifyContent: 'center', alignItems: 'center' },
+
+  // Pick options
+  pickOptionsRow: { flexDirection: 'row', gap: 12, marginTop: 14 },
+  pickOptionBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 10, borderRadius: 12, backgroundColor: '#352418', borderWidth: 1, borderColor: '#f9741530' },
+  pickOptionText: { color: '#f97415', fontWeight: '700', fontSize: 13 },
+
+  // Upload button
+  uploadBtn: { marginTop: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, borderRadius: 99, backgroundColor: '#f97415', elevation: 6, shadowColor: '#f97415', shadowOpacity: 0.3, shadowRadius: 8, marginBottom: 20 },
+  uploadBtnDisabled: { backgroundColor: '#4a3221' },
+  uploadBtnText: { color: '#fff', fontWeight: '800', fontSize: 15 },
+
+  // Rx List
+  rxList: { gap: 12, marginBottom: 20 },
+  rxCard: { backgroundColor: '#2c1d14', borderRadius: 16, padding: 16 },
+  rxRow: { flexDirection: 'row', gap: 14 },
+  rxThumbWrap: { position: 'relative' },
+  rxThumb: { width: 90, height: 90, borderRadius: 12, backgroundColor: '#352418' },
+  rxThumbFallback: { justifyContent: 'center', alignItems: 'center' },
+  rxBlurOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: '#00000060', borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+
+  // Rx info
+  rxInfo: { flex: 1 },
+  rxTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 },
+  rxName: { flex: 1, color: '#fff', fontWeight: '700', fontSize: 15, marginRight: 8 },
+  rxStatusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 99 },
+  rxStatusText: { fontSize: 10, fontWeight: '700' },
+  rxDate: { color: '#9c7b64', fontSize: 11, fontWeight: '500', marginBottom: 8 },
+  rxNote: { borderRadius: 10, padding: 10, borderLeftWidth: 3 },
+  rxNoteBlue: { backgroundColor: '#f9741510', borderLeftColor: '#f97415' },
+  rxNoteRed: { backgroundColor: '#ef444415', borderLeftColor: '#ef4444' },
+  rxNoteLabel: { fontWeight: '700', color: '#e5e5e5', fontSize: 11 },
+  rxNoteText: { color: '#d1d5db', fontSize: 11, lineHeight: 16, marginTop: 2 },
+  rxPending: { color: '#6b7280', fontSize: 12, fontStyle: 'italic' },
+
+  // Empty / Loading
+  loadingWrap: { padding: 48, alignItems: 'center' },
+  emptyState: { padding: 48, alignItems: 'center' },
+  emptyText: { color: '#9ca3af', fontSize: 14 },
 });
