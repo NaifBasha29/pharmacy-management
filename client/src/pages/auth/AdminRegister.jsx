@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { FiUser, FiMail, FiLock, FiPhone, FiMapPin, FiShield, FiEye, FiEyeOff } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import './Auth.css';
-import phamLogo from '../../../assets/phamlogo.png';
+import logo from '../../../assets/logo.png';
 
 function AdminRegister() {
   const [formData, setFormData] = useState({
@@ -72,7 +72,7 @@ function AdminRegister() {
         {/* Left Side - Branding (Red for Admin) */}
         <div className="auth-left" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)' }}>
           <div className="auth-brand">
-            <img src={phamLogo} alt="RxHub" className="brand-logo-img" />
+            <img src={logo} alt="RxHub" className="brand-logo-img" />
             <h1>RxHub Admin</h1>
             <p>System Administration Portal</p>
           </div>

@@ -8,8 +8,9 @@ import {
   FiClipboard, FiAlertCircle, FiTruck, FiHeart, FiHelpCircle,
   FiCrosshair // Using an icon instead of logo for now
 } from 'react-icons/fi';
+import ThemeToggle from './ThemeToggle';
 import './Sidebar.css';
-import phamLogo from '../../../assets/phamlogo.png';
+import logo from '../../../assets/logo.png';
 
 const Sidebar = () => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
@@ -31,18 +32,14 @@ const Sidebar = () => {
     { path: '/admin/prescriptions', icon: <FiClipboard />, label: 'Prescriptions' },
     { path: '/admin/orders', icon: <FiShoppingCart />, label: 'Orders' },
     { path: '/admin/reports', icon: <FiActivity />, label: 'Reports' },
-    { path: '/admin/compliance', icon: <FiFileText />, label: 'Compliance' },
+    { path: '/admin/audit-logs', icon: <FiFileText />, label: 'Compliance' },
     { path: '/admin/support', icon: <FiHelpCircle />, label: 'Support' },
     { path: '/admin/settings', icon: <FiSettings />, label: 'Settings' }
   ];
 
   const pharmacistLinks = [
     { path: '/pharmacist', icon: <FiHome />, label: 'Dashboard' },
-    { path: '/pharmacist/dispensing', icon: <FiClipboard />, label: 'Dispensing' },
-    { path: '/pharmacist/prescriptions', icon: <FiFileText />, label: 'Prescriptions' },
-    { path: '/pharmacist/patients', icon: <FiHeart />, label: 'Patients' },
-    { path: '/pharmacist/alerts', icon: <FiAlertCircle />, label: 'Alerts' },
-    { path: '/pharmacist/restock', icon: <FiTruck />, label: 'Restock' }
+    { path: '/pharmacist/patients', icon: <FiHeart />, label: 'Patients' }
   ];
 
   const userLinks = [
@@ -109,6 +106,10 @@ const Sidebar = () => {
         </nav>
 
         <div className="sidebar-footer">
+          <div className={`video-call-controls ${!isOpen ? 'collapsed' : ''}`} style={{ padding: '0 0.5rem 0.5rem' }}>
+            <ThemeToggle className={!isOpen ? 'w-full' : ''} />
+          </div>
+
           <button className="nav-link notification-btn">
             <span className="nav-icon">
               <FiBell />

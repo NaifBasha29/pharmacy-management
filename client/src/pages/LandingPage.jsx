@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fa';
 import './LandingPage.css';
 import landingImage from '../../assets/lp.png';
-import phamLogo from '../../assets/phamlogo.png';
+import logo from '../../assets/logo.png';
 
 const LandingPage = () => {
     const [contactForm, setContactForm] = useState({
@@ -59,8 +59,8 @@ const LandingPage = () => {
             <nav className="landing-nav">
                 <div className="nav-container">
                     <Link to="/" className="nav-brand">
-                        <img src={phamLogo} alt="RxHub" className="brand-logo-img" />
-                        <span className="brand-name">RxHub</span>
+                        <img src={logo} alt="RxHub" className="brand-logo-img" />
+
                     </Link>
                     <div className="nav-links">
                         <a href="#home" className={`nav-link ${activeSection === 'home' ? 'active' : ''}`} onClick={() => setActiveSection('home')}>Home</a>
