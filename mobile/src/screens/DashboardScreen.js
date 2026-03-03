@@ -12,11 +12,11 @@ import { useAuth } from '../context/AuthContext';
 import { colors } from '../theme/colors';
 import { CustomLineChart } from '../components/CustomChart';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import api from '../config/api';
+import { SERVER_URL } from '../config/api';
+import { analyticsAPI } from '../services/mobileApi';
 import io from 'socket.io-client';
-import { Alert, Platform } from 'react-native';
 
-const SOCKET_URL = Platform.OS === 'android' ? 'http://192.168.0.96:5000' : 'http://localhost:5000';
+const SOCKET_URL = SERVER_URL;
 
 
 const StatCard = ({ title, value, icon, color }) => (
@@ -43,22 +43,16 @@ export default function DashboardScreen({ navigation }) {
 
   const fetchStats = async () => {
     try {
-      // Replace with actual API endpoints
-      // const res = await api.get('/analytics/dashboard');
-      // setStats(res.data);
-      
-      // Simulating API delay for demo
-      setTimeout(() => {
-        setStats({
-          sales: '$12,450',
-          orders: '45',
-          medicines: '1,203',
-          alerts: '3'
-        });
-      }, 1000);
-      
+      const dashboardRes = await analyticsAPI.getDashboard();
+      if (dashboardRes.data.success) {
+        setStats(dashboardRes.data.data);
+      } else {
+        // Fallback or specific error handling
+         console.warn("Failed to fetch dashboard stats", dashboardRes.data.message);
+      }
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching stats:", error);
+      // Optional: keep simulated data for dev/demo if API fails
     }
   };
 
@@ -73,6 +67,10 @@ export default function DashboardScreen({ navigation }) {
     // Socket connection
     const socket = io(SOCKET_URL);
     
+    socket.on('connect_error', (err) => {
+      console.log('Socket connection error:', err);
+    });
+
     socket.on('connect', () => {
       console.log('Socket connected');
       if (user?.role) {

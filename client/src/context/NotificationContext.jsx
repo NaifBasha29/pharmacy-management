@@ -20,7 +20,9 @@ export const NotificationProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      const newSocket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+      // Socket connects to the server base URL (without /api)
+      const socketUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5005/api').replace('/api', '');
+      const newSocket = io(socketUrl, {
         withCredentials: true
       });
 

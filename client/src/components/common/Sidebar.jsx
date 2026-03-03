@@ -5,7 +5,8 @@ import { useNotifications } from '../../context/NotificationContext';
 import {
   FiHome, FiUsers, FiPackage, FiShoppingCart, FiFileText,
   FiSettings, FiLogOut, FiMenu, FiX, FiBell, FiActivity,
-  FiClipboard, FiAlertCircle, FiTruck, FiHeart, FiHelpCircle
+  FiClipboard, FiAlertCircle, FiTruck, FiHeart, FiHelpCircle,
+  FiCrosshair // Using an icon instead of logo for now
 } from 'react-icons/fi';
 import ThemeToggle from './ThemeToggle';
 import './Sidebar.css';
@@ -70,7 +71,7 @@ const Sidebar = () => {
       <aside className={`sidebar ${isOpen ? 'open' : 'collapsed'} ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <img src={logo} alt="RxHub" className="logo-icon" />
+            <FiCrosshair className="logo-icon" size={28} color="#f97316" />
             {isOpen && <span className="logo-text">RxHub</span>}
           </div>
           <button className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>

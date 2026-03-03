@@ -5,7 +5,12 @@ let io;
 export const initSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: '*',
+      origin: [
+        'http://localhost:5173', // Vite client
+        'http://localhost:8081', // Expo
+        'http://192.168.6.88:8081', // Expo LAN
+        'http://localhost:5005'
+      ],
       methods: ['GET', 'POST'],
       credentials: true
     }

@@ -30,7 +30,7 @@ const PatientLogin = () => {
         const result = await loginPatient(formData);
 
         if (result.success) {
-            if (result.user.role === 'patient') navigate('/user');
+            if (result.user.role === 'user') navigate('/user');
             else {
                 setError('Access denied: User is not a patient');
             }

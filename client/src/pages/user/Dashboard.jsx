@@ -8,6 +8,7 @@ import './UserDashboard.css';
 
 const UserDashboard = () => {
     const { user, isAuthenticated } = useAuth();
+
     const [stats, setStats] = useState({
         totalOrders: 0,
         pendingOrders: 0,

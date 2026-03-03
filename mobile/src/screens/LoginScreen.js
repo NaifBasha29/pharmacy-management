@@ -8,24 +8,25 @@ import {
   KeyboardAvoidingView, 
   Platform, 
   ActivityIndicator,
-  Image
+  StatusBar
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../theme/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
+  const [patientId, setPatientId] = useState('');
   const [password, setPassword] = useState('');
   const { login, loading, error } = useAuth();
 
   const handleLogin = async () => {
-    if (!email || !password) return;
-    await login(email, password);
+    if (!patientId || !password) return;
+    await login(patientId, password);
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
@@ -33,26 +34,31 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.content}>
           <View style={styles.header}>
             <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to your account</Text>
+            <Text style={styles.subtitle}>Sign in to your patient account</Text>
           </View>
 
           {error && (
             <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
+              <Text style={styles.errorText}>
+                {error.includes('401') 
+                  ? 'Invalid Patient ID or Password' 
+                  : error.includes('Network Error') 
+                    ? 'Cannot connect to server. Check your internet connection.' 
+                    : error}
+              </Text>
             </View>
           )}
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Patient ID</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Enter your email"
+                placeholder="Enter your patient ID"
                 placeholderTextColor={colors.textLight}
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
+                value={patientId}
+                onChangeText={setPatientId}
+                autoCapitalize="characters"
               />
             </View>
 
@@ -125,18 +131,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.inputBackground,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
     color: colors.textPrimary,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
   },
   button: {
     backgroundColor: colors.primary,
@@ -156,10 +157,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   errorContainer: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)', // Red with opacity
     padding: 12,
     borderRadius: 8,
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.2)',
   },
   errorText: {
     color: colors.error,

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import api from '../config/api';
+import { authAPI } from '../services/mobileApi';
 
 const AuthContext = createContext({});
 
@@ -20,26 +20,32 @@ export const AuthProvider = ({ children }) => {
       const token = await SecureStore.getItemAsync('userToken');
       if (token) {
         // Verify token and get user data
-        const response = await api.get('/auth/me');
+        const response = await authAPI.getCurrentUser();
         if (response.data.success) {
           setUser(response.data.data.user);
         } else {
-          await logout();
+          // Token invalid, clear it
+          await SecureStore.deleteItemAsync('userToken');
+          await SecureStore.deleteItemAsync('refreshToken');
+          setUser(null);
         }
       }
     } catch (e) {
       console.log('Failed to restore token', e);
-      // Optional: Try to refresh token here
+      // Token expired or invalid - clear stored tokens
+      await SecureStore.deleteItemAsync('userToken');
+      await SecureStore.deleteItemAsync('refreshToken');
+      setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (patientId, password) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await authAPI.loginPatient({ patientId, password });
       
       if (response.data.success) {
         const { user, accessToken, refreshToken } = response.data.data;
@@ -65,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await api.post('/auth/logout');
+      await authAPI.logout();
     } catch (e) {
       console.log('Logout API call failed', e);
     } finally {

@@ -653,7 +653,7 @@ h6 {
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--bg-primary); /* Use theme background */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -662,9 +662,18 @@ h6 {
   z-index: 1100;
 }
 
+.loading-text {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  animation: pulse 2s infinite;
+}
+
 .loading-overlay .spinner {
   width: 48px;
   height: 48px;
+  border-color: var(--border-light);
+  border-top-color: var(--primary-500);
 }
 
 /* ================================
