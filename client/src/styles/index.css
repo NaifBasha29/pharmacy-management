@@ -44,18 +44,18 @@
   --success: #f97316;
   --warning: #f59e0b;
   --error: #ef4444;
-  --info: #f97316;
+  --info: #3b82f6;
 
-  /* Background & Surface */
-  --bg-primary: #000000;
-  --bg-secondary: #050505;
-  --bg-tertiary: #0a0a0a;
-  --surface: #0a0a0a;
+  /* Background & Surface - Light Mode Default */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --surface: #ffffff;
   --surface-hover: rgba(249, 115, 22, 0.05);
 
-  /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
+  /* Text Colors - Light Mode Default */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
   --text-tertiary: #6b7280;
   --text-inverse: #ffffff;
 
@@ -110,6 +110,7 @@
   --text-primary: #e5e5e5;
   --text-secondary: #9ca3af;
   --text-tertiary: #6b7280;
+  --text-inverse: #000000;
   --border-light: rgba(249, 115, 22, 0.1);
   --border-default: rgba(249, 115, 22, 0.2);
   --primary-500: #f97316;
@@ -132,11 +133,12 @@ html {
 
 body {
   font-family: var(--font-family);
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -228,15 +230,16 @@ h6 {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #000000;
+  background: var(--bg-primary);
+  transition: background-color 0.3s ease;
 }
 
 .dashboard-main {
   flex: 1;
   margin-top: 50px;
   padding: 1.5rem;
-  background: #050505;
-  color: #e5e5e5;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   transition: all var(--transition-normal);
 }
 

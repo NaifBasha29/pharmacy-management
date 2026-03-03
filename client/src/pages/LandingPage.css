@@ -4,25 +4,24 @@
 ======================================== */
 
 /* CSS Variables - Design System */
+/* CSS Variables - Design System */
 :root {
-  --primary: #f97316;
-  --primary-light: #fb923c;
-  --primary-dark: #ea580c;
-  --accent: #c2410c;
-  --success: #f97316;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --primary: var(--primary-500);
+  --primary-light: var(--primary-400);
+  --primary-dark: var(--primary-600);
+  --accent: var(--primary-700);
 
-  --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
-  --text-muted: #94a3b8;
+  /* Inherit from global theme */
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
+  --text-muted: var(--text-tertiary);
 
-  --bg-primary: #000000;
-  --bg-secondary: #050505;
-  --bg-dark: #0a0a0a;
+  --bg-primary: var(--bg-primary);
+  --bg-secondary: var(--bg-secondary);
+  --bg-dark: var(--bg-tertiary);
 
-  --border: rgba(249, 115, 22, 0.1);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --border: var(--border-light);
+
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
@@ -162,9 +161,9 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
-  height: 80px;
+  height: 100px;
   display: grid;
-  grid-template-columns: 200px 1fr 200px;
+  grid-template-columns: 350px 1fr 350px;
   align-items: center;
 }
 
@@ -189,8 +188,8 @@
 }
 
 .brand-logo-img {
-  width: 5rem;
-  height: 5rem;
+  width: 6rem;
+  height: 6rem;
   object-fit: contain;
   border-radius: var(--radius-md);
 }
@@ -280,7 +279,7 @@
 .hero {
   position: relative;
   min-height: 100vh;
-  padding: 8rem 2rem 4rem;
+  padding: 9rem 2rem 4rem;
   background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
   overflow: hidden;
 }
