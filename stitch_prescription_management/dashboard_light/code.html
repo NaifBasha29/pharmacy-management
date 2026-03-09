@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RxHub - Health Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center bg-white/80 dark:bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+<span class="material-symbols-outlined text-primary text-2xl">medical_services</span>
+</div>
+<h1 class="text-slate-900 dark:text-white text-xl font-extrabold tracking-tight">RxHub</h1>
+</div>
+<div class="flex gap-2 items-center">
+<button class="flex items-center justify-center rounded-full size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="relative flex items-center justify-center rounded-full size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full border-2 border-white dark:border-background-dark"></span>
+</button>
+</div>
+</header>
+<!-- Welcome Section -->
+<section class="px-4 pt-6 pb-2">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Good morning, Alex</p>
+<h2 class="text-slate-900 dark:text-white text-2xl font-bold leading-tight tracking-tight">Your Health Overview</h2>
+</section>
+<!-- Stats Cards -->
+<div class="grid grid-cols-2 gap-4 p-4">
+<div class="flex flex-col gap-3 rounded-xl p-5 bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">pill</span>
+</div>
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Active Scripts</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">4</p>
+<p class="text-emerald-600 text-sm font-bold">+1</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 rounded-xl p-5 bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="size-10 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-amber-600">reorder</span>
+</div>
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Refills Ready</p>
+<div class="flex items-baseline gap-2">
+<p class="text-slate-900 dark:text-white text-3xl font-bold">2</p>
+<p class="text-slate-400 text-sm font-medium">0%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Banner / Action Card -->
+<div class="px-4 pb-6">
+<div class="relative overflow-hidden rounded-xl bg-primary p-6 text-white shadow-lg shadow-primary/20">
+<div class="relative z-10">
+<h3 class="text-lg font-bold">Next Refill Pickup</h3>
+<p class="text-white/80 text-sm mt-1">Crestor 10mg is ready for collection at Central Pharmacy.</p>
+<button class="mt-4 px-4 py-2 bg-white text-primary text-sm font-bold rounded-lg hover:bg-slate-50 transition-colors">
+                        View Details
+                    </button>
+</div>
+<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-white/10 text-9xl select-none">local_pharmacy</span>
+</div>
+</div>
+<!-- Current Medications List -->
+<div class="px-4">
+<div class="flex items-center justify-between pb-4">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold">Current Medications</h3>
+<button class="text-primary text-sm font-bold">View All</button>
+</div>
+<div class="space-y-3">
+<!-- Med Card 1 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="size-12 shrink-0 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close up of white round pills" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhV6OH9IKFuUI5rOmAr_pQci8UdVAKQsNokochbWKVfPbdTSkWn6CjOJiCPLWlLyvJpzLfWgaCNQmWim7v37ePyx4zho2blaClaW41bcF77fkM5E658W4wwnb_7FocfvSOhhQEtIxZse7jGQPPuGGecdDJquJvIyqAtaU3azSKYMpk_1GnbwcfxPpIBhhln5pZW-RFyhujRpq2akN3Din8izd_mWXy54ZOqTswChHp3YtF2LeLWhxhlcbHW9Xn-No_Sts8i_8_TQ"/>
+</div>
+<div class="flex-1">
+<h4 class="text-slate-900 dark:text-white font-bold text-sm">Lisinopril</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs">10mg • Once daily</p>
+</div>
+<div class="text-right">
+<p class="text-slate-900 dark:text-white font-bold text-sm">8:00 AM</p>
+<p class="text-emerald-600 text-[10px] font-bold uppercase">Taken</p>
+</div>
+</div>
+<!-- Med Card 2 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="size-12 shrink-0 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Blue and white capsule pills" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnSnfC_CwjycystmIU5-UxR8rhNBDJ65Ihx6o-ocVbsLE56dIgpMuS9ah4OcOTm8fJZduZ1OtXPUvRfzJCBcoP4be0X8N7qFVvO9anyzwQFpqkPMrEk6gZxONUoqt3kyWzVdCjHwXw7W9hk-1B5ATaTn4sXGBuobe3Ob3ZIjwT0KsqIulQBp34ESyBOcHLTmAu0RYOTnAY_7H178fsLa6-Ig2Hx-ozLfsJJS25nb1p_T24l8BcEIvRUVv0Pb-Qr2zYZMz-n_ms5Q"/>
+</div>
+<div class="flex-1">
+<h4 class="text-slate-900 dark:text-white font-bold text-sm">Metformin</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs">500mg • Twice daily</p>
+</div>
+<div class="text-right">
+<p class="text-slate-900 dark:text-white font-bold text-sm">8:00 PM</p>
+<p class="text-amber-500 text-[10px] font-bold uppercase">Upcoming</p>
+</div>
+</div>
+<!-- Med Card 3 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800 opacity-75">
+<div class="size-12 shrink-0 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A bottle of prescription medication" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsuvsStUP5TDxPtcQ8Q64C8XXSJAARRz_gS_jP44hgqjir78-piqfvp39m21TqTqfL8zHWMi0Xm2lgpjHAsFDjL9i4MkcsyS7cwwBNFCzDVLbAba4wTWTpC3zlPoHEzrHvUnHH_whHWntdiLyameL6yBz1he2M02Kn0fklT20lSf47ZiSSWB5F5gYeGB1whrI8f-mRJ68nIrMCuOIiKyhfUSWwV5P04CLXi-nGyzbpKwagDNFml2P0o_M5xPWQmbnveraJMRYjhA"/>
+</div>
+<div class="flex-1">
+<h4 class="text-slate-900 dark:text-white font-bold text-sm">Atorvastatin</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs">20mg • Evening</p>
+</div>
+<div class="text-right">
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Near You Pharmacy -->
+<div class="px-4 mt-8 pb-8">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-4">Nearby Pharmacies</h3>
+<div class="flex gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4">
+<div class="min-w-[240px] flex flex-col gap-2 rounded-xl bg-white dark:bg-slate-900 p-4 border border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="h-24 w-full rounded-lg bg-slate-200 dark:bg-slate-800 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Modern pharmacy interior with clean shelves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCskfFL5t6KamNQ_lqtD0Sub81JGCRl3-qq8s3XtNZx4nfX4SCzsmtqpmm-dPBapFeyerfitj9opPW360RIwkzFkhdDo9I1LqiR6srlzML47xDVya52mWJ3PhtC3N8OSP3M7crtXl8g7zEcNjyq6jUwzYZQ30zBeE02PBVkXNkB_MrRRfxUyRZnV4HlDOk73pIcvyUeJlgHXiO7moe-U-EIpSdAlVRHF4S2tJNWGqSmq1r1nv3NJwbopgXjgaXJ6ccfXV4CxpTmbw"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-white/90 dark:bg-slate-900/90 rounded text-[10px] font-bold text-emerald-600">OPEN</div>
+</div>
+<h4 class="text-slate-900 dark:text-white font-bold text-sm">HealthFirst Central</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> 0.4 miles away
+                    </p>
+</div>
+<div class="min-w-[240px] flex flex-col gap-2 rounded-xl bg-white dark:bg-slate-900 p-4 border border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="h-24 w-full rounded-lg bg-slate-200 dark:bg-slate-800 overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Close up of pharmacy supplies" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC12sfQzDVY1B8PqTf01IfDQuxCcMdhSTZHR09zuArEvPyHzv3lR0n3Tbpjm-hJefQXu3sIvUmjEz3XKL7yVdUaes2pZq_r-8J490Uk40u-tdy_A8-e1Ziya-Pn9Ob5zEznvxMHQSvXTOAjoouAu9FVSN2mjFQ2aXfJtPJnfKqxEppxNfdIv5ddvinJXOvB4SXUNbwOSVmqGyAQW8yxF_0yw9Bmhnom_jyWzlr-1eU6J1OkdmBCT5MyP_tUbrt1J2DpY2WpNQpmag"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-white/90 dark:bg-slate-900/90 rounded text-[10px] font-bold text-emerald-600">OPEN</div>
+</div>
+<h4 class="text-slate-900 dark:text-white font-bold text-sm">Walgreens West End</h4>
+<p class="text-slate-500 dark:text-slate-400 text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> 1.2 miles away
+                    </p>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 z-[60] bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-6 py-3">
+<div class="flex items-center justify-between max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">pill</span>
+<span class="text-[10px] font-bold">Meds</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span class="text-[10px] font-bold">Pharmacy</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { colors } from '../theme/colors';
+import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
 import api from '../config/api';
 
@@ -21,6 +21,7 @@ const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 48) / 2;
 
 export default function CatalogScreen({ navigation }) {
+  const { theme } = useTheme();
   const [medicines, setMedicines] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
@@ -28,6 +29,7 @@ export default function CatalogScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { addToCart, cartCount } = useCart();
+  const styles = createStyles(theme);
 
   useEffect(() => {
     fetchCategories();
@@ -93,35 +95,46 @@ export default function CatalogScreen({ navigation }) {
   );
 
   const renderMedicine = ({ item }) => (
-    <TouchableOpacity style={styles.card} activeOpacity={0.9}>
-      <Image
-        source={{ uri: item.image || 'https://via.placeholder.com/150?text=Medicine' }}
-        style={styles.image}
-        resizeMode="cover"
-      />
-      {item.stock < 10 && item.stock > 0 && (
-        <View style={styles.lowStockBadge}>
-          <Text style={styles.lowStockText}>Low Stock</Text>
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: theme.card }]}
+      activeOpacity={0.9}
+      onPress={() => navigation.navigate('MedicineDetail', { medicineId: item._id })}
+    >
+      <View style={styles.imageContainer}>
+        <Image
+          source={{ uri: item.image || 'https://via.placeholder.com/150?text=Medicine' }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <View style={styles.categoryBadge}>
+          <Text style={styles.categoryBadgeText}>{item.category?.name || 'General'}</Text>
         </View>
-      )}
-      {item.stock === 0 && (
-        <View style={styles.outOfStockBadge}>
-          <Text style={styles.outOfStockText}>Out of Stock</Text>
-        </View>
-      )}
+        {item.stock < 10 && item.stock > 0 && (
+          <View style={styles.lowStockBadge}>
+            <Text style={styles.lowStockText}>Low Stock</Text>
+          </View>
+        )}
+        {item.stock === 0 && (
+          <View style={styles.outOfStockBadge}>
+            <Text style={styles.outOfStockText}>Out of Stock</Text>
+          </View>
+        )}
+      </View>
       <View style={styles.cardContent}>
-        <Text style={styles.medicineName} numberOfLines={2}>{item.name}</Text>
-        <Text style={styles.medicineCategory} numberOfLines={1}>
-          {item.category?.name || 'General'}
+        <Text style={[styles.medicineName, { color: theme.textPrimary }]} numberOfLines={1}>
+          {item.name}
         </Text>
-        <View style={styles.priceRow}>
-          <Text style={styles.price}>${item.price?.toFixed(2)}</Text>
+        <Text style={[styles.medicineDesc, { color: theme.textSecondary }]} numberOfLines={2}>
+          {item.description || 'Medicine description'}
+        </Text>
+        <View style={styles.cardFooter}>
+          <Text style={[styles.price, { color: theme.primary }]}>₹{item.price?.toFixed(2)}</Text>
           <TouchableOpacity
             style={[styles.addButton, item.stock === 0 && styles.addButtonDisabled]}
             onPress={() => handleAddToCart(item)}
             disabled={item.stock === 0}
           >
-            <Icon name="cart-plus" size={18} color="#fff" />
+            <Icon name="add" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>
@@ -132,15 +145,15 @@ export default function CatalogScreen({ navigation }) {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Browse</Text>
-          <Text style={styles.titleAccent}>Medicines</Text>
-        </View>
+        <TouchableOpacity style={styles.backBtn}>
+          <Icon name="arrow-back" size={24} color={theme.textPrimary} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Medicine Catalog</Text>
         <TouchableOpacity
           style={styles.cartButton}
           onPress={() => navigation.navigate('Cart')}
         >
-          <Icon name="cart-outline" size={24} color={colors.primary} />
+          <Icon name="cart-outline" size={24} color={theme.textPrimary} />
           {cartCount > 0 && (
             <View style={styles.cartBadge}>
               <Text style={styles.cartBadgeText}>{cartCount}</Text>
@@ -151,37 +164,40 @@ export default function CatalogScreen({ navigation }) {
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Icon name="magnify" size={20} color={colors.textLight} />
+        <Icon name="magnify" size={20} color={theme.textTertiary} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search medicines..."
-          placeholderTextColor={colors.textLight}
+          placeholder="Search medicines, symptoms..."
+          placeholderTextColor={theme.placeholder}
           value={search}
           onChangeText={setSearch}
         />
-        {search.length > 0 && (
-          <TouchableOpacity onPress={() => setSearch('')}>
-            <Icon name="close-circle" size={20} color={colors.textLight} />
-          </TouchableOpacity>
-        )}
       </View>
 
-      {/* Categories */}
-      {categories.length > 0 && (
-        <FlatList
-          data={categories}
-          renderItem={renderCategory}
-          keyExtractor={(item) => item._id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoriesList}
-        />
-      )}
+      {/* Filter Buttons */}
+      <View style={styles.filtersContainer}>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Icon name="filter-list" size={16} color={theme.primary} />
+          <Text style={styles.filterText}>Filters</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filterText}>Category</Text>
+          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filterText}>Min Price</Text>
+          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filterText}>Max Price</Text>
+          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
+        </TouchableOpacity>
+      </View>
 
       {/* Medicines Grid */}
       {loading && medicines.length === 0 ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={theme.primary} />
           <Text style={styles.loadingText}>Loading medicines...</Text>
         </View>
       ) : (
@@ -197,7 +213,7 @@ export default function CatalogScreen({ navigation }) {
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Icon name="pill-off" size={64} color={colors.textLight} />
+              <Icon name="pill-off" size={64} color={theme.textTertiary} />
               <Text style={styles.emptyText}>No medicines found</Text>
             </View>
           }
@@ -207,61 +223,61 @@ export default function CatalogScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
+    backgroundColor: theme.background,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '300',
-    color: colors.textPrimary,
-  },
-  titleAccent: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  cartButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.surface,
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: theme.textPrimary,
+    flex: 1,
+    textAlign: 'center',
+  },
+  cartButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   cartBadge: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: colors.error || '#ef4444',
+    backgroundColor: theme.primary,
     borderRadius: 10,
-    minWidth: 20,
-    height: 20,
+    minWidth: 18,
+    height: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },
   cartBadgeText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
     marginHorizontal: 16,
     marginVertical: 8,
     paddingHorizontal: 16,
@@ -277,7 +293,29 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 12,
     fontSize: 16,
-    color: colors.textPrimary,
+    color: theme.textPrimary,
+  },
+  filtersContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  filterBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: theme.surface,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  filterText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: theme.textSecondary,
   },
   categoriesList: {
     paddingHorizontal: 16,
@@ -286,20 +324,20 @@ const styles = StyleSheet.create({
   categoryChip: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: colors.border || '#e5e7eb',
+    borderColor: theme.border,
   },
   categoryChipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: theme.primary,
+    borderColor: theme.primary,
   },
   categoryText: {
     fontSize: 14,
     fontWeight: '500',
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
   categoryTextActive: {
     color: '#fff',
@@ -310,7 +348,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: CARD_WIDTH,
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
     borderRadius: 16,
     margin: 8,
     elevation: 3,
@@ -319,17 +357,42 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  imageContainer: {
+    height: 120,
+    position: 'relative',
   },
   image: {
     width: '100%',
-    height: 120,
-    backgroundColor: '#f3f4f6',
+    height: '100%',
+    backgroundColor: theme.surfaceHighlight,
+    opacity: 0.9,
+  },
+  categoryBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 123, 255, 0.3)',
+  },
+  categoryBadgeText: {
+    color: '#007bff',
+    fontSize: 10,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   lowStockBadge: {
     position: 'absolute',
-    top: 8,
+    bottom: 8,
     right: 8,
-    backgroundColor: colors.warning || '#f59e0b',
+    backgroundColor: '#f59e0b',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -343,7 +406,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-    backgroundColor: colors.error || '#ef4444',
+    backgroundColor: '#ef4444',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -355,38 +418,37 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     padding: 12,
+    flex: 1,
   },
   medicineName: {
     fontSize: 14,
-    fontWeight: '600',
-    color: colors.textPrimary,
+    fontWeight: 'bold',
     marginBottom: 4,
   },
-  medicineCategory: {
+  medicineDesc: {
     fontSize: 12,
-    color: colors.textSecondary,
     marginBottom: 8,
+    lineHeight: 16,
   },
-  priceRow: {
+  cardFooter: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   price: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: colors.success || '#10b981',
   },
   addButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primary,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: theme.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   addButtonDisabled: {
-    backgroundColor: colors.textLight,
+    backgroundColor: theme.textTertiary,
   },
   loadingContainer: {
     flex: 1,
@@ -395,7 +457,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 12,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
   emptyContainer: {
     flex: 1,
@@ -406,6 +468,6 @@ const styles = StyleSheet.create({
   emptyText: {
     marginTop: 16,
     fontSize: 16,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
 });

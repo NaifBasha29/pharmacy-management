@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { colors } from '../theme/colors';
+import { useTheme } from '../context/ThemeContext';
 import api from '../config/api';
 
 const STATUS_CONFIG = {
@@ -31,11 +31,13 @@ const TABS = [
 ];
 
 export default function OrdersScreen({ navigation }) {
+  const { theme } = useTheme();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [expandedOrder, setExpandedOrder] = useState(null);
+  const styles = createStyles(theme);
 
   useEffect(() => {
     fetchOrders();
@@ -110,7 +112,7 @@ export default function OrdersScreen({ navigation }) {
       <TouchableOpacity
         style={styles.orderCard}
         activeOpacity={0.9}
-        onPress={() => setExpandedOrder(isExpanded ? null : item._id)}
+        onPress={() => navigation.navigate('OrderDetail', { orderId: item._id })}
       >
         <View style={styles.orderHeader}>
           <View>
@@ -137,7 +139,7 @@ export default function OrdersScreen({ navigation }) {
                   {orderItem.medicine?.name || 'Medicine'} x{orderItem.quantity}
                 </Text>
                 <Text style={styles.orderItemPrice}>
-                  ${(orderItem.price * orderItem.quantity).toFixed(2)}
+                  ${((orderItem.price || 0) * (orderItem.quantity || 0)).toFixed(2)}
                 </Text>
               </View>
             ))}
@@ -158,7 +160,7 @@ export default function OrdersScreen({ navigation }) {
           <Icon
             name={isExpanded ? 'chevron-up' : 'chevron-down'}
             size={20}
-            color={colors.textLight}
+            color={theme.textTertiary}
           />
         </View>
       </TouchableOpacity>
@@ -188,7 +190,7 @@ export default function OrdersScreen({ navigation }) {
 
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <ActivityIndicator size="large" color={theme.primary} />
         </View>
       ) : (
         <FlatList
@@ -202,7 +204,7 @@ export default function OrdersScreen({ navigation }) {
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Icon name="package-variant" size={64} color={colors.textLight} />
+              <Icon name="package-variant" size={64} color={theme.textTertiary} />
               <Text style={styles.emptyText}>No orders found</Text>
             </View>
           }
@@ -212,10 +214,10 @@ export default function OrdersScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
   },
   header: {
     paddingHorizontal: 16,
@@ -224,7 +226,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: theme.textPrimary,
   },
   tabsContainer: {
     flexDirection: 'row',
@@ -236,15 +238,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     marginRight: 8,
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
   },
   tabActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: theme.primary,
   },
   tabText: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
   tabTextActive: {
     color: '#fff',
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   orderCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -272,11 +274,11 @@ const styles = StyleSheet.create({
   orderId: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: theme.textPrimary,
   },
   orderDate: {
     fontSize: 12,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
     marginTop: 4,
   },
   statusBadge: {
@@ -299,19 +301,19 @@ const styles = StyleSheet.create({
   },
   itemCount: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
   orderTotal: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.primary,
+    color: theme.primary,
   },
   orderDetails: {
     marginTop: 12,
   },
   divider: {
     height: 1,
-    backgroundColor: colors.border || '#e5e7eb',
+    backgroundColor: theme.border,
     marginBottom: 12,
   },
   orderItemRow: {
@@ -321,13 +323,13 @@ const styles = StyleSheet.create({
   },
   orderItemName: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
     flex: 1,
   },
   orderItemPrice: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.textPrimary,
+    color: theme.textPrimary,
   },
   cancelButton: {
     flexDirection: 'row',
@@ -337,12 +339,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#fee2e2',
-    backgroundColor: '#fef2f2',
+    borderColor: theme.errorMuted,
+    backgroundColor: theme.errorMuted,
     gap: 6,
   },
   cancelButtonText: {
-    color: '#ef4444',
+    color: theme.error,
     fontWeight: '600',
   },
   expandIndicator: {
@@ -363,6 +365,6 @@ const styles = StyleSheet.create({
   emptyText: {
     marginTop: 16,
     fontSize: 16,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
 });

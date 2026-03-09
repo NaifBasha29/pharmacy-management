@@ -11,52 +11,19 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
-import { colors } from '../theme/colors';
+import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
 import api from '../config/api';
 
 export default function CartScreen({ navigation }) {
+  const { theme } = useTheme();
   const { cart, updateQuantity, removeFromCart, clearCart, cartTotal } = useCart();
   const [loading, setLoading] = useState(false);
+  const styles = createStyles(theme);
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (cart.length === 0) return;
-
-    Alert.alert(
-      'Confirm Order',
-      `Total: $${cartTotal.toFixed(2)}\n\nProceed with checkout?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Confirm',
-          onPress: async () => {
-            try {
-              setLoading(true);
-              const orderItems = cart.map(item => ({
-                medicine: item._id,
-                quantity: item.quantity,
-                price: item.price
-              }));
-
-              await api.post('/orders', {
-                items: orderItems,
-                totalAmount: cartTotal
-              });
-
-              clearCart();
-              Alert.alert('Success', 'Order placed successfully!', [
-                { text: 'OK', onPress: () => navigation.navigate('Orders') }
-              ]);
-            } catch (error) {
-              console.log('Checkout error:', error);
-              Alert.alert('Error', 'Failed to place order. Please try again.');
-            } finally {
-              setLoading(false);
-            }
-          }
-        }
-      ]
-    );
+    navigation.navigate('Checkout');
   };
 
   const handleRemove = (item) => {
@@ -86,18 +53,18 @@ export default function CartScreen({ navigation }) {
               style={styles.quantityButton}
               onPress={() => updateQuantity(item._id, item.quantity - 1)}
             >
-              <Icon name="minus" size={18} color={colors.primary} />
+              <Icon name="minus" size={18} color={theme.primary} />
             </TouchableOpacity>
             <Text style={styles.quantityText}>{item.quantity}</Text>
             <TouchableOpacity
               style={styles.quantityButton}
               onPress={() => updateQuantity(item._id, item.quantity + 1)}
             >
-              <Icon name="plus" size={18} color={colors.primary} />
+              <Icon name="plus" size={18} color={theme.primary} />
             </TouchableOpacity>
           </View>
           <Text style={styles.itemTotal}>
-            ${(item.price * item.quantity).toFixed(2)}
+            ${((item.price || 0) * item.quantity).toFixed(2)}
           </Text>
         </View>
       </View>
@@ -105,7 +72,7 @@ export default function CartScreen({ navigation }) {
         style={styles.removeButton}
         onPress={() => handleRemove(item)}
       >
-        <Icon name="trash-can-outline" size={20} color={colors.error || '#ef4444'} />
+          <Icon name="trash-can-outline" size={20} color={theme.error} />
       </TouchableOpacity>
     </View>
   );
@@ -115,7 +82,7 @@ export default function CartScreen({ navigation }) {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={24} color={colors.textPrimary} />
+          <Icon name="arrow-left" size={24} color={theme.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Cart</Text>
         {cart.length > 0 ? (
@@ -125,7 +92,7 @@ export default function CartScreen({ navigation }) {
               { text: 'Clear', style: 'destructive', onPress: clearCart }
             ]);
           }}>
-            <Icon name="delete-sweep-outline" size={24} color={colors.error || '#ef4444'} />
+            <Icon name="delete-sweep-outline" size={24} color={theme.error} />
           </TouchableOpacity>
         ) : (
           <View style={{ width: 24 }} />
@@ -134,7 +101,7 @@ export default function CartScreen({ navigation }) {
 
       {cart.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Icon name="cart-off" size={80} color={colors.textLight} />
+          <Icon name="cart-off" size={80} color={theme.textTertiary} />
           <Text style={styles.emptyTitle}>Your cart is empty</Text>
           <Text style={styles.emptySubtitle}>Add medicines to get started</Text>
           <TouchableOpacity
@@ -158,7 +125,7 @@ export default function CartScreen({ navigation }) {
           <View style={styles.footer}>
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total</Text>
-              <Text style={styles.totalAmount}>${cartTotal.toFixed(2)}</Text>
+              <Text style={styles.totalAmount}>${(cartTotal || 0).toFixed(2)}</Text>
             </View>
             <TouchableOpacity
               style={[styles.checkoutButton, loading && styles.checkoutButtonDisabled]}
@@ -181,10 +148,10 @@ export default function CartScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
   },
   header: {
     flexDirection: 'row',
@@ -193,12 +160,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border || '#e5e7eb',
+    borderBottomColor: theme.border,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: theme.textPrimary,
   },
   cartList: {
     padding: 16,
@@ -206,7 +173,7 @@ const styles = StyleSheet.create({
   },
   cartItem: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
     borderRadius: 16,
     padding: 12,
     marginBottom: 12,
@@ -220,7 +187,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 12,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: theme.surfaceHighlight,
   },
   itemDetails: {
     flex: 1,
@@ -230,11 +197,11 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.textPrimary,
+    color: theme.textPrimary,
   },
   itemPrice: {
     fontSize: 12,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
   quantityRow: {
     flexDirection: 'row',
@@ -244,7 +211,7 @@ const styles = StyleSheet.create({
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
     borderRadius: 8,
     padding: 4,
   },
@@ -254,18 +221,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
   },
   quantityText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: theme.textPrimary,
     marginHorizontal: 12,
   },
   itemTotal: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.primary,
+    color: theme.primary,
   },
   removeButton: {
     padding: 8,
@@ -279,19 +246,19 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: theme.textPrimary,
     marginTop: 16,
   },
   emptySubtitle: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
     marginTop: 8,
   },
   shopButton: {
     marginTop: 24,
     paddingHorizontal: 24,
     paddingVertical: 14,
-    backgroundColor: colors.primary,
+    backgroundColor: theme.primary,
     borderRadius: 12,
   },
   shopButtonText: {
@@ -304,7 +271,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
     padding: 16,
     paddingBottom: 32,
     borderTopLeftRadius: 24,
@@ -323,18 +290,18 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 16,
-    color: colors.textSecondary,
+    color: theme.textSecondary,
   },
   totalAmount: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: colors.primary,
+    color: theme.primary,
   },
   checkoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: theme.primary,
     paddingVertical: 16,
     borderRadius: 14,
     gap: 8,

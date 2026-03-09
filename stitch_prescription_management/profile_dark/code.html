@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RxHub - User Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header / Navigation Bar -->
+<header class="flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-primary/10 sticky top-0 z-10 backdrop-blur-md">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-lg hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Profile</h2>
+<div class="flex size-10 items-center justify-end">
+<button class="flex items-center justify-center rounded-lg hover:bg-primary/10 p-2">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="max-w-xl mx-auto px-4">
+<!-- User Avatar Card -->
+<div class="flex py-8 flex-col items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full border-4 border-primary/20 h-32 w-32 shadow-xl" data-alt="Professional male user profile picture wearing a suit" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA32aBekYxoPLwDJ597gjOTT2gb_oF7UWQrF0lrS5Ws7KdFrCGuMB_BoBW7Ihq_2XcpgDxbsQYYRnF2SilQknFNKkYsQv5gW48pCQFzgpEiuyO76TgwG8r7kX97YlxXJBgHyoJTJTi2rNw2h8EAHBakaz3KeoZmB2k7zBrSIiWzPufSlDBdp4SEYINeJlwJt0A1jRtGlScuZq1OdE_JuDzTZW8FbHoP3QffiI60RlGbXhHJ-PtfWZ4hLw96NjgzfHWh1w5sWLFnrw");'>
+</div>
+<div class="absolute bottom-1 right-1 bg-green-500 border-4 border-background-dark h-6 w-6 rounded-full"></div>
+</div>
+<div class="flex flex-col items-center justify-center mt-4">
+<h1 class="text-slate-900 dark:text-slate-100 text-2xl font-extrabold tracking-tight">Alex Johnson</h1>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-primary/20 text-primary px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">Active Member</span>
+</div>
+<p class="text-primary/70 text-sm font-medium mt-1">Member since March 2022</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<div class="mb-6">
+<div class="flex border-b border-primary/10 justify-between">
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-primary/60 pb-3 pt-4 flex-1 hover:text-primary transition-colors" href="#">
+<span class="text-sm font-bold tracking-tight">Personal</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-primary text-primary pb-3 pt-4 flex-1" href="#">
+<span class="text-sm font-bold tracking-tight">Health</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-primary/60 pb-3 pt-4 flex-1 hover:text-primary transition-colors" href="#">
+<span class="text-sm font-bold tracking-tight">Security</span>
+</a>
+</div>
+</div>
+<!-- Health Profile Section -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold tracking-tight">Health Profile</h3>
+<span class="material-symbols-outlined text-primary text-sm">edit</span>
+</div>
+<!-- Blood Group Card -->
+<div class="bg-primary/5 rounded-xl p-4 border border-primary/10 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary">water_drop</span>
+</div>
+<div>
+<p class="text-primary/60 text-xs font-bold uppercase tracking-widest">Blood Group</p>
+<p class="text-slate-900 dark:text-slate-100 text-lg font-bold">O Positive (O+)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary/40">chevron_right</span>
+</div>
+<!-- Allergies Tags -->
+<div class="space-y-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">warning</span>
+<h4 class="text-slate-900 dark:text-slate-100 text-sm font-bold">Allergies</h4>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold">Penicillin</span>
+<span class="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold">Peanuts</span>
+<span class="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold">Latex</span>
+<button class="bg-primary/10 text-primary px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">add</span> Add
+                    </button>
+</div>
+</div>
+<!-- Chronic Conditions -->
+<div class="space-y-3 pt-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">chronic</span>
+<h4 class="text-slate-900 dark:text-slate-100 text-sm font-bold">Chronic Conditions</h4>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-lg text-xs font-semibold">Type 2 Diabetes</span>
+<span class="bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-lg text-xs font-semibold">Hypertension</span>
+<button class="bg-primary/10 text-primary px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">add</span> Add
+                    </button>
+</div>
+</div>
+<!-- Save Changes Button -->
+<div class="pt-8 pb-12">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                    Save Changes
+                </button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-[#2d1e14] border-t border-primary/10 px-4 pb-6 pt-2 z-20">
+<div class="flex max-w-xl mx-auto items-center justify-between">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary/40" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary/40" href="#">
+<span class="material-symbols-outlined">pill</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Meds</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary/40" href="#">
+<span class="material-symbols-outlined">ecg_heart</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Health</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">person</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profile</p>
+</a>
+</div>
+</nav>
+</body></html>

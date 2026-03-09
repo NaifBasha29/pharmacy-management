@@ -251,7 +251,7 @@ const UserDashboard = () => {
                                     <FiRefreshCcw style={{ color: '#f97316' }} /> Buy Again
                                 </h3>
                             </div>
-                            <div style={{ padding: '0.5rem' }}>
+                            <div style={styles.buyAgainContainer}>
                                 {featuredMedicines.slice(0, 3).map((medicine) => (
                                     <div key={medicine._id} className="ud-buy-again-item">
                                         <div className="ud-buy-again-icon">

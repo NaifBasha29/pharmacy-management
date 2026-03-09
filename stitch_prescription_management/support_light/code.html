@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>RxHub Help Center</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between max-w-2xl mx-auto w-full">
+<div class="text-primary flex size-10 items-center justify-center rounded-full hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h1 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Help &amp; Support</h1>
+<div class="flex w-10 items-center justify-end">
+<button class="flex items-center justify-center rounded-full size-10 hover:bg-primary/10 text-primary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-2xl mx-auto pb-24">
+<!-- Search Section -->
+<div class="px-4 py-6">
+<div class="mb-2">
+<h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">How can we help?</h2>
+<p class="text-slate-600 dark:text-slate-400 text-sm">Search our knowledge base or contact us below.</p>
+</div>
+<label class="flex flex-col w-full mt-4">
+<div class="flex w-full items-stretch rounded-xl h-14 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<div class="text-primary flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full border-none bg-transparent focus:ring-0 h-full placeholder:text-slate-400 px-4 text-base font-normal" placeholder="Search help articles..."/>
+</div>
+</label>
+</div>
+<!-- Quick Links / Contact Cards -->
+<div class="px-4 py-2">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-4">Contact Channels</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm hover:border-primary/30 transition-colors">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold">Live Chat</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Response in 2m</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm hover:border-primary/30 transition-colors">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">call</span>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold">Call Us</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">9am - 6pm EST</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm hover:border-primary/30 transition-colors">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold">Email</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Response in 24h</p>
+</div>
+</div>
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm hover:border-primary/30 transition-colors">
+<div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">help_center</span>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-base font-bold">Guides</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Self-service</p>
+</div>
+</div>
+</div>
+</div>
+<!-- FAQ Accordions -->
+<div class="px-4 py-8">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-4">Frequently Asked Questions</h3>
+<div class="space-y-3">
+<!-- FAQ Item 1 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-primary/5 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left">
+<span class="font-medium text-slate-800 dark:text-slate-200">How do I refill my prescription?</span>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</button>
+</div>
+<!-- FAQ Item 2 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-primary/5 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left">
+<span class="font-medium text-slate-800 dark:text-slate-200">What is the status of my order?</span>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</button>
+</div>
+<!-- FAQ Item 3 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-primary/5 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left">
+<span class="font-medium text-slate-800 dark:text-slate-200">Can I set up automatic refills?</span>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</button>
+<div class="px-4 pb-4 text-sm text-slate-500 dark:text-slate-400">
+                        Yes! You can enable automatic refills for most recurring medications in your account settings under 'Meds'.
+                    </div>
+</div>
+<!-- FAQ Item 4 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-primary/5 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left">
+<span class="font-medium text-slate-800 dark:text-slate-200">Insurance and payment methods</span>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Community Section -->
+<div class="px-4 pb-8">
+<div class="bg-primary/10 rounded-2xl p-6 flex items-center gap-4 border border-primary/20">
+<div class="flex-1">
+<h4 class="text-primary font-bold text-lg">RxHub Community</h4>
+<p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Join 50k+ users in our health and wellness forum.</p>
+<button class="mt-4 px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg">Join Now</button>
+</div>
+<div class="hidden sm:block">
+<div class="size-20 rounded-full bg-cover bg-center" data-alt="Community of happy health users" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDhMLkdj3eU-ezls32OvMyDPDBWomjovQSrMJm1zlYvJ5R6-c_0CMY9mNL8t1-UZOKVzXkdD_fSeR9bygpN5qgTY7O0cHY-Y55ksB47kOXpWo1X69fZFdw2OJ39k381NM9rYkzYVYWnWrZfNGLO2UOzHgco_yocDsHEUh68o502Hr_iYgPAx76VfofRxbZtj-3SPIZtJjw8RrY7cqwhNy_z7xA7LzVoDMnYZ-6OBiJ5Po8ibyB75c1NVDoZUbtcPYfct8RS63TQYg')"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-lg border-t border-primary/10 pb-6 pt-2 px-4">
+<div class="max-w-2xl mx-auto flex justify-around items-end">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">medication</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Meds</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Orders</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">contact_support</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Support</p>
+</a>
+</div>
+</nav>
+</body></html>

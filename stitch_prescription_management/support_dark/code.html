@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RxHub Support Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            border-bottom: 3px solid #f97415;
+            color: #f97415;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between max-w-2xl mx-auto w-full">
+<button class="text-slate-900 dark:text-slate-100 flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">RxHub Support</h1>
+</div>
+</header>
+<main class="flex-1 max-w-2xl mx-auto w-full pb-24">
+<!-- Search Bar -->
+<div class="px-4 pt-6 pb-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-slate-100 dark:bg-primary/5 border-none rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-primary text-sm" placeholder="Search for help..." type="text"/>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex border-b border-primary/10 px-4 mb-6">
+<a class="flex-1 flex flex-col items-center justify-center border-b-[3px] border-primary text-primary pb-3 pt-4 font-bold text-sm" href="#">
+                FAQs
+            </a>
+<a class="flex-1 flex flex-col items-center justify-center border-b-[3px] border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4 font-bold text-sm hover:text-primary transition-colors" href="#">
+                Submit Ticket
+            </a>
+</nav>
+<!-- Contact Section -->
+<section class="px-4 mb-8">
+<h2 class="text-lg font-bold mb-4">Contact Us</h2>
+<div class="grid grid-cols-3 gap-3">
+<div class="flex flex-col items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-primary/5 border border-primary/5 hover:border-primary/20 transition-all cursor-pointer">
+<div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">call</span>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold">Call Us</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400">24/7 Available</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-primary/5 border border-primary/5 hover:border-primary/20 transition-all cursor-pointer">
+<div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold">Email</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400">&lt; 12h Response</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-primary/5 border border-primary/5 hover:border-primary/20 transition-all cursor-pointer">
+<div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">chat</span>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold">Live Chat</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400">Instant Help</p>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQs Accordion -->
+<section class="px-4 mb-8">
+<h2 class="text-lg font-bold mb-4">Top Questions</h2>
+<div class="space-y-3">
+<!-- Item 1 -->
+<div class="rounded-xl bg-slate-100 dark:bg-primary/5 overflow-hidden border border-primary/5">
+<button class="w-full px-5 py-4 flex items-center justify-between text-left">
+<span class="text-sm font-medium">How to track my prescription?</span>
+<span class="material-symbols-outlined text-primary">expand_more</span>
+</button>
+<div class="px-5 pb-4 text-sm text-slate-600 dark:text-slate-400">
+                        You can track your order in real-time through the "Orders" tab in the bottom navigation menu. Updates are provided at every stage of delivery.
+                    </div>
+</div>
+<!-- Item 2 -->
+<div class="rounded-xl bg-slate-100 dark:bg-primary/5 overflow-hidden border border-primary/5">
+<button class="w-full px-5 py-4 flex items-center justify-between text-left">
+<span class="text-sm font-medium">How do I upload a new prescription?</span>
+<span class="material-symbols-outlined text-primary">add</span>
+</button>
+</div>
+<!-- Item 3 -->
+<div class="rounded-xl bg-slate-100 dark:bg-primary/5 overflow-hidden border border-primary/5">
+<button class="w-full px-5 py-4 flex items-center justify-between text-left">
+<span class="text-sm font-medium">Payment methods available</span>
+<span class="material-symbols-outlined text-primary">add</span>
+</button>
+</div>
+<!-- Item 4 -->
+<div class="rounded-xl bg-slate-100 dark:bg-primary/5 overflow-hidden border border-primary/5">
+<button class="w-full px-5 py-4 flex items-center justify-between text-left">
+<span class="text-sm font-medium">Insurance and coverage</span>
+<span class="material-symbols-outlined text-primary">add</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Helpful Resources -->
+<section class="px-4">
+<h2 class="text-lg font-bold mb-4">Quick Resources</h2>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-4 rounded-xl border border-primary/10">
+<div class="w-16 h-16 rounded-lg bg-center bg-cover flex-shrink-0" data-alt="Healthcare professional using a digital tablet" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgkOqseI0gQjjR-FIVjT1QUI9c1SNHVLxwr_I_nafj_uM7GmSFcJ2_zQxxLl5w6mz8kZS38hotOVWs8VsJKKnpHZv3C9ayskGzN2g5vjCxnZduwNxZn6kd8jg0lHQeXBQqJQ9bMMnxKZ0m-0mFu_5V61CQxn9Rj0FG6GVqsgMTwddz5251PhNE2X9Oiy7PzuviFTWAaP70uYMt1bH3AfQGgrVZ06ooxBUlmxt5TvIdaE-P_6AgwDv1hD1GcXMUENTn8vcveK_cPg')"></div>
+<div>
+<h4 class="font-bold text-sm">Getting Started Guide</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Learn how to make the most of RxHub for your prescriptions.</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 rounded-xl border border-primary/10">
+<div class="w-16 h-16 rounded-lg bg-center bg-cover flex-shrink-0" data-alt="Abstract pharmaceutical medicine pills on table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC8jpCm-5jEfyxHs5zP2hufMyPdkGrwEMFUCo_iCY4MlLHvvEIoJX2fd0j_D9wnI0sNJBBQ_cS7iOXK2MHM0WKMfwvyE00n3eBLsn8eJex5O4dCdNUMEQl047ri-tgB_howwMTjzkMGJ8dfyr06t3G-2F3YPHGVEFFfrUKvzaJI6c33M6YmQIJAQ5uVeqzNWQ6KuRWYq55xt4gTKIBgYULzGPcoZLaFCIIP2GW7uY_ZrExeXh703xARvVXhgcVjdj4STZK2t7T8CQ')"></div>
+<div>
+<h4 class="font-bold text-sm">Automatic Refills</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Never miss a dose with our automated refill program.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<footer class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-primary/10 z-50">
+<div class="max-w-2xl mx-auto flex gap-2 px-4 pb-6 pt-2">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<p class="text-[10px] font-medium">Orders</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">help</span>
+<p class="text-[10px] font-medium">Support</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium">Profile</p>
+</a>
+</div>
+</footer>
+</body></html>

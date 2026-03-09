@@ -3,8 +3,10 @@ import api from '../config/api';
 // Auth API
 export const authAPI = {
   loginPatient: (credentials) => api.post('/auth/login/patient', credentials),
+  registerPatient: (data) => api.post('/auth/register/patient', data),
   getCurrentUser: () => api.get('/auth/me'),
   logout: () => api.post('/auth/logout'),
+  changePassword: (data) => api.put('/auth/change-password', data),
 };
 
 // Orders API
@@ -44,11 +46,73 @@ export const analyticsAPI = {
   getDashboard: () => api.get('/analytics/dashboard'),
 };
 
+// Categories API (for catalog filters)
+export const categoriesAPI = {
+  getAll: () => api.get('/categories'),
+};
+
+// Favorites API
+export const favoritesAPI = {
+  getAll: () => api.get('/favorites'),
+  add: (medicineId) => api.post('/favorites', { medicineId }),
+  remove: (medicineId) => api.delete(`/favorites/${medicineId}`),
+  check: (medicineId) => api.get(`/favorites/check/${medicineId}`),
+};
+
+// Refills API
+export const refillsAPI = {
+  create: (orderId) => api.post('/refills', { orderId }),
+};
+
+// AI API
+export const aiAPI = {
+  symptomCheck: (symptoms) => api.post('/ai/symptom-check', { symptoms }),
+  chat: (message) => api.post('/ai/chat', { message }),
+  recommendations: () => api.get('/ai/recommendations'),
+};
+
+// Home Medicines API (expiry tracking)
+export const homeMedicinesAPI = {
+  getAll: () => api.get('/home-medicines'),
+  add: (data) => api.post('/home-medicines', data),
+  update: (id, data) => api.put(`/home-medicines/${id}`, data),
+  remove: (id) => api.delete(`/home-medicines/${id}`),
+  getExpiring: (days) => api.get('/home-medicines/expiring', { params: { days } }),
+};
+
+// Payments API
+export const paymentsAPI = {
+  createIntent: (orderId, paymentMethod) => api.post('/payments/create-intent', { orderId, paymentMethod }),
+  verify: (transactionId, orderId) => api.post('/payments/verify', { transactionId, orderId }),
+};
+
+// Reviews API
+export const reviewsAPI = {
+  create: (orderId, rating, comment) => api.post('/reviews', { orderId, rating, comment }),
+  getAll: () => api.get('/reviews'),
+  getByOrder: (orderId) => api.get(`/reviews/order/${orderId}`),
+};
+
+// Support Tickets API
+export const supportAPI = {
+  create: (data) => api.post('/support', data),
+  getAll: () => api.get('/support'),
+  getById: (id) => api.get(`/support/${id}`),
+};
+
 export default {
   authAPI,
   ordersAPI,
   prescriptionsAPI,
   patientsAPI,
   medicinesAPI,
-  analyticsAPI
+  analyticsAPI,
+  categoriesAPI,
+  favoritesAPI,
+  refillsAPI,
+  aiAPI,
+  homeMedicinesAPI,
+  paymentsAPI,
+  reviewsAPI,
+  supportAPI,
 };

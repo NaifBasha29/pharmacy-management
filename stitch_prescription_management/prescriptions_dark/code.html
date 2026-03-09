@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RxHub - Prescriptions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-10 flex items-center justify-between p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Prescriptions</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-primary/10 text-slate-600 dark:text-slate-300">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-primary/10 text-slate-600 dark:text-slate-300 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-background-dark"></span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Upload Section -->
+<section class="p-4">
+<div class="relative group">
+<div class="flex flex-col items-center justify-center border-2 border-dashed border-primary/30 rounded-xl bg-primary/5 p-8 transition-colors group-hover:border-primary/50 group-hover:bg-primary/10">
+<div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl">upload_file</span>
+</div>
+<h2 class="text-lg font-bold mb-1">Upload Prescription</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400 text-center mb-6 max-w-xs">
+                        Drop your digital prescription PDF or image here to start your order.
+                    </p>
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-6 rounded-lg transition-all shadow-lg shadow-primary/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                        Select File
+                    </button>
+</div>
+</div>
+</section>
+<!-- Stats Quick Look (Custom Component) -->
+<section class="px-4 py-2 grid grid-cols-3 gap-3">
+<div class="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-center">
+<p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Approved</p>
+<p class="text-xl font-bold text-emerald-600 dark:text-emerald-400">12</p>
+</div>
+<div class="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-center">
+<p class="text-xs text-amber-600 dark:text-amber-400 font-medium">Pending</p>
+<p class="text-xl font-bold text-amber-600 dark:text-amber-400">03</p>
+</div>
+<div class="bg-rose-500/10 border border-rose-500/20 rounded-lg p-3 text-center">
+<p class="text-xs text-rose-600 dark:text-rose-400 font-medium">Rejected</p>
+<p class="text-xl font-bold text-rose-600 dark:text-rose-400">01</p>
+</div>
+</section>
+<!-- History Section -->
+<section class="p-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">Recent History</h3>
+<button class="text-primary text-sm font-semibold">View All</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Prescription Card 1 -->
+<div class="bg-slate-50 dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10 flex flex-col">
+<div class="aspect-square bg-slate-200 dark:bg-slate-800 relative group">
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Close up of a medical prescription paper" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuApnmfpFYg9L4sg6-ILCmQveJTXQ2o0qo86eOpYDL_fAp8BPiLgKOhbbGqNxSn-NT-Dkx4fqU4ZnwY7hCRid7UI4za0RMSpG9wYPWSuEHM--9kWcpmCbylytheaM5gZG-TgM3_eOEW5az8Fqxm0bqcEka83Y8l5DKayEoY681asXY0G7Ax-w3uvdqZ6XUQ3QGV9_0mwZiLxmeMTi3Un7zK3Djjs0Bnyrbdhs1bdfOeErgf7R3MI4rgPorPrbdw5LGyJPPaPeUQfUg')"></div>
+<div class="absolute top-2 right-2">
+<span class="px-2 py-1 bg-emerald-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">Approved</span>
+</div>
+</div>
+<div class="p-3">
+<p class="font-bold text-sm truncate">Amoxicillin 500mg</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">2 days ago</p>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-xs font-bold text-primary">View Details</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Prescription Card 2 -->
+<div class="bg-slate-50 dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10 flex flex-col">
+<div class="aspect-square bg-slate-200 dark:bg-slate-800 relative">
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Digital tablet showing prescription list" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCD7N4HKVDxkmKzikNAl4obHItrqGCY4jd1D5z4XagMeel3orf6BSRscg-7rcwbX9B4VoHPDsMBohfQSBvguSjJa7Cyok6i8GZ2STbNka6ss7zhZE3zfgSdQPQkB61E9xKXEALx5EJLLzSz6gGBk8PAmckIh7w0QBYqSekRuw7eKdMMIYGWC5Ub4oqO0dfDQzMBPv-y9wtmNpGAh3LJAfpFg0KCICmTX2D61veVYJ0Re-59e9PIWtNEVv1DExqhsvPaJ-W51C45RA')"></div>
+<div class="absolute top-2 right-2">
+<span class="px-2 py-1 bg-amber-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">Pending</span>
+</div>
+</div>
+<div class="p-3">
+<p class="font-bold text-sm truncate">Lipitor (Atorvastatin)</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">1 day ago</p>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-xs font-bold text-primary">In Review</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">schedule</span>
+</div>
+</div>
+</div>
+<!-- Prescription Card 3 -->
+<div class="bg-slate-50 dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10 flex flex-col">
+<div class="aspect-square bg-slate-200 dark:bg-slate-800 relative">
+<div class="absolute inset-0 bg-cover bg-center opacity-80 grayscale" data-alt="Hand holding an inhaler" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDPTX88C3nXwTSXY0WgLLZOSEewOmZVvcvXXA0UCFh669dDDfhyOmXdrcdBpc5yEQPQTciLzj_4cdyq5FkHcAAP3sjnhYaNdKuxSLbSm407iOxyPY769b3QEvbLrdMozf-ulyBAFOLsmlR_RejUp62-nTWKqi0FXhBX5yji2jpAUGxTyObHPGUCkQ57bmx7ggNsvQJLYC5fM6vqTLQ2xmamnsg1n2kz2hJtBQN1yW0pHGnRsgdyNOyimu4_hN5n-Fkuup0Li4qAIQ')"></div>
+<div class="absolute top-2 right-2">
+<span class="px-2 py-1 bg-rose-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">Rejected</span>
+</div>
+</div>
+<div class="p-3">
+<p class="font-bold text-sm truncate">Ventolin Inhaler</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">5 hours ago</p>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-xs font-bold text-rose-500">See Reason</span>
+<span class="material-symbols-outlined text-rose-500 text-sm">error</span>
+</div>
+</div>
+</div>
+<!-- Prescription Card 4 -->
+<div class="bg-slate-50 dark:bg-primary/5 rounded-xl overflow-hidden border border-slate-200 dark:border-primary/10 flex flex-col opacity-80">
+<div class="aspect-square bg-slate-200 dark:bg-slate-800 relative">
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Pills scattered on a table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA5NRrf5t6917Xo6RicibuDwygX6nz1tj_n17eQ0W6u2iGwjwsMbeRKgl-dDzoeRC6IdfQnMXS98RTMItrG_7_f-Sz9Ex0MkqdhUnVVheOVcXiSviYi3xEBKekTmOC-8s_h-cLfZe7yu6RFj5cFs5Rf8MzUucM2PnbwbP788YJ74Q99gaKdat5rdiVlDUCE88-vNRRUuU94-i2CU8UXVLzyEjuPGPvqXZq_mziIm0CpKuTC9SzNPURCSi9V4RF650Gp2oAVd-z01Q')"></div>
+<div class="absolute top-2 right-2">
+<span class="px-2 py-1 bg-emerald-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">Approved</span>
+</div>
+</div>
+<div class="p-3">
+<p class="font-bold text-sm truncate">Metformin 850mg</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">1 week ago</p>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-xs font-bold text-primary">Re-order</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">autorenew</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-background-light dark:bg-[#352418] border-t border-slate-200 dark:border-primary/10 px-4 pb-6 pt-2 z-20">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined active-icon">receipt_long</span>
+<span class="text-[10px] font-bold">Prescriptions</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">local_pharmacy</span>
+<span class="text-[10px] font-medium">Pharmacy</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

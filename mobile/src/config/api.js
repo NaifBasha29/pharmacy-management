@@ -1,24 +1,44 @@
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from '../utils/storage';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
+import { refreshAccessToken } from '../utils/tokenRefresh';
 
-// Replace with your machine's LAN IP address for physical device testing
-// e.g., http://192.168.1.5:5005
-const SERVER_IP = '192.168.6.88'; 
-const PORT = '5005';
+const API_PORT = 5005;
 
-export const SERVER_URL = Platform.OS === 'android' 
-  ? `http://${SERVER_IP}:${PORT}` 
-  : `http://localhost:${PORT}`;
+// Derive the dev-server host that Expo Go / dev-client is already connected to.
+// This works because Expo sets the debuggerHost to "IP:PORT" of Metro.
+const getDevHost = () => {
+  try {
+    // Expo SDK 49+ (expoGoConfig or expoConfig)
+    const debuggerHost =
+      Constants.expoGoConfig?.debuggerHost ??
+      Constants.expoConfig?.hostUri ??
+      Constants.manifest?.debuggerHost ??
+      Constants.manifest?.hostUri;
+    if (debuggerHost) {
+      // debuggerHost is "192.168.x.x:PORT", strip the port
+      return debuggerHost.split(':')[0];
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+};
 
-const BASE_URL = `${SERVER_URL}/api`;
+const devHost = getDevHost();
+const fallbackHost = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
+const apiHost = devHost || fallbackHost;
+const BASE_URL = `http://${apiHost}:${API_PORT}/api`;
+
+console.log(`🌐 API Base URL: ${BASE_URL}`);
 
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 second timeout
+  timeout: 15000,
 });
 
 // Add a request interceptor to add the auth token
@@ -43,7 +63,31 @@ api.interceptors.response.use(
     console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
     return response;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Check if error is 401 TOKEN_EXPIRED and we haven't already tried to refresh
+    if (error.response?.status === 401 && 
+        error.response?.data?.code === 'TOKEN_EXPIRED' && 
+        !originalRequest._retry) {
+      
+      originalRequest._retry = true;
+      
+      try {
+        // Try to refresh the token
+        const newToken = await refreshAccessToken();
+        
+        // Update the authorization header with new token
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        
+        // Retry the original request
+        return api(originalRequest);
+      } catch (refreshError) {
+        // Refresh failed, return the original error
+        console.log('Token refresh failed in interceptor, proceeding with error');
+      }
+    }
+
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('❌ API ERROR DETAILS:');
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

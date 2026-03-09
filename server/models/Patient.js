@@ -80,6 +80,10 @@ const patientSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  resetPasswordOTP: {
+    code: String,
+    expiresAt: Date
   }
 }, {
   timestamps: true

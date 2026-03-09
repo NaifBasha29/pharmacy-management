@@ -35,6 +35,12 @@ import auditLogRoutes from './routes/auditLogs.js';
 import supportRoutes from './routes/support.js';
 import clinicRoutes from './routes/clinics.js';
 import adminStatsRoutes from './routes/adminStats.js';
+import favoriteRoutes from './routes/favorites.js';
+import reviewRoutes from './routes/reviews.js';
+import homeMedicineRoutes from './routes/homeMedicines.js';
+import refillRoutes from './routes/refills.js';
+import aiRoutes from './routes/ai.js';
+import paymentRoutes from './routes/payments.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -62,10 +68,14 @@ app.use(helmet({
 // CORS configuration
 app.use(cors({
   origin: [
-    'http://localhost:5173', // Vite client
-    'http://localhost:8081', // Expo
-    'http://192.168.6.88:8081', // Expo LAN
-    'http://localhost:5005' // Self
+    'http://localhost:5173',          // Vite client
+    'http://localhost:3000',          // CRA / Next
+    'http://localhost:8081',          // Expo web
+    'http://localhost:8082',          // Expo web (fallback port)
+    'http://192.168.29.190:8081',     // Expo LAN
+    'http://192.168.29.190:8082',     // Expo LAN fallback
+    'http://192.168.6.88:8081',       // old IP
+    'http://localhost:5005',          // Self
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -115,6 +125,12 @@ app.use('/api/audit-logs', auditLogRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/clinics', clinicRoutes);
 app.use('/api/admin', adminStatsRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/home-medicines', homeMedicineRoutes);
+app.use('/api/refills', refillRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

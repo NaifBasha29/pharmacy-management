@@ -1,5 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 import User from '../models/User.js';
 import Clinic from '../models/Clinic.js';
 import Patient from '../models/Patient.js';
@@ -11,6 +13,133 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import { loginRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
+
+// Gmail transporter for OTP emails
+const createMailTransporter = () => {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD
+    }
+  });
+};
+
+// @route   POST /api/auth/register/patient
+// @desc    Self-register a patient account for mobile app
+// @access  Public
+router.post('/register/patient', asyncHandler(async (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    password,
+    dateOfBirth,
+    bloodGroup,
+    allergies,
+    chronicConditions,
+    address
+  } = req.body;
+
+  if (!name || !phone || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Name, phone, and password are required'
+    });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: 'Password must be at least 6 characters'
+    });
+  }
+
+  const existingPhone = await Patient.findOne({ phone });
+  if (existingPhone) {
+    return res.status(400).json({
+      success: false,
+      message: 'An account with this phone number already exists'
+    });
+  }
+
+  if (email) {
+    const existingEmail = await Patient.findOne({ email: email.toLowerCase().trim() });
+    if (existingEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'An account with this email already exists'
+      });
+    }
+  }
+
+  const patientData = {
+    name: name.trim(),
+    phone: phone.trim(),
+    password,
+    gender: 'other',
+    isActive: true,
+    bloodGroup: bloodGroup || 'unknown',
+    allergies: Array.isArray(allergies) ? allergies : [],
+    chronicConditions: Array.isArray(chronicConditions) ? chronicConditions : []
+  };
+
+  if (email) {
+    patientData.email = email.toLowerCase().trim();
+  }
+
+  if (dateOfBirth && String(dateOfBirth).trim()) {
+    const parsedDate = new Date(String(dateOfBirth).trim());
+    if (!Number.isNaN(parsedDate.getTime())) {
+      patientData.dateOfBirth = parsedDate;
+    }
+  }
+
+  if (address && String(address).trim()) {
+    patientData.address = { street: String(address).trim() };
+  }
+
+  const patient = await Patient.create(patientData);
+
+  const accessToken = generateToken(patient._id, 'patient');
+  const refreshToken = generateRefreshToken(patient._id, 'patient');
+
+  await Session.createSession({
+    userId: patient._id,
+    userType: 'Patient',
+    accessToken,
+    refreshToken,
+    deviceInfo: getDeviceInfo(req),
+    expiresIn: 7 * 24 * 60 * 60 * 1000
+  });
+
+  await AuditLog.log({
+    action: 'CREATE',
+    resource: 'Patient',
+    resourceId: patient._id,
+    description: `New patient self-registered: ${patient.patientId}`,
+    ipAddress: req.ip
+  });
+
+  res.status(201).json({
+    success: true,
+    message: 'Account created successfully',
+    data: {
+      user: {
+        id: patient._id,
+        name: patient.name,
+        email: patient.email,
+        patientId: patient.patientId,
+        phone: patient.phone,
+        role: 'patient',
+        type: 'patient'
+      },
+      patientId: patient.patientId,
+      accessToken,
+      refreshToken
+    }
+  });
+}));
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
@@ -276,9 +405,23 @@ router.post('/login/clinic', loginRateLimiter, asyncHandler(async (req, res) => 
 // @desc    Login patient (Patient collection)
 // @access  Public
 router.post('/login/patient', loginRateLimiter, asyncHandler(async (req, res) => {
-  const { patientId, password } = req.body;
+  const { identifier, password } = req.body;
 
-  const patient = await Patient.findOne({ patientId }).select('+password');
+  if (!identifier || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email or patient ID and password are required'
+    });
+  }
+
+  const normalizedIdentifier = String(identifier).trim();
+  const isEmailLogin = normalizedIdentifier.includes('@');
+
+  const patient = await Patient.findOne(
+    isEmailLogin
+      ? { email: normalizedIdentifier.toLowerCase() }
+      : { patientId: normalizedIdentifier.toUpperCase() }
+  ).select('+password');
 
   if (!patient) {
     return res.status(401).json({
@@ -330,7 +473,7 @@ router.post('/login/patient', loginRateLimiter, asyncHandler(async (req, res) =>
         id: patient._id,
         name: patient.name,
         email: patient.email,
-        role: 'user',
+        role: 'patient',
         type: 'patient',
         patientId: patient.patientId
       },
@@ -411,7 +554,7 @@ router.get('/me', protect, asyncHandler(async (req, res) => {
           email: patient.email,
           patientId: patient.patientId,
           phone: patient.phone,
-          role: 'user',
+          role: 'patient',
           type: 'patient',
           createdAt: patient.createdAt
         }
@@ -542,6 +685,209 @@ router.put('/change-password', protect, asyncHandler(async (req, res) => {
   res.json({
     success: true,
     message: 'Password changed successfully'
+  });
+}));
+
+// ─── Forgot Password with Gmail OTP ───
+
+// @route   POST /api/auth/forgot-password
+// @desc    Send OTP to patient's email for password reset
+// @access  Public
+router.post('/forgot-password', loginRateLimiter, asyncHandler(async (req, res) => {
+  const { identifier } = req.body;
+
+  if (!identifier) {
+    return res.status(400).json({
+      success: false,
+      message: 'Email or Patient ID is required'
+    });
+  }
+
+  const normalizedIdentifier = String(identifier).trim();
+  const isEmail = normalizedIdentifier.includes('@');
+
+  const patient = await Patient.findOne(
+    isEmail
+      ? { email: normalizedIdentifier.toLowerCase() }
+      : { patientId: normalizedIdentifier.toUpperCase() }
+  );
+
+  if (!patient) {
+    return res.status(404).json({
+      success: false,
+      message: 'No account found with this email or patient ID'
+    });
+  }
+
+  if (!patient.email) {
+    return res.status(400).json({
+      success: false,
+      message: 'No email address linked to this account. Please contact support.'
+    });
+  }
+
+  // Generate 6-digit OTP
+  const otp = crypto.randomInt(100000, 999999).toString();
+  const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+  patient.resetPasswordOTP = { code: otp, expiresAt: otpExpiry };
+  await patient.save({ validateBeforeSave: false });
+
+  // Send OTP email
+  const transporter = createMailTransporter();
+  await transporter.sendMail({
+    from: `"PharmaCare" <${process.env.GMAIL_USER}>`,
+    to: patient.email,
+    subject: 'PharmaCare - Password Reset OTP',
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px;">
+        <h2 style="color:#2563eb;margin-bottom:8px;">PharmaCare</h2>
+        <p>Hi <strong>${patient.name}</strong>,</p>
+        <p>Your password reset OTP is:</p>
+        <div style="text-align:center;margin:24px 0;">
+          <span style="font-size:32px;letter-spacing:8px;font-weight:bold;color:#2563eb;background:#eff6ff;padding:12px 24px;border-radius:8px;">${otp}</span>
+        </div>
+        <p style="color:#6b7280;font-size:14px;">This code expires in <strong>10 minutes</strong>. If you didn't request this, ignore this email.</p>
+        <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
+        <p style="color:#9ca3af;font-size:12px;text-align:center;">PharmaCare Pharmacy Management</p>
+      </div>
+    `
+  });
+
+  // Mask email for response
+  const [localPart, domain] = patient.email.split('@');
+  const maskedEmail = `${localPart.slice(0, 2)}${'*'.repeat(Math.max(localPart.length - 2, 0))}@${domain}`;
+
+  res.json({
+    success: true,
+    message: 'OTP sent to your registered email',
+    data: { maskedEmail }
+  });
+}));
+
+// @route   POST /api/auth/verify-otp
+// @desc    Verify the OTP code
+// @access  Public
+router.post('/verify-otp', loginRateLimiter, asyncHandler(async (req, res) => {
+  const { identifier, otp } = req.body;
+
+  if (!identifier || !otp) {
+    return res.status(400).json({
+      success: false,
+      message: 'Identifier and OTP are required'
+    });
+  }
+
+  const normalizedIdentifier = String(identifier).trim();
+  const isEmail = normalizedIdentifier.includes('@');
+
+  const patient = await Patient.findOne(
+    isEmail
+      ? { email: normalizedIdentifier.toLowerCase() }
+      : { patientId: normalizedIdentifier.toUpperCase() }
+  );
+
+  if (!patient || !patient.resetPasswordOTP?.code) {
+    return res.status(400).json({
+      success: false,
+      message: 'No OTP request found. Please request a new one.'
+    });
+  }
+
+  if (new Date() > new Date(patient.resetPasswordOTP.expiresAt)) {
+    patient.resetPasswordOTP = undefined;
+    await patient.save({ validateBeforeSave: false });
+    return res.status(400).json({
+      success: false,
+      message: 'OTP has expired. Please request a new one.'
+    });
+  }
+
+  if (patient.resetPasswordOTP.code !== String(otp).trim()) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid OTP. Please try again.'
+    });
+  }
+
+  // OTP is valid — generate a short-lived reset token
+  const resetToken = jwt.sign(
+    { id: patient._id, purpose: 'password-reset' },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' }
+  );
+
+  // Clear OTP after successful verification
+  patient.resetPasswordOTP = undefined;
+  await patient.save({ validateBeforeSave: false });
+
+  res.json({
+    success: true,
+    message: 'OTP verified successfully',
+    data: { resetToken }
+  });
+}));
+
+// @route   POST /api/auth/reset-password
+// @desc    Reset password using the reset token from OTP verification
+// @access  Public (requires valid resetToken)
+router.post('/reset-password', asyncHandler(async (req, res) => {
+  const { resetToken, newPassword } = req.body;
+
+  if (!resetToken || !newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: 'Reset token and new password are required'
+    });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: 'Password must be at least 6 characters'
+    });
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
+  } catch {
+    return res.status(400).json({
+      success: false,
+      message: 'Reset link has expired. Please start over.'
+    });
+  }
+
+  if (decoded.purpose !== 'password-reset') {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid reset token'
+    });
+  }
+
+  const patient = await Patient.findById(decoded.id).select('+password');
+  if (!patient) {
+    return res.status(404).json({
+      success: false,
+      message: 'Patient not found'
+    });
+  }
+
+  patient.password = newPassword;
+  patient.resetPasswordOTP = undefined;
+  await patient.save();
+
+  await AuditLog.log({
+    action: 'PASSWORD_RESET',
+    resource: 'Patient',
+    resourceId: patient._id,
+    description: `Password reset via OTP for patient: ${patient.patientId}`,
+    ipAddress: req.ip
+  });
+
+  res.json({
+    success: true,
+    message: 'Password reset successfully. You can now login with your new password.'
   });
 }));
 
