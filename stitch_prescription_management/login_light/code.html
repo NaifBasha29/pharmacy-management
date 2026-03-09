@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>RxHub - Login</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 transition-colors">
+<div class="relative flex min-h-screen w-full flex-col items-center justify-center p-4">
+<!-- Header / Logo -->
+<div class="flex flex-col items-center mb-8">
+<div class="bg-primary/10 p-4 rounded-xl mb-4">
+<span class="material-symbols-outlined text-primary text-5xl">prescriptions</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-3xl font-extrabold tracking-tight">RxHub</h2>
+</div>
+<!-- Main Card -->
+<div class="w-full max-w-[440px] bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+<div class="mb-8 text-center">
+<h1 class="text-2xl font-bold leading-tight mb-2">Welcome back</h1>
+<p class="text-slate-500 dark:text-slate-400 text-base">Log in to manage your prescriptions</p>
+</div>
+<form class="space-y-4">
+<!-- Email Field -->
+<div>
+<label class="block text-sm font-semibold mb-1.5 ml-1">Email address</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-xl">mail</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="name@company.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div>
+<div class="flex justify-between items-center mb-1.5 ml-1">
+<label class="block text-sm font-semibold">Password</label>
+<a class="text-primary text-xs font-bold hover:underline" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 text-xl">lock</span>
+</div>
+<input class="block w-full pl-10 pr-10 py-3 border border-slate-200 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" placeholder="••••••••" type="password"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
+<span class="material-symbols-outlined text-slate-400 text-xl">visibility</span>
+</div>
+</div>
+</div>
+<!-- Login Button -->
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 mt-2" type="submit">
+                    Sign In
+                </button>
+</form>
+<!-- Divider -->
+<div class="relative flex items-center py-6">
+<div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+<span class="flex-shrink mx-4 text-slate-400 text-sm uppercase tracking-wider font-medium">Or continue with</span>
+<div class="flex-grow border-t border-slate-200 dark:border-slate-700"></div>
+</div>
+<!-- Social Buttons -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-semibold text-slate-700 dark:text-slate-200">
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M12.48 10.92v3.28h7.84c-.24 1.84-.908 3.152-1.928 4.176-1.224 1.224-3.136 2.552-6.528 2.552-5.32 0-9.424-4.328-9.424-9.648s4.104-9.648 9.424-9.648c2.88 0 5.104 1.136 6.648 2.592l2.304-2.304C18.68 1.952 15.936.5 12.48.5 6.312.5 1.144 5.664 1.144 11.832s5.168 11.332 11.336 11.332c3.344 0 5.864-1.104 7.728-3.048 2.016-2.016 2.656-4.848 2.656-7.144 0-.68-.048-1.32-.144-1.936h-10.24z" fill="#EA4335"></path>
+</svg>
+                    Google
+                </button>
+<button class="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-semibold text-slate-700 dark:text-slate-200">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M16.365 1.43c.ad 0 2.404.001 2.404.001v4.39h-1.252c-1.855 0-2.222.88-2.222 2.17V10.11h3.38l-.442 3.414h-2.938v8.745H11.3v-8.745H8.36V10.11H11.3V7.583c0-2.92 1.784-4.515 4.392-4.515 1.249 0 2.322.093 2.634.135z"></path>
+</svg>
+                    Facebook
+                </button>
+</div>
+<!-- Signup Link -->
+<p class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                New to RxHub? 
+                <a class="text-primary font-bold hover:underline" href="#">Create an account</a>
+</p>
+</div>
+<!-- Footer Decor -->
+<div class="mt-8 flex items-center gap-6 text-slate-400 text-xs">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+<!-- Decorative background elements -->
+<div class="fixed -z-10 top-0 left-0 w-full h-full opacity-5 pointer-events-none">
+<div class="absolute top-[10%] left-[5%] w-64 h-64 bg-primary rounded-full blur-[100px]"></div>
+<div class="absolute bottom-[15%] right-[10%] w-96 h-96 bg-primary rounded-full blur-[120px]"></div>
+</div>
+</div>
+</body></html>

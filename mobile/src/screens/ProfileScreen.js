@@ -6,6 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { patientsAPI, authAPI } from '../services/mobileApi';
 import Toast from 'react-native-toast-message';
 
@@ -14,6 +15,7 @@ const TABS = ['Personal Details', 'Health Profile', 'Security'];
 
 export default function ProfileScreen({ navigation }) {
   const { user, updateUser, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('Health Profile');
   const [saving, setSaving] = useState(false);
 
@@ -211,6 +213,29 @@ export default function ProfileScreen({ navigation }) {
       <LabelInput label="New Password"     val={security.newPassword}     onChg={v => setSecurity(s => ({ ...s, newPassword: v }))}     secure />
       <LabelInput label="Confirm Password" val={security.confirmPassword} onChg={v => setSecurity(s => ({ ...s, confirmPassword: v }))} secure />
       <SaveBtn label="Change Password" onPress={changePassword} saving={saving} />
+
+      {/* Theme Toggle */}
+      <TouchableOpacity
+        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, paddingHorizontal: 4, marginBottom: 10 }}
+        onPress={toggleTheme}
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <MaterialIcons name={isDark ? 'dark-mode' : 'light-mode'} size={20} color={isDark ? '#f59e0b' : '#3b82f6'} />
+          <Text style={{ color: '#fff', fontWeight: '600', fontSize: 15 }}>
+            {isDark ? 'Dark Mode' : 'Light Mode'}
+          </Text>
+        </View>
+        <View style={{
+          width: 50, height: 28, borderRadius: 14, padding: 3,
+          backgroundColor: isDark ? '#f97415' : '#d1d5db',
+          justifyContent: 'center',
+        }}>
+          <View style={{
+            width: 22, height: 22, borderRadius: 11, backgroundColor: '#fff',
+            alignSelf: isDark ? 'flex-end' : 'flex-start',
+          }} />
+        </View>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.logoutBtn} onPress={() => Alert.alert('Logout', 'Are you sure?', [
         { text: 'Cancel', style: 'cancel' },

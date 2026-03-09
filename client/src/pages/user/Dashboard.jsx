@@ -160,7 +160,8 @@ const UserDashboard = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '1rem',
-            marginBottom: '2rem'
+            marginBottom: '2rem',
+            justifyItems: 'center'
         },
         actionCard: {
             background: '#0a0a0a',
@@ -173,7 +174,8 @@ const UserDashboard = () => {
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
             border: '1px solid rgba(0,0,0,0.04)',
             transition: 'all 0.3s ease',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            minHeight: '120px'
         },
         actionIcon: (bg) => ({
             width: '52px',
@@ -186,12 +188,14 @@ const UserDashboard = () => {
             color: 'white',
             background: bg,
             marginBottom: '0.75rem',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+            flexShrink: 0
         }),
         actionLabel: {
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#334155'
+            color: '#334155',
+            textAlign: 'center'
         },
         mainGrid: {
             display: 'grid',
@@ -301,7 +305,13 @@ const UserDashboard = () => {
             padding: '0.75rem 1rem',
             borderRadius: '0.75rem',
             cursor: 'pointer',
-            transition: 'background 0.2s'
+            transition: 'background 0.2s',
+            marginBottom: '0.5rem'
+        },
+        buyAgainContainer: {
+            padding: '0.5rem',
+            maxHeight: '300px',
+            overflowY: 'auto'
         }
     };
 
@@ -469,13 +479,13 @@ const UserDashboard = () => {
                                 </h3>
                             </div>
                             <div style={{ padding: '0.5rem 0' }}>
-                                <div style={styles.healthItem}>
+                                <div style={{ ...styles.healthItem, marginBottom: '0.75rem' }}>
                                     <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>Blood Group</span>
                                     <span style={{ fontWeight: 700, padding: '0.25rem 0.75rem', background: '#fee2e2', color: '#dc2626', borderRadius: '9999px', fontSize: '0.875rem' }}>B+</span>
                                 </div>
-                                <div style={styles.healthItem}>
+                                <div style={{ ...styles.healthItem, marginBottom: '0.75rem' }}>
                                     <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>Allergies</span>
-                                    <span style={{ fontWeight: 600, padding: '0.25rem 0.75rem', background: '#fef3c7', color: '#d97706', borderRadius: '9999px', fontSize: '0.75rem' }}>None</span>
+                                    <span style={{ fontWeight: 600, padding: '0.25rem 0.75rem', background: '#fef3c7', color: '#d97706', borderRadius: '9999px', fontSize: '0.875rem' }}>None</span>
                                 </div>
                             </div>
                             <div style={{ padding: '0.75rem 1.25rem', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
@@ -492,7 +502,7 @@ const UserDashboard = () => {
                                     <FiRefreshCcw style={{ color: '#f97316' }} /> Buy Again
                                 </h3>
                             </div>
-                            <div style={{ padding: '0.5rem' }}>
+                            <div style={styles.buyAgainContainer}>
                                 {featuredMedicines.slice(0, 3).map((medicine) => (
                                     <div key={medicine._id} style={styles.buyAgainItem}>
                                         <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
@@ -524,9 +534,15 @@ const UserDashboard = () => {
                     .dashboard-main > div:nth-child(4) { grid-template-columns: repeat(2, 1fr) !important; }
                     .dashboard-main > div:last-child { grid-template-columns: 1fr !important; }
                 }
+                @media (max-width: 768px) {
+                    .dashboard-main > div:nth-child(2) { grid-template-columns: repeat(2, 1fr) !important; }
+                    .dashboard-main > div:nth-child(4) { grid-template-columns: repeat(2, 1fr) !important; }
+                    .dashboard-main > div:last-child { grid-template-columns: 1fr !important; }
+                }
                 @media (max-width: 640px) {
                     .dashboard-main > div:nth-child(2) { grid-template-columns: 1fr !important; }
                     .dashboard-main > div:nth-child(4) { grid-template-columns: repeat(2, 1fr) !important; }
+                    .dashboard-main { padding: 1rem !important; }
                 }
             `}</style>
         </div>

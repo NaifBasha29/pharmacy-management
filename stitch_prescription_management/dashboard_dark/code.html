@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RxHub Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-fill { font-variation-settings: 'FILL' 1; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header -->
+<header class="flex items-center justify-between p-4 sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white">medication</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-primary to-orange-400 bg-clip-text text-transparent">RxHub</h1>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-primary/10 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full"></span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto space-y-6 px-4 pt-4">
+<!-- Welcome Section -->
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="size-16 rounded-full border-2 border-primary p-0.5">
+<div class="size-full rounded-full bg-cover bg-center" data-alt="Portrait of a smiling male patient" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXLdyEoP4xC_26vokI2L7RWPD327TCbsfd-n3gkaDqEI0DyWs91mio3BP0Wo4Emnjk192e6XOTMSoErIjPmtiK2-IEBsR5tsEIBKNihLDuBy0Ct2pT7dpNDybMtppFMLv1CW3CFSnthwxSqR63p54M35W8iQ66Ywdgzfa9OTBFsKjf7uI7PCKgXPYLhrLJoQGJk4FRjak8GGG6EH2Gt2eiaRbsvJnvPwU-ODLpXElGZRLoLofO9PRr3AQig64AkLr-Rrk-LIWVFw')"></div>
+</div>
+<div>
+<h2 class="text-2xl font-extrabold">Welcome back, <span class="bg-gradient-to-r from-primary to-orange-300 bg-clip-text text-transparent">Alex</span></h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-primary/10 text-primary text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                            Monday, Oct 23
+                        </span>
+<span class="text-slate-500 dark:text-slate-400 text-sm">Premium Member</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-primary/5 dark:bg-primary/10 p-5 rounded-xl border border-primary/10">
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Orders</p>
+<div class="flex items-end justify-between mt-2">
+<span class="text-3xl font-bold">128</span>
+<span class="text-emerald-500 text-sm font-bold flex items-center">+12%</span>
+</div>
+</div>
+<div class="bg-primary/5 dark:bg-primary/10 p-5 rounded-xl border border-primary/10">
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">In Progress</p>
+<div class="flex items-end justify-between mt-2">
+<span class="text-3xl font-bold">03</span>
+<span class="bg-primary/20 text-primary text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Priority</span>
+</div>
+</div>
+<div class="bg-primary/5 dark:bg-primary/10 p-5 rounded-xl border border-primary/10">
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Delivered</p>
+<div class="flex items-end justify-between mt-2">
+<span class="text-3xl font-bold">122</span>
+<span class="text-emerald-500 text-sm font-bold flex items-center">+98%</span>
+</div>
+</div>
+<div class="bg-primary/5 dark:bg-primary/10 p-5 rounded-xl border border-primary/10">
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Active Rx</p>
+<div class="flex items-end justify-between mt-2">
+<span class="text-3xl font-bold">05</span>
+<span class="text-slate-400 text-sm font-medium">Stable</span>
+</div>
+</div>
+</section>
+<!-- Quick Actions -->
+<section>
+<h3 class="text-lg font-bold mb-4">Quick Actions</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<button class="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary transition-all group">
+<span class="material-symbols-outlined text-primary text-3xl mb-2 group-hover:scale-110 transition-transform">medical_services</span>
+<span class="text-sm font-semibold">Catalog</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary transition-all group">
+<span class="material-symbols-outlined text-primary text-3xl mb-2 group-hover:scale-110 transition-transform">package_2</span>
+<span class="text-sm font-semibold">Orders</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-primary text-white rounded-xl border border-primary hover:bg-primary/90 transition-all group shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-3xl mb-2 group-hover:scale-110 transition-transform">upload_file</span>
+<span class="text-sm font-semibold">Upload Rx</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary transition-all group">
+<span class="material-symbols-outlined text-primary text-3xl mb-2 group-hover:scale-110 transition-transform">person_outline</span>
+<span class="text-sm font-semibold">Profile</span>
+</button>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Recent Orders -->
+<section class="lg:col-span-2 space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold">Recent Orders</h3>
+<a class="text-primary text-sm font-bold hover:underline" href="#">View All</a>
+</div>
+<div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+<th class="px-4 py-3 text-xs font-bold uppercase text-slate-500">Medicine</th>
+<th class="px-4 py-3 text-xs font-bold uppercase text-slate-500">Order ID</th>
+<th class="px-4 py-3 text-xs font-bold uppercase text-slate-500">Status</th>
+<th class="px-4 py-3 text-xs font-bold uppercase text-slate-500">Date</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+<tr>
+<td class="px-4 py-4">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">pill</span>
+</div>
+<span class="font-semibold text-sm">Amoxicillin 500mg</span>
+</div>
+</td>
+<td class="px-4 py-4 text-sm">#RX-99201</td>
+<td class="px-4 py-4">
+<span class="px-2 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-[10px] font-bold uppercase tracking-wider">In Transit</span>
+</td>
+<td class="px-4 py-4 text-sm text-slate-500">Oct 22, 2023</td>
+</tr>
+<tr>
+<td class="px-4 py-4">
+<div class="flex items-center gap-2">
+<div class="size-8 rounded bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">pill</span>
+</div>
+<span class="font-semibold text-sm">Lisinopril 10mg</span>
+</div>
+</td>
+<td class="px-4 py-4 text-sm">#RX-98552</td>
+<td class="px-4 py-4">
+<span class="px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider">Delivered</span>
+</td>
+<td class="px-4 py-4 text-sm text-slate-500">Oct 18, 2023</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Health Summary Sidebar -->
+<section class="space-y-6">
+<div class="bg-gradient-to-br from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 p-6 rounded-2xl border border-white/5 shadow-xl relative overflow-hidden">
+<div class="absolute -right-8 -top-8 size-32 bg-primary/10 rounded-full blur-3xl"></div>
+<h3 class="text-white text-lg font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                        Health Summary
+                    </h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between text-slate-300">
+<span class="text-sm">Vitals Score</span>
+<span class="text-white font-bold">92/100</span>
+</div>
+<div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[92%] rounded-full"></div>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-2">
+<div class="bg-white/5 p-3 rounded-xl border border-white/10">
+<p class="text-[10px] uppercase text-slate-400 font-bold">Next Refill</p>
+<p class="text-white font-bold mt-1">4 Days</p>
+</div>
+<div class="bg-white/5 p-3 rounded-xl border border-white/10">
+<p class="text-[10px] uppercase text-slate-400 font-bold">Adherence</p>
+<p class="text-white font-bold mt-1">98%</p>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-lg font-bold mb-4">Buy Again</h3>
+<div class="bg-white dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+<div class="flex items-center gap-4">
+<div class="size-16 rounded-lg bg-background-light dark:bg-background-dark p-2">
+<div class="size-full bg-contain bg-center bg-no-repeat" data-alt="Vitamin C supplement bottle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDAGNp-N8CKdnx4pIpLxj53TS3kpPrCtXsS4FF-XbdbJhOiSXbzfuFjToQ5L4Jgw82z97KvrEs5STHucgGaZx3SZDmD_PierauJ4XNASEWhPU30VD03LF9rz8NTFiXAqpRB6c4KIz0ry_3uDtkQF1lCekVJRPusVLAskQd5Lpe3VOytFfRa-4c9VttJUmrWocTMYaPg056bMsTfnfIuENA5RPUkVKxKUH9lD88haOgmEqVUH8H_otx2_gSl9Qqe77zeF7efZw9BCQ')"></div>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">Vitamin C 1000mg</p>
+<p class="text-xs text-slate-500">60 Capsules • OTC</p>
+<div class="flex items-center justify-between mt-2">
+<span class="font-bold text-primary text-sm">$12.99</span>
+<button class="bg-primary/20 text-primary p-1 rounded-full hover:bg-primary/30">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-6 py-2 pb-6 flex items-center justify-between z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined active-fill">house</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-bold">Catalog</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-[10px] font-bold">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</nav>
+</body></html>

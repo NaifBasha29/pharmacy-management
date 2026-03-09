@@ -1,236 +1,473 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput,
-  Image, FlatList, RefreshControl, StatusBar,
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+  RefreshControl,
+  Dimensions
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
 import { useCart } from '../context/CartContext';
-import { medicinesAPI, categoriesAPI } from '../services/mobileApi';
-import Toast from 'react-native-toast-message';
+import api from '../config/api';
 
-const CATEGORY_SCROLL_DATA = [{ _id: '', name: 'All' }];
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = (width - 48) / 2;
 
 export default function CatalogScreen({ navigation }) {
-  const { addToCart } = useCart();
+  const { theme } = useTheme();
   const [medicines, setMedicines] = useState([]);
-  const [categories, setCategories] = useState(CATEGORY_SCROLL_DATA);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [cartCount, setCartCount] = useState(0);
-  const LIMIT = 12;
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const { addToCart, cartCount } = useCart();
+  const styles = createStyles(theme);
 
-  const fetchCategories = useCallback(async () => {
-    try {
-      const res = await medicinesAPI.getAll({ limit: 1 }); // placeholder — use categoriesAPI if exported
-      // Try to get categories separately
-    } catch {}
+  useEffect(() => {
+    fetchCategories();
+    fetchMedicines();
   }, []);
 
-  const fetchMedicines = useCallback(async (pg = 1, reset = false) => {
+  useEffect(() => {
+    const delaySearch = setTimeout(() => {
+      fetchMedicines();
+    }, 500);
+    return () => clearTimeout(delaySearch);
+  }, [search, selectedCategory]);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await api.get('/categories');
+      setCategories(res.data.data.categories || []);
+    } catch (error) {
+      console.log('Error fetching categories:', error);
+    }
+  };
+
+  const fetchMedicines = async () => {
     try {
       setLoading(true);
-      const params = { page: pg, limit: LIMIT };
+      const params = {};
       if (search) params.search = search;
       if (selectedCategory) params.category = selectedCategory;
-      const res = await medicinesAPI.getAll(params);
-      const data = res.data?.data;
-      const list = data?.medicines || [];
-      setMedicines(reset ? list : prev => pg === 1 ? list : [...prev, ...list]);
-      setTotalPages(data?.pagination?.pages || 1);
-    } catch (err) {
-      console.log('Catalog fetch error:', err?.message);
+      
+      const res = await api.get('/medicines', { params });
+      setMedicines(res.data.data.medicines || []);
+    } catch (error) {
+      console.log('Error fetching medicines:', error);
     } finally {
       setLoading(false);
     }
-  }, [search, selectedCategory]);
-
-  useEffect(() => { fetchMedicines(1, true); setPage(1); }, [search, selectedCategory]);
+  };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchMedicines(1, true).finally(() => setRefreshing(false));
-  }, [fetchMedicines]);
+    fetchMedicines().then(() => setRefreshing(false));
+  }, [search, selectedCategory]);
 
-  const handleAddToCart = (med) => {
-    if (med.stock === 0) return;
-    addToCart(med, 1);
-    Toast.show({ type: 'success', text1: 'Added to cart', text2: med.name });
+  const handleAddToCart = (medicine) => {
+    addToCart(medicine, 1);
   };
 
-  const renderMedCard = ({ item: med }) => {
-    const outOfStock = med.stock === 0;
-    const lowStock   = med.stock > 0 && med.stock <= 10;
-    return (
-      <View style={[styles.medCard, outOfStock && styles.medCardDisabled]}>
-        {/* Image */}
-        <View style={[styles.medImgWrap, outOfStock && { opacity: 0.5 }]}>
-          {med.image
-            ? <Image source={{ uri: med.image }} style={styles.medImg} resizeMode="cover" />
-            : <Text style={{ fontSize: 42, opacity: 0.5 }}>💊</Text>}
+  const renderCategory = ({ item }) => (
+    <TouchableOpacity
+      style={[
+        styles.categoryChip,
+        selectedCategory === item._id && styles.categoryChipActive
+      ]}
+      onPress={() => setSelectedCategory(selectedCategory === item._id ? '' : item._id)}
+    >
+      <Text style={[
+        styles.categoryText,
+        selectedCategory === item._id && styles.categoryTextActive
+      ]}>
+        {item.name}
+      </Text>
+    </TouchableOpacity>
+  );
 
-          {/* Category badge */}
-          <View style={styles.catBadge}>
-            <Text style={styles.catBadgeText}>{med.category?.name || 'General'}</Text>
-          </View>
-
-          {/* Stock badges */}
-          {lowStock && !outOfStock && (
-            <View style={[styles.stockBadge, { backgroundColor: '#ef4444ee' }]}>
-              <Text style={styles.stockBadgeText}>Low Stock</Text>
-            </View>
-          )}
-          {outOfStock && (
-            <View style={styles.outOfStockOverlay}>
-              <View style={styles.outOfStockPill}>
-                <Text style={styles.stockBadgeText}>Out of Stock</Text>
-              </View>
-            </View>
-          )}
+  const renderMedicine = ({ item }) => (
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: theme.card }]}
+      activeOpacity={0.9}
+      onPress={() => navigation.navigate('MedicineDetail', { medicineId: item._id })}
+    >
+      <View style={styles.imageContainer}>
+        <Image
+          source={{ uri: item.image || 'https://via.placeholder.com/150?text=Medicine' }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <View style={styles.categoryBadge}>
+          <Text style={styles.categoryBadgeText}>{item.category?.name || 'General'}</Text>
         </View>
-
-        {/* Body */}
-        <View style={styles.medBody}>
-          <Text style={[styles.medName, outOfStock && { color: '#6b7280' }]} numberOfLines={1}>{med.name}</Text>
-          <Text style={styles.medDesc} numberOfLines={2}>{med.description || 'No description available'}</Text>
-          <View style={styles.medFooter}>
-            <Text style={[styles.medPrice, outOfStock && { color: '#6b7280' }]}>₹{med.price}</Text>
-            <TouchableOpacity
-              onPress={() => handleAddToCart(med)}
-              disabled={outOfStock}
-              style={[styles.addBtn, outOfStock && styles.addBtnDisabled]}
-            >
-              {outOfStock
-                ? <MaterialIcons name="block" size={16} color="#9ca3af" />
-                : <MaterialIcons name="add" size={16} color="#fff" />}
-            </TouchableOpacity>
+        {item.stock < 10 && item.stock > 0 && (
+          <View style={styles.lowStockBadge}>
+            <Text style={styles.lowStockText}>Low Stock</Text>
           </View>
+        )}
+        {item.stock === 0 && (
+          <View style={styles.outOfStockBadge}>
+            <Text style={styles.outOfStockText}>Out of Stock</Text>
+          </View>
+        )}
+      </View>
+      <View style={styles.cardContent}>
+        <Text style={[styles.medicineName, { color: theme.textPrimary }]} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={[styles.medicineDesc, { color: theme.textSecondary }]} numberOfLines={2}>
+          {item.description || 'Medicine description'}
+        </Text>
+        <View style={styles.cardFooter}>
+          <Text style={[styles.price, { color: theme.primary }]}>₹{item.price?.toFixed(2)}</Text>
+          <TouchableOpacity
+            style={[styles.addButton, item.stock === 0 && styles.addButtonDisabled]}
+            onPress={() => handleAddToCart(item)}
+            disabled={item.stock === 0}
+          >
+            <Icon name="add" size={20} color="#fff" />
+          </TouchableOpacity>
         </View>
       </View>
-    );
-  };
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar barStyle="light-content" backgroundColor="#000" />
-
-      {/* ── Sticky Header ── */}
-      <View style={styles.stickyHead}>
-        <View style={styles.topBar}>
-          <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-            <MaterialIcons name="arrow-back" size={22} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.pageTitle}>Medicine Catalog</Text>
-          <TouchableOpacity style={styles.cartBtn} onPress={() => navigation.navigate('Cart')}>
-            <MaterialIcons name="shopping-cart" size={22} color="#fff" />
-            <View style={styles.cartDot} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Search */}
-        <View style={styles.searchWrap}>
-          <MaterialIcons name="search" size={20} color="#9ca3af" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search medicines, symptoms..."
-            placeholderTextColor="#6b7280"
-            value={search}
-            onChangeText={setSearch}
-          />
-        </View>
-
-        {/* Filter Pills */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
-          <View style={styles.filterPill}>
-            <MaterialIcons name="filter-list" size={14} color="#f97415" />
-            <Text style={styles.filterPillText}>Filters</Text>
-          </View>
-          <TouchableOpacity style={[styles.filterPill, !selectedCategory && styles.filterPillActive]} onPress={() => setSelectedCategory('')}>
-            <Text style={[styles.filterPillText, !selectedCategory && { color: '#f97415' }]}>All</Text>
-          </TouchableOpacity>
-          {categories.slice(1).map(c => (
-            <TouchableOpacity key={c._id} style={[styles.filterPill, selectedCategory === c._id && styles.filterPillActive]} onPress={() => setSelectedCategory(c._id)}>
-              <Text style={[styles.filterPillText, selectedCategory === c._id && { color: '#f97415' }]}>{c.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backBtn}>
+          <Icon name="arrow-back" size={24} color={theme.textPrimary} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Medicine Catalog</Text>
+        <TouchableOpacity
+          style={styles.cartButton}
+          onPress={() => navigation.navigate('Cart')}
+        >
+          <Icon name="cart-outline" size={24} color={theme.textPrimary} />
+          {cartCount > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
-      {/* ── Medicine Grid ── */}
-      {medicines.length === 0 && !loading ? (
-        <View style={styles.emptyState}>
-          <Text style={{ fontSize: 48, marginBottom: 12 }}>🔍</Text>
-          <Text style={styles.emptyTitle}>No medicines found</Text>
-          <Text style={styles.emptySubtitle}>Try adjusting your search or filters</Text>
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <Icon name="magnify" size={20} color={theme.textTertiary} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search medicines, symptoms..."
+          placeholderTextColor={theme.placeholder}
+          value={search}
+          onChangeText={setSearch}
+        />
+      </View>
+
+      {/* Filter Buttons */}
+      <View style={styles.filtersContainer}>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Icon name="filter-list" size={16} color={theme.primary} />
+          <Text style={styles.filterText}>Filters</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filterText}>Category</Text>
+          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filterText}>Min Price</Text>
+          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filterText}>Max Price</Text>
+          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Medicines Grid */}
+      {loading && medicines.length === 0 ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={theme.primary} />
+          <Text style={styles.loadingText}>Loading medicines...</Text>
         </View>
       ) : (
         <FlatList
           data={medicines}
-          keyExtractor={i => i._id}
-          renderItem={renderMedCard}
+          renderItem={renderMedicine}
+          keyExtractor={(item) => item._id}
           numColumns={2}
-          columnWrapperStyle={{ gap: 12 }}
-          contentContainerStyle={styles.gridContent}
+          contentContainerStyle={styles.medicinesList}
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#f97415" />}
-          onEndReached={() => { if (page < totalPages) { const next = page + 1; setPage(next); fetchMedicines(next, false); } }}
-          onEndReachedThreshold={0.4}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Icon name="pill-off" size={64} color={theme.textTertiary} />
+              <Text style={styles.emptyText}>No medicines found</Text>
+            </View>
+          }
         />
       )}
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1a1614' },
-
-  // Header
-  stickyHead: { backgroundColor: '#1a1614', borderBottomWidth: 1, borderBottomColor: '#ffffff15' },
-  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', backgroundColor: '#2a221d' },
-  pageTitle: { flex: 1, color: '#fff', fontSize: 17, fontWeight: '800', textAlign: 'center' },
-  cartBtn: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', backgroundColor: '#2a221d', position: 'relative' },
-  cartDot: { position: 'absolute', top: 6, right: 6, width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97415', borderWidth: 1.5, borderColor: '#1a1614' },
-
-  // Search
-  searchWrap: { flexDirection: 'row', alignItems: 'center', marginHorizontal: 16, marginBottom: 12, backgroundColor: '#2a221d', borderRadius: 14 },
-  searchIcon: { marginLeft: 12 },
-  searchInput: { flex: 1, color: '#fff', paddig: 0, paddingHorizontal: 10, paddingVertical: 12, fontSize: 14 },
-
-  // Filter pills
-  filterRow: { paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
-  filterPill: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, backgroundColor: '#2a221d', borderWidth: 1, borderColor: '#ffffff15' },
-  filterPillActive: { borderColor: '#f9741560' },
-  filterPillText: { color: '#e5e5e5', fontSize: 13, fontWeight: '500' },
-
-  // Grid
-  gridContent: { padding: 16, gap: 12 },
-  medCard: { flex: 1, backgroundColor: '#2a221d', borderRadius: 20, overflow: 'hidden', borderWidth: 1, borderColor: '#ffffff08' },
-  medCardDisabled: { opacity: 0.75 },
-  medImgWrap: { height: 130, backgroundColor: '#1a1614', justifyContent: 'center', alignItems: 'center', position: 'relative' },
-  medImg: { width: '100%', height: '100%' },
-  catBadge: { position: 'absolute', top: 8, left: 8, backgroundColor: '#3b82f630', borderWidth: 1, borderColor: '#3b82f650', borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 },
-  catBadgeText: { color: '#93c5fd', fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
-  stockBadge: { position: 'absolute', bottom: 8, right: 8, borderRadius: 6, paddingHorizontal: 7, paddingVertical: 2 },
-  stockBadgeText: { color: '#fff', fontSize: 9, fontWeight: '700', textTransform: 'uppercase' },
-  outOfStockOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: '#00000060', justifyContent: 'center', alignItems: 'center' },
-  outOfStockPill: { backgroundColor: '#4b5563dd', paddingHorizontal: 14, paddingVertical: 5, borderRadius: 99, borderWidth: 1, borderColor: '#ffffff20' },
-
-  // Card body
-  medBody: { padding: 12, flex: 1 },
-  medName: { color: '#fff', fontWeight: '700', fontSize: 14, letterSpacing: -0.2 },
-  medDesc: { color: '#9ca3af', fontSize: 11, marginTop: 4, lineHeight: 16 },
-  medFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 },
-  medPrice: { fontSize: 17, fontWeight: '800', color: '#fff' },
-  addBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: '#f97415', justifyContent: 'center', alignItems: 'center', elevation: 4, shadowColor: '#f97415', shadowOpacity: 0.4, shadowRadius: 6 },
-  addBtnDisabled: { backgroundColor: '#2a221d' },
-
-  // Empty
-  emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
-  emptyTitle: { color: '#fff', fontSize: 18, fontWeight: '700', marginBottom: 6 },
-  emptySubtitle: { color: '#9ca3af', fontSize: 13, textAlign: 'center' },
+const createStyles = (theme) => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: theme.background,
+  },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: theme.textPrimary,
+    flex: 1,
+    textAlign: 'center',
+  },
+  cartButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: theme.primary,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cartBadgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.surface,
+    marginHorizontal: 16,
+    marginVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    color: theme.textPrimary,
+  },
+  filtersContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  filterBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: theme.surface,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  filterText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: theme.textSecondary,
+  },
+  categoriesList: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  categoryChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: theme.surface,
+    borderRadius: 20,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  categoryChipActive: {
+    backgroundColor: theme.primary,
+    borderColor: theme.primary,
+  },
+  categoryText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: theme.textSecondary,
+  },
+  categoryTextActive: {
+    color: '#fff',
+  },
+  medicinesList: {
+    padding: 8,
+    paddingBottom: 100,
+  },
+  card: {
+    width: CARD_WIDTH,
+    backgroundColor: theme.surface,
+    borderRadius: 16,
+    margin: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  imageContainer: {
+    height: 120,
+    position: 'relative',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: theme.surfaceHighlight,
+    opacity: 0.9,
+  },
+  categoryBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 123, 255, 0.3)',
+  },
+  categoryBadgeText: {
+    color: '#007bff',
+    fontSize: 10,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  lowStockBadge: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    backgroundColor: '#f59e0b',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  lowStockText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  outOfStockBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#ef4444',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  outOfStockText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  cardContent: {
+    padding: 12,
+    flex: 1,
+  },
+  medicineName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  medicineDesc: {
+    fontSize: 12,
+    marginBottom: 8,
+    lineHeight: 16,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  addButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: theme.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addButtonDisabled: {
+    backgroundColor: theme.textTertiary,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    color: theme.textSecondary,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 60,
+  },
+  emptyText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: theme.textSecondary,
+  },
 });

@@ -11,7 +11,7 @@ const auditLogSchema = new mongoose.Schema({
     required: true,
     enum: [
       'CREATE', 'UPDATE', 'DELETE', 'VIEW',
-      'LOGIN', 'LOGOUT', 'PASSWORD_CHANGE',
+      'LOGIN', 'LOGOUT', 'PASSWORD_CHANGE', 'PASSWORD_RESET',
       'ROLE_CHANGE', 'STATUS_CHANGE', 'ACTIVATE', 'SEND_CREDENTIALS',
       'DISPENSE', 'RESTOCK', 'PRICE_CHANGE',
       'ORDER_STATUS_CHANGE', 'PRESCRIPTION_VERIFY',

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RxHub - Order History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
+<!-- Header -->
+<header class="flex items-center bg-background-light dark:bg-background-dark p-4 border-b border-slate-200 dark:border-primary/20 sticky top-0 z-10">
+<div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 ml-2">Order History</h2>
+<div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">search</span>
+</div>
+</header>
+<!-- Tabs Navigation -->
+<nav class="bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-primary/10">
+<div class="flex px-4 gap-6 overflow-x-auto no-scrollbar">
+<a class="flex flex-col items-center justify-center border-b-2 border-primary text-primary pb-3 pt-4 whitespace-nowrap" href="#">
+<span class="text-sm font-bold tracking-wide">All</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4 whitespace-nowrap hover:text-primary transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Active</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4 whitespace-nowrap hover:text-primary transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Completed</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4 whitespace-nowrap hover:text-primary transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Cancelled</span>
+</a>
+</div>
+</nav>
+<!-- Orders List -->
+<main class="flex-1 p-4 space-y-4 pb-24">
+<!-- Order Card 1 (Active) -->
+<div class="rounded-xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-primary/5 shadow-sm overflow-hidden">
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="inline-flex items-center rounded-full bg-primary/20 px-2 py-0.5 text-xs font-bold text-primary">IN TRANSIT</span>
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Order #RX-99254</h3>
+</div>
+<div class="text-right">
+<p class="text-primary text-lg font-bold">$42.50</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2 border-y border-slate-100 dark:border-primary/5">
+<div class="size-16 rounded-lg bg-cover bg-center shrink-0 border border-slate-200 dark:border-primary/20" data-alt="Orange prescription pill bottle on clean background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQnVEZQRbLQkcMFsJiiJoj_N4BZDTlC653WPn8OWBhY0UIq0ZkQkjlH3Ga88mgIxUo0HiELbFZtIH-uoiBq8G6cyeXCNNiIibH8i-hUgzGJRDge6Ao_Ok3gkRzhId1c90jpapxSQ7-TBuqXYmexcvEdYqR1ZD9hn-6eUMmVfzf3rNPp5vtKLZyNPxSEzIvkEIP35XDTayB6htf2PoNwIJU0UdFdnVC9FfdNzihigjsHstNCedIZtVTSyOjVyf2CNa8H-fvQYEvIg')">
+</div>
+<div class="flex-1">
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium">Lisinopril 10mg</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Quantity: 30 Tablets</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Placed on Oct 28, 2023</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-primary text-white rounded-lg py-2 px-4 text-sm font-bold hover:bg-primary/90 transition-colors">
+                            Track Order
+                        </button>
+<button class="flex items-center justify-center rounded-lg border border-slate-300 dark:border-primary/20 px-3 hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-slate-500">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Order Card 2 (Completed) -->
+<div class="rounded-xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-primary/5 shadow-sm overflow-hidden opacity-90">
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="inline-flex items-center rounded-full bg-slate-200 dark:bg-primary/10 px-2 py-0.5 text-xs font-bold text-slate-600 dark:text-slate-400">COMPLETED</span>
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Order #RX-99201</h3>
+</div>
+<div class="text-right">
+<p class="text-primary text-lg font-bold">$145.00</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2 border-y border-slate-100 dark:border-primary/5">
+<div class="size-16 rounded-lg bg-cover bg-center shrink-0 border border-slate-200 dark:border-primary/20" data-alt="Various medical supplies and pill containers" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDXdLj3r8cCR9w8UFLqRRoKzG_GXPtp5_tkENXB2WqFKaSZ0JqL5C9OsaSJvJomX_q_JiiSXvyRH_L3C5bpOEKyMRjbThfj1qt8wlzaKr0gpmOR6ioOUtEH-F4I7V0dxGH8vD3UHLXu7xDTSIXyyBHzxR0hvyGXv7vbFjaHlcE1QqVYFZIKSXaERaigN668JlRlz4dbk6ZeOWO-7W8JDEPxMF2EXpqMN2HTOLcXyl5HgsnDm1vovwFyYJearC6oDcJPqAqcw6jCtg')">
+</div>
+<div class="flex-1">
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium">Multi-Medication Bundle</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Quantity: 3 Items</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Delivered on Oct 24, 2023</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 border border-primary text-primary rounded-lg py-2 px-4 text-sm font-bold hover:bg-primary/10 transition-colors">
+                            Reorder
+                        </button>
+<button class="flex-1 bg-slate-100 dark:bg-primary/10 text-slate-700 dark:text-slate-200 rounded-lg py-2 px-4 text-sm font-bold hover:bg-slate-200 dark:hover:bg-primary/20 transition-colors">
+                            View Details
+                        </button>
+</div>
+</div>
+</div>
+<!-- Order Card 3 (Cancelled) -->
+<div class="rounded-xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-primary/5 shadow-sm overflow-hidden opacity-80">
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="inline-flex items-center rounded-full bg-red-100 dark:bg-red-900/20 px-2 py-0.5 text-xs font-bold text-red-600 dark:text-red-400">CANCELLED</span>
+<h3 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Order #RX-99188</h3>
+</div>
+<div class="text-right">
+<p class="text-slate-500 text-lg font-bold line-through">$89.00</p>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2 border-y border-slate-100 dark:border-primary/5">
+<div class="size-16 rounded-lg bg-cover bg-center shrink-0 grayscale border border-slate-200 dark:border-primary/20" data-alt="Black and white vitamin bottle image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEXhG9-j30Wlv8hf1mTh2X9jzb4GG_JFpATbBCwxSZieD85uJ1XKSp_WJmGdK2r0t5nysDjq5KZUsJChWo8Z6STc8BF-7Z0nMt2GvHfgYQYRWbWslLGG2xNE7kiaUiVbkHQY7_thxXA5SKDuK059nvrqKqTTh3qMv1heC_-1MMuDvKsBO8UuS9BYllkXskvrmA07wAZoUU9ZWGAp2sj87ie1wupk2ASizIp_n4DZBDdT44wjpipOZtlS0Tm2iONAUlEpov47t0Tg')">
+</div>
+<div class="flex-1">
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium">Daily Vitamins Complex</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Quantity: 1 Bottle</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Cancelled on Oct 20, 2023</p>
+</div>
+</div>
+<button class="w-full bg-slate-100 dark:bg-primary/10 text-slate-700 dark:text-slate-200 rounded-lg py-2 px-4 text-sm font-bold hover:bg-slate-200 dark:hover:bg-primary/20 transition-colors">
+                        View Details
+                    </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<footer class="fixed bottom-0 w-full bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-primary/20 px-4 pb-6 pt-2">
+<div class="flex gap-2 max-w-lg mx-auto">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">home</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined font-fill">receipt_long</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Orders</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">medication</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Meds</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profile</p>
+</a>
+</div>
+</footer>
+</div>
+</body></html>

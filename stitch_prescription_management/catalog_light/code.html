@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>RxHub Medicine Catalog</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen flex-col mx-auto max-w-md bg-white dark:bg-background-dark shadow-xl">
+<header class="sticky top-0 z-10 flex items-center justify-between bg-white/80 dark:bg-background-dark/80 backdrop-blur-md p-4 border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center gap-2">
+<div class="bg-primary p-1.5 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl">medical_services</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">RxHub</h1>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">notifications</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">shopping_cart</span>
+<span class="absolute top-1 right-1 size-4 bg-primary text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white dark:border-background-dark">2</span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto">
+<div class="p-4 space-y-4">
+<div class="relative">
+<label class="flex flex-col w-full h-12">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
+<div class="text-slate-400 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input w-full border-none bg-transparent focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 px-3 text-base" placeholder="Search medicines or brands" value=""/>
+<button class="px-3 text-primary">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</label>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-primary text-white text-sm font-semibold shadow-sm">
+                        All
+                    </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 transition-colors">
+                        Pain Relief
+                    </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 transition-colors">
+                        Antibiotics
+                    </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-4 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-200 transition-colors">
+                        Vitamins
+                    </button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 flex items-center justify-center relative">
+<img alt="Medicine" class="object-cover w-full h-full" data-alt="White medicine pill bottle on blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjvTrR9a9KZmtCtHys9q3q5jEVnki3A0Ld_uCsdrIkfvTpRA6vBO-smG7SDh-nilnoknWYAFT0cSTPO7p2Pc4wAYZ9iEouzmSv8IB9wRKdvtNpLxdGCyn6Ed1Q9_LVdHsiLzghK12LIH3AbQsnVgqFZZrjffKY32RM_4y6jkDqCxUYu7PQ7Z0i-bpv14amT6A39444hFbaNmSpfztHeFaHHYlzA7HDj8CyYDVtbjsZW_IfydNzGExDRGVy2XqvYR_8lA25xX04SQ"/>
+<button class="absolute top-2 right-2 size-8 bg-white/80 dark:bg-black/20 backdrop-blur rounded-full flex items-center justify-center text-slate-600 dark:text-white">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="p-3 space-y-2">
+<div>
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-sm leading-tight line-clamp-1">Paracetamol 500mg</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Pack of 20 Tablets</p>
+</div>
+<div class="flex items-center justify-between">
+<p class="text-primary font-bold text-base">$5.00</p>
+<button class="size-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-sm hover:bg-primary/90">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 flex items-center justify-center relative">
+<img alt="Medicine" class="object-cover w-full h-full" data-alt="Selection of different colored capsules" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCX1tHJHkvPKW88ChtDogVMaJAeknBB2ie60SX8XJB5DHQxcNAJZd3a03ddTXN2oHn_pDFBe7xk1pSO-xz1GvXep_0JLKvqc2ZBC8VPjeepGRmllBZiHCyKi70t40Fuv7kfU6LASHOU5ah3e6HpO3Sb-SioQ9DZPMWSGwcEYC9KzBjc5s2MhnNJ4ZTSRzCPLS7BgQ9JyIZjnOrbsEcpfaFARJDryNBM82z70wIrkrfeNj1uZn4_lTiRNB4TWv3sVrq-sJFs_B70mg"/>
+<div class="absolute top-2 left-2 px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded uppercase tracking-wider">Prescription</div>
+<button class="absolute top-2 right-2 size-8 bg-white/80 dark:bg-black/20 backdrop-blur rounded-full flex items-center justify-center text-slate-600 dark:text-white">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="p-3 space-y-2">
+<div>
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-sm leading-tight line-clamp-1">Amoxicillin 250mg</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Antibiotic Course</p>
+</div>
+<div class="flex items-center justify-between">
+<p class="text-primary font-bold text-base">$12.50</p>
+<button class="size-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-sm hover:bg-primary/90">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 flex items-center justify-center relative">
+<img alt="Medicine" class="object-cover w-full h-full" data-alt="Vitamin bottle with orange slices" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6nJtcHP238Mg2I-TGmLcTqgHgAuHZiv-MlcS9eoDVi3JCpbhPnFoQyBrNbZxOorBf7RWoKEskRWQVU7uWDxyxUZ9nGNgRyasg5UfcbSAubHQmG7lFTqJx9k6DdEY90tYOr3OO7QMNUlP6NloQmr3P7bDazHMtfEdcUeioiFqpox5doVwSwCNKipNyG7g0gC42UpTWqUZzPhtXbWNK62mCRkpbfmQirfZr9rMbomietXDrDI9xMwfzkwLcpDP9Zc9kHVXiE942ow"/>
+<button class="absolute top-2 right-2 size-8 bg-white/80 dark:bg-black/20 backdrop-blur rounded-full flex items-center justify-center text-slate-600 dark:text-white">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="p-3 space-y-2">
+<div>
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-sm leading-tight line-clamp-1">Vitamin C 1000mg</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Daily Supplement</p>
+</div>
+<div class="flex items-center justify-between">
+<p class="text-primary font-bold text-base">$8.00</p>
+<button class="size-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-sm hover:bg-primary/90">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 flex items-center justify-center relative">
+<img alt="Medicine" class="object-cover w-full h-full" data-alt="Box of ibuprofen tablets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhl-QxYp3eibhOvpKD7wXR-005RP4cP999dbuQ6NA0SljX_niP4Cmkob_NdAP2kRZC2CUswcBHfW-kKe1R7rQ5ENAdfWC4Ib7APxSlaza1yWj-t_dCkAlAehEbi0OxDR3yaTX8Tx0q4fcbEtbkPyNR1rLjStLdlDWADSgS6rcRHz1RYrq8ixVbUqeSrTvH3N0tu5-0PyUQHDCvNZIopPnsky4BFzghytlQqCb_yEYoIYs8aqGkAdhOMwHPpiU0xXCcNc5MeYnHxA"/>
+<button class="absolute top-2 right-2 size-8 bg-white/80 dark:bg-black/20 backdrop-blur rounded-full flex items-center justify-center text-slate-600 dark:text-white">
+<span class="material-symbols-outlined text-lg">favorite</span>
+</button>
+</div>
+<div class="p-3 space-y-2">
+<div>
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-sm leading-tight line-clamp-1">Ibuprofen 400mg</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Pain Relief Tablets</p>
+</div>
+<div class="flex items-center justify-between">
+<p class="text-primary font-bold text-base">$6.50</p>
+<button class="size-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-sm hover:bg-primary/90">
+<span class="material-symbols-outlined text-xl">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-primary/10 rounded-2xl p-4 flex items-center gap-4 border border-primary/20">
+<div class="flex-1 space-y-1">
+<p class="text-slate-900 dark:text-slate-100 font-bold text-sm">Upload Prescription</p>
+<p class="text-slate-600 dark:text-slate-400 text-xs">Order prescription drugs easily</p>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm">
+                        Upload Now
+                    </button>
+</div>
+</div>
+</main>
+<nav class="bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 px-6 py-2 pb-6 flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-2xl">home</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Catalog</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-2xl">receipt_long</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Profile</span>
+</a>
+</nav>
+</div>
+</body></html>

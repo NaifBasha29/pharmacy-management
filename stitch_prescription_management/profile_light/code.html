@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f97415",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23170f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>RxHub - User Profile</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl overflow-hidden">
+<header class="flex items-center p-4 justify-between bg-white dark:bg-background-dark sticky top-0 z-10 border-b border-slate-100 dark:border-slate-800">
+<div class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight flex-1 text-center">My Profile</h2>
+<div class="flex size-10 items-center justify-end">
+<button class="flex items-center justify-center rounded-full size-10 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">settings</span>
+</button>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto">
+<div class="flex p-6 @container">
+<div class="flex w-full flex-col gap-4 items-center">
+<div class="flex gap-4 flex-col items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-white dark:border-slate-800 shadow-lg" data-alt="Professional portrait of a male healthcare user" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJkLU4cSr-xd95_BayuMQkkX-P_MiziKITFJ3Mi1_4fVdmEBYhYMQ_vA54LtYUOIg2XgNCVCW940VDtpSUk6o3NOxmi4_t_f7wb7fIFJR91Rps4qDbboS9u8jLQqyR2P4egAEXwfhtc26OEnKRMWo_EtGLyvib9n2Ouocsem9vC6D2a861X0TDpEZTbt3w7oF9HGtWnZ8tfQTzMkOlIN50dQetUSbcmxnBFZMFg_qMyzKk5dDYbGmM9yJimem4IT65kwgJyhZ6rQ");'></div>
+<div class="absolute bottom-1 right-1 bg-primary text-white p-1.5 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">verified</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center">
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-extrabold tracking-tight text-center">Alex Johnson</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary text-sm">location_on</span>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal text-center">New York, NY • Member since 2021</p>
+</div>
+</div>
+</div>
+<button class="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-11 px-6 bg-primary text-white text-sm font-bold shadow-md hover:bg-primary/90 transition-all w-full max-w-[320px]">
+<span class="truncate">Edit Profile</span>
+</button>
+</div>
+</div>
+<div class="flex gap-3 px-4 py-4 overflow-x-auto no-scrollbar">
+<div class="flex min-w-[100px] flex-1 flex-col gap-1 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4 items-center text-center shadow-sm">
+<p class="text-primary tracking-tight text-2xl font-bold">12</p>
+<p class="text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold tracking-wider">Prescriptions</p>
+</div>
+<div class="flex min-w-[100px] flex-1 flex-col gap-1 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4 items-center text-center shadow-sm">
+<p class="text-primary tracking-tight text-2xl font-bold">4</p>
+<p class="text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold tracking-wider">Providers</p>
+</div>
+<div class="flex min-w-[100px] flex-1 flex-col gap-1 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4 items-center text-center shadow-sm">
+<p class="text-primary tracking-tight text-2xl font-bold">128</p>
+<p class="text-slate-500 dark:text-slate-400 text-[10px] uppercase font-bold tracking-wider">Health Pts</p>
+</div>
+</div>
+<div class="sticky top-[73px] bg-white dark:bg-background-dark z-10 border-b border-slate-100 dark:border-slate-800">
+<div class="flex px-4 justify-between">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4 flex-1 hover:text-primary transition-colors" href="#">
+<p class="text-sm font-bold tracking-wide">Overview</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-slate-900 dark:text-slate-100 pb-3 pt-4 flex-1" href="#">
+<p class="text-sm font-bold tracking-wide">Health Tags</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-slate-400 pb-3 pt-4 flex-1 hover:text-primary transition-colors" href="#">
+<p class="text-sm font-bold tracking-wide">History</p>
+</a>
+</div>
+</div>
+<div class="p-4 space-y-6">
+<div>
+<h3 class="text-slate-900 dark:text-slate-100 text-base font-bold mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">label</span>
+                        Active Health Tags
+                    </h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-bold border border-primary/20 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">monitor_heart</span> Cardiovascular
+                        </span>
+<span class="px-3 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-bold border border-primary/20 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">nutrition</span> Keto-Friendly
+                        </span>
+<span class="px-3 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-bold border border-primary/20 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">fitness_center</span> Active Lifestyle
+                        </span>
+<span class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full text-xs font-bold border border-slate-200 dark:border-slate-700 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">medication</span> Vitamin D+
+                        </span>
+</div>
+</div>
+<div class="rounded-2xl bg-primary/5 dark:bg-primary/10 p-4 border border-primary/10">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-slate-900 dark:text-slate-100 text-base font-bold">Upcoming Refills</h3>
+<span class="text-primary text-xs font-bold cursor-pointer">View All</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="bg-primary/10 p-2 rounded-lg text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">pill</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Lisinopril 10mg</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Due in 3 days</p>
+</div>
+<button class="bg-primary text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Auto-refill</button>
+</div>
+<div class="flex items-center gap-3 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="bg-primary/10 p-2 rounded-lg text-primary flex items-center justify-center">
+<span class="material-symbols-outlined">pill</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Atorvastatin 20mg</p>
+<p class="text-xs text-slate-500 dark:text-slate-400">Due in 12 days</p>
+</div>
+<button class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold px-3 py-1.5 rounded-lg">Notify Me</button>
+</div>
+</div>
+</div>
+<div class="mb-20">
+<h3 class="text-slate-900 dark:text-slate-100 text-base font-bold mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">group</span>
+                        Linked Providers
+                    </h3>
+<div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+<div class="min-w-[120px] flex flex-col items-center gap-2">
+<div class="size-16 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-primary/20 overflow-hidden" data-alt="Profile photo of Dr. Sarah Smith" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD1aySDwxEcODD45wM4suqJ7BOlE7SKmlhEidn_iu8PrClxk9eQgyV8ALv00db7i9GBSl9bGMUUwHrh9FaUNPdZ0hlVkM3e4xR-AjKihnb4W61E7P8hZT3gkJDObabI2TUYKbPinDCKiVYNIUlwQgNb3QTKfAqUbmQ_1eKgupknmg8Xc1m8APdmZamWraEcO68OG6bZtj7mo4PM5vq-QFQs9gzv7a5aRK0PsFHgh23xl3nuolr27nDs0g8KtvOH2BIP3I0T4rqV0A");'></div>
+<p class="text-xs font-bold text-slate-900 dark:text-slate-100">Dr. Sarah Smith</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400">Cardiology</p>
+</div>
+<div class="min-w-[120px] flex flex-col items-center gap-2">
+<div class="size-16 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 overflow-hidden" data-alt="Profile photo of Dr. Robert Chen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuANv-bDMQnROVhRH7SHy6PChBpkSpkUHFUU2wBqigvTFwXLgLAMj82cwsr_zlrS819fZyPFf5Rbu2PdwDKtj3iKwVxP1IhShw-U7jsQMnLOgASw20sSXVkt8Y-LVe7s7Ucbcj3FUMu0Kww28QT_QWh8OCfxPjC8s0XWODzL3yJYlYq3SJcCs0n9tpLToXrPGnCmU7gVKaLk5PUkybBt6k75773oGRT_mtKn-8IfpRZGn5md2VnibXzefIAItMzUxjpwJYR7N1RUpw");'></div>
+<p class="text-xs font-bold text-slate-900 dark:text-slate-100">Dr. Robert Chen</p>
+<p class="text-[10px] text-slate-500 dark:text-slate-400">General Practice</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 pb-safe shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.1)]">
+<div class="flex items-center justify-around h-16 px-4">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">home</span>
+<p class="text-[10px] font-bold">Home</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">medication</span>
+<p class="text-[10px] font-bold">Meds</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">medical_services</span>
+<p class="text-[10px] font-bold">Doctors</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">person</span>
+<p class="text-[10px] font-bold">Profile</p>
+</a>
+</div>
+</nav>
+</div>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</body></html>
