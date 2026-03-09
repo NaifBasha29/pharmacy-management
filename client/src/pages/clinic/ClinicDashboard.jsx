@@ -5,6 +5,7 @@ import {
     FaUsers, FaPills, FaClipboardList, FaChartLine,
     FaCog, FaSignOutAlt, FaStore, FaUserMd
 } from 'react-icons/fa';
+import ThemeToggle from '../../components/common/ThemeToggle';
 import './ClinicDashboard.css';
 
 const ClinicDashboard = () => {
@@ -76,6 +77,9 @@ const ClinicDashboard = () => {
                 </nav>
 
                 <div className="sidebar-footer">
+                    <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+                        <ThemeToggle />
+                    </div>
                     <button onClick={handleLogout} className="logout-btn">
                         <FaSignOutAlt />
                         <span>Logout</span>

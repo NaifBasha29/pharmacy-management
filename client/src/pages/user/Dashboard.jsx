@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiPackage, FiFileText, FiClock, FiActivity, FiUser, FiRefreshCcw, FiArrowRight, FiTrendingUp, FiCalendar, FiPlus } from 'react-icons/fi';
 import { ordersAPI, medicinesAPI, prescriptionsAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/common/Sidebar';
+import './UserDashboard.css';
 
 const UserDashboard = () => {
     const { user, isAuthenticated } = useAuth();
@@ -64,266 +64,15 @@ const UserDashboard = () => {
 
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-    // Inline styles for guaranteed rendering
-    const styles = {
-        page: {
-            background: '#000000',
-            minHeight: '100vh',
-            padding: '2rem'
-        },
-        header: {
-            marginBottom: '2rem'
-        },
-        title: {
-            fontSize: '1.875rem',
-            fontWeight: '700',
-            color: '#ffffff',
-            marginBottom: '0.5rem'
-        },
-        gradientText: {
-            background: 'linear-gradient(135deg, #f97316, #8b5cf6)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-        },
-        subtitle: {
-            color: '#9ca3af',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            fontSize: '0.95rem'
-        },
-        dateBadge: {
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            padding: '0.375rem 0.75rem',
-            background: '#0a0a0a',
-            borderRadius: '9999px',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: '#475569',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
-        },
-        statsGrid: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '1.25rem',
-            marginBottom: '2rem'
-        },
-        statCard: {
-            background: '#0a0a0a',
-            borderRadius: '1rem',
-            padding: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
-            border: '1px solid rgba(0,0,0,0.04)',
-            transition: 'all 0.3s ease'
-        },
-        statIcon: (gradient) => ({
-            width: '56px',
-            height: '56px',
-            borderRadius: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.5rem',
-            color: 'white',
-            background: gradient,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            flexShrink: 0
-        }),
-        statValue: {
-            fontSize: '2rem',
-            fontWeight: '800',
-            color: '#ffffff',
-            lineHeight: '1'
-        },
-        statLabel: {
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: '#9ca3af',
-            marginTop: '0.25rem'
-        },
-        sectionTitle: {
-            fontSize: '1.125rem',
-            fontWeight: '700',
-            color: '#ffffff',
-            marginBottom: '1rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem'
-        },
-        quickActionsGrid: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '1rem',
-            marginBottom: '2rem',
-            justifyItems: 'center'
-        },
-        actionCard: {
-            background: '#0a0a0a',
-            borderRadius: '1rem',
-            padding: '1.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            textDecoration: 'none',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            border: '1px solid rgba(0,0,0,0.04)',
-            transition: 'all 0.3s ease',
-            cursor: 'pointer',
-            minHeight: '120px'
-        },
-        actionIcon: (bg) => ({
-            width: '52px',
-            height: '52px',
-            borderRadius: '0.875rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.5rem',
-            color: 'white',
-            background: bg,
-            marginBottom: '0.75rem',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-            flexShrink: 0
-        }),
-        actionLabel: {
-            fontSize: '0.875rem',
-            fontWeight: '600',
-            color: '#334155',
-            textAlign: 'center'
-        },
-        mainGrid: {
-            display: 'grid',
-            gridTemplateColumns: '2fr 1fr',
-            gap: '1.5rem'
-        },
-        card: {
-            background: '#0a0a0a',
-            borderRadius: '1rem',
-            overflow: 'hidden',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            border: '1px solid rgba(0,0,0,0.04)'
-        },
-        cardHeader: {
-            padding: '1rem 1.5rem',
-            borderBottom: '1px solid #f1f5f9',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-        },
-        viewAllLink: {
-            fontSize: '0.875rem',
-            fontWeight: '600',
-            color: '#f97316',
-            textDecoration: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.25rem'
-        },
-        table: {
-            width: '100%',
-            borderCollapse: 'collapse'
-        },
-        th: {
-            padding: '0.75rem 1.25rem',
-            fontSize: '0.75rem',
-            fontWeight: '600',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-            color: '#9ca3af',
-            textAlign: 'left',
-            background: '#f8fafc'
-        },
-        td: {
-            padding: '1rem 1.25rem',
-            fontSize: '0.875rem',
-            color: '#334155',
-            borderBottom: '1px solid #f1f5f9'
-        },
-        badge: (type) => {
-            const colors = {
-                pending: { bg: '#fef3c7', color: '#d97706' },
-                processing: { bg: '#dbeafe', color: '#ea580c' },
-                dispatched: { bg: '#e0e7ff', color: '#4f46e5' },
-                delivered: { bg: '#dcfce7', color: '#16a34a' },
-                cancelled: { bg: '#fee2e2', color: '#dc2626' }
-            };
-            const c = colors[type] || { bg: '#f1f5f9', color: '#9ca3af' };
-            return {
-                display: 'inline-block',
-                padding: '0.25rem 0.75rem',
-                fontSize: '0.75rem',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                borderRadius: '9999px',
-                background: c.bg,
-                color: c.color
-            };
-        },
-        emptyState: {
-            textAlign: 'center',
-            padding: '3rem 1.5rem'
-        },
-        emptyIcon: {
-            width: '64px',
-            height: '64px',
-            background: '#f1f5f9',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 1rem',
-            fontSize: '1.75rem'
-        },
-        healthCard: {
-            background: 'linear-gradient(135deg, #fff 0%, #fef2f2 100%)',
-            borderRadius: '1rem',
-            overflow: 'hidden',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            border: '1px solid rgba(254,202,202,0.3)',
-            marginBottom: '1.5rem'
-        },
-        healthItem: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '0.875rem 1.25rem',
-            background: 'rgba(255,255,255,0.7)',
-            margin: '0 1rem',
-            marginBottom: '0.5rem',
-            borderRadius: '0.5rem'
-        },
-        buyAgainItem: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1rem',
-            padding: '0.75rem 1rem',
-            borderRadius: '0.75rem',
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-            marginBottom: '0.5rem'
-        },
-        buyAgainContainer: {
-            padding: '0.5rem',
-            maxHeight: '300px',
-            overflowY: 'auto'
-        }
-    };
-
     if (loading) {
         return (
             <div className="dashboard-layout">
                 <Sidebar />
-                <main className="dashboard-main" style={styles.page}>
+                <main className="dashboard-main user-dashboard-page">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh' }}>
                         <div style={{ textAlign: 'center' }}>
                             <div className="spinner" style={{ width: 48, height: 48, margin: '0 auto 1rem' }} />
-                            <p style={{ color: '#9ca3af', fontWeight: 500 }}>Loading your dashboard...</p>
+                            <p style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Loading your dashboard...</p>
                         </div>
                     </div>
                 </main>
@@ -334,134 +83,134 @@ const UserDashboard = () => {
     return (
         <div className="dashboard-layout">
             <Sidebar />
-            <main className="dashboard-main" style={styles.page}>
+            <main className="dashboard-main user-dashboard-page">
                 {/* Header */}
-                <div style={styles.header}>
-                    <h1 style={styles.title}>
-                        Welcome back, <span style={styles.gradientText}>{user?.name?.split(' ')[0]}!</span> 👋
+                <div className="ud-header">
+                    <h1 className="ud-title">
+                        Welcome back, <span className="ud-gradient-text">{user?.name?.split(' ')[0]}!</span> 👋
                     </h1>
-                    <p style={styles.subtitle}>
+                    <p className="ud-subtitle">
                         Here's your health overview
-                        <span style={styles.dateBadge}>
+                        <span className="ud-date-badge">
                             <FiCalendar size={14} /> {today}
                         </span>
                     </p>
                 </div>
 
                 {/* Stats Grid */}
-                <div style={styles.statsGrid}>
-                    <div style={styles.statCard}>
-                        <div style={styles.statIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
+                <div className="ud-stats-grid">
+                    <div className="ud-stat-card">
+                        <div className="ud-stat-icon" style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)' }}>
                             <FiShoppingCart />
                         </div>
                         <div>
-                            <div style={styles.statValue}>{stats.totalOrders}</div>
-                            <div style={styles.statLabel}>Total Orders</div>
+                            <div className="ud-stat-value">{stats.totalOrders}</div>
+                            <div className="ud-stat-label">Total Orders</div>
                         </div>
                     </div>
 
-                    <div style={styles.statCard}>
-                        <div style={styles.statIcon('linear-gradient(135deg, #f59e0b, #fbbf24)')}>
+                    <div className="ud-stat-card">
+                        <div className="ud-stat-icon" style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}>
                             <FiClock />
                         </div>
                         <div>
-                            <div style={styles.statValue}>{stats.pendingOrders}</div>
-                            <div style={styles.statLabel}>In Progress</div>
+                            <div className="ud-stat-value">{stats.pendingOrders}</div>
+                            <div className="ud-stat-label">In Progress</div>
                         </div>
                     </div>
 
-                    <div style={styles.statCard}>
-                        <div style={styles.statIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
+                    <div className="ud-stat-card">
+                        <div className="ud-stat-icon" style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)' }}>
                             <FiPackage />
                         </div>
                         <div>
-                            <div style={styles.statValue}>{stats.completedOrders}</div>
-                            <div style={styles.statLabel}>Delivered</div>
+                            <div className="ud-stat-value">{stats.completedOrders}</div>
+                            <div className="ud-stat-label">Delivered</div>
                         </div>
                     </div>
 
-                    <div style={styles.statCard}>
-                        <div style={styles.statIcon('linear-gradient(135deg, #8b5cf6, #a78bfa)')}>
+                    <div className="ud-stat-card">
+                        <div className="ud-stat-icon" style={{ background: 'linear-gradient(135deg, #8b5cf6, #a78bfa)' }}>
                             <FiFileText />
                         </div>
                         <div>
-                            <div style={styles.statValue}>{stats.activePrescriptions}</div>
-                            <div style={styles.statLabel}>Active Rx</div>
+                            <div className="ud-stat-value">{stats.activePrescriptions}</div>
+                            <div className="ud-stat-label">Active Rx</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Quick Actions */}
                 <div style={{ marginBottom: '2rem' }}>
-                    <h3 style={styles.sectionTitle}><FiActivity /> Quick Actions</h3>
-                    <div style={styles.quickActionsGrid}>
-                        <Link to="/user/catalog" style={styles.actionCard}>
-                            <div style={styles.actionIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
+                    <h3 className="ud-section-title"><FiActivity /> Quick Actions</h3>
+                    <div className="ud-quick-actions-grid">
+                        <Link to="/user/catalog" className="ud-action-card">
+                            <div className="ud-action-icon" style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)' }}>
                                 <FiPackage />
                             </div>
-                            <span style={styles.actionLabel}>Browse Medicines</span>
+                            <span className="ud-action-label">Browse Medicines</span>
                         </Link>
-                        <Link to="/user/orders" style={styles.actionCard}>
-                            <div style={styles.actionIcon('linear-gradient(135deg, #f59e0b, #fbbf24)')}>
+                        <Link to="/user/orders" className="ud-action-card">
+                            <div className="ud-action-icon" style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}>
                                 <FiShoppingCart />
                             </div>
-                            <span style={styles.actionLabel}>My Orders</span>
+                            <span className="ud-action-label">My Orders</span>
                         </Link>
-                        <Link to="/user/prescriptions" style={styles.actionCard}>
-                            <div style={styles.actionIcon('linear-gradient(135deg, #8b5cf6, #a78bfa)')}>
+                        <Link to="/user/prescriptions" className="ud-action-card">
+                            <div className="ud-action-icon" style={{ background: 'linear-gradient(135deg, #8b5cf6, #a78bfa)' }}>
                                 <FiFileText />
                             </div>
-                            <span style={styles.actionLabel}>Upload Rx</span>
+                            <span className="ud-action-label">Upload Rx</span>
                         </Link>
-                        <Link to="/user/profile" style={styles.actionCard}>
-                            <div style={styles.actionIcon('linear-gradient(135deg, #f97316, #fb923c)')}>
+                        <Link to="/user/profile" className="ud-action-card">
+                            <div className="ud-action-icon" style={{ background: 'linear-gradient(135deg, #f97316, #fb923c)' }}>
                                 <FiUser />
                             </div>
-                            <span style={styles.actionLabel}>My Profile</span>
+                            <span className="ud-action-label">My Profile</span>
                         </Link>
                     </div>
                 </div>
 
                 {/* Main Content Grid */}
-                <div style={styles.mainGrid}>
+                <div className="ud-main-grid">
                     {/* Recent Orders */}
-                    <div style={styles.card}>
-                        <div style={styles.cardHeader}>
-                            <h3 style={{ ...styles.sectionTitle, marginBottom: 0 }}>
-                                <FiClock style={{ color: '#94a3b8' }} /> Recent Orders
+                    <div className="ud-card">
+                        <div className="ud-card-header">
+                            <h3 className="ud-section-title" style={{ marginBottom: 0 }}>
+                                <FiClock style={{ color: 'var(--text-secondary)' }} /> Recent Orders
                             </h3>
-                            <Link to="/user/orders" style={styles.viewAllLink}>
+                            <Link to="/user/orders" className="ud-view-all">
                                 View All <FiArrowRight size={14} />
                             </Link>
                         </div>
                         {recentOrders.length > 0 ? (
-                            <table style={styles.table}>
+                            <table className="ud-table">
                                 <thead>
                                     <tr>
-                                        <th style={styles.th}>Order</th>
-                                        <th style={styles.th}>Items</th>
-                                        <th style={styles.th}>Total</th>
-                                        <th style={styles.th}>Status</th>
+                                        <th className="ud-th">Order</th>
+                                        <th className="ud-th">Items</th>
+                                        <th className="ud-th">Total</th>
+                                        <th className="ud-th">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {recentOrders.slice(0, 4).map((order) => (
                                         <tr key={order._id}>
-                                            <td style={{ ...styles.td, fontWeight: 600 }}>#{order.orderNumber}</td>
-                                            <td style={styles.td}>{order.items?.length || 0} items</td>
-                                            <td style={{ ...styles.td, fontWeight: 600 }}>₹{order.total?.toLocaleString()}</td>
-                                            <td style={styles.td}>
-                                                <span style={styles.badge(order.status)}>{order.status}</span>
+                                            <td className="ud-td" style={{ fontWeight: 600 }}>#{order.orderNumber}</td>
+                                            <td className="ud-td">{order.items?.length || 0} items</td>
+                                            <td className="ud-td" style={{ fontWeight: 600 }}>₹{order.total?.toLocaleString()}</td>
+                                            <td className="ud-td">
+                                                <span className={`ud-badge ${order.status}`}>{order.status}</span>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         ) : (
-                            <div style={styles.emptyState}>
-                                <div style={styles.emptyIcon}>📦</div>
-                                <h4 style={{ fontWeight: 600, color: '#334155', marginBottom: '0.25rem' }}>No orders yet</h4>
-                                <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginBottom: '1rem' }}>Start shopping to see your orders here</p>
+                            <div className="ud-empty-state">
+                                <div className="ud-empty-icon">📦</div>
+                                <h4 style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>No orders yet</h4>
+                                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Start shopping to see your orders here</p>
                                 <Link to="/user/catalog" className="btn btn-primary">
                                     <FiShoppingCart /> Browse Catalog
                                 </Link>
@@ -472,54 +221,54 @@ const UserDashboard = () => {
                     {/* Right Column */}
                     <div>
                         {/* Health Summary */}
-                        <div style={styles.healthCard}>
-                            <div style={{ ...styles.cardHeader, borderBottom: '1px solid rgba(254,202,202,0.3)' }}>
-                                <h3 style={{ ...styles.sectionTitle, marginBottom: 0, color: '#dc2626' }}>
+                        <div className="ud-health-card">
+                            <div className="ud-card-header" style={{ borderBottom: '1px solid var(--border-light)' }}>
+                                <h3 className="ud-section-title" style={{ marginBottom: 0, color: '#dc2626' }}>
                                     <FiActivity /> Health Summary
                                 </h3>
                             </div>
                             <div style={{ padding: '0.5rem 0' }}>
-                                <div style={{ ...styles.healthItem, marginBottom: '0.75rem' }}>
-                                    <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>Blood Group</span>
+                                <div className="ud-health-item">
+                                    <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Blood Group</span>
                                     <span style={{ fontWeight: 700, padding: '0.25rem 0.75rem', background: '#fee2e2', color: '#dc2626', borderRadius: '9999px', fontSize: '0.875rem' }}>B+</span>
                                 </div>
-                                <div style={{ ...styles.healthItem, marginBottom: '0.75rem' }}>
-                                    <span style={{ fontSize: '0.875rem', color: '#9ca3af' }}>Allergies</span>
-                                    <span style={{ fontWeight: 600, padding: '0.25rem 0.75rem', background: '#fef3c7', color: '#d97706', borderRadius: '9999px', fontSize: '0.875rem' }}>None</span>
+                                <div className="ud-health-item">
+                                    <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Allergies</span>
+                                    <span style={{ fontWeight: 600, padding: '0.25rem 0.75rem', background: '#fef3c7', color: '#d97706', borderRadius: '9999px', fontSize: '0.75rem' }}>None</span>
                                 </div>
                             </div>
-                            <div style={{ padding: '0.75rem 1.25rem', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
-                                <Link to="/user/profile" style={{ ...styles.viewAllLink, color: '#dc2626', justifyContent: 'space-between' }}>
+                            <div style={{ padding: '0.75rem 1.25rem', borderTop: '1px solid var(--border-light)' }}>
+                                <Link to="/user/profile" className="ud-view-all" style={{ color: '#dc2626', justifyContent: 'space-between' }}>
                                     View Full Profile <FiArrowRight />
                                 </Link>
                             </div>
                         </div>
 
                         {/* Buy Again */}
-                        <div style={styles.card}>
-                            <div style={styles.cardHeader}>
-                                <h3 style={{ ...styles.sectionTitle, marginBottom: 0 }}>
+                        <div className="ud-card">
+                            <div className="ud-card-header">
+                                <h3 className="ud-section-title" style={{ marginBottom: 0 }}>
                                     <FiRefreshCcw style={{ color: '#f97316' }} /> Buy Again
                                 </h3>
                             </div>
                             <div style={styles.buyAgainContainer}>
                                 {featuredMedicines.slice(0, 3).map((medicine) => (
-                                    <div key={medicine._id} style={styles.buyAgainItem}>
-                                        <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', borderRadius: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                                    <div key={medicine._id} className="ud-buy-again-item">
+                                        <div className="ud-buy-again-icon">
                                             💊
                                         </div>
                                         <div style={{ flex: 1 }}>
-                                            <div style={{ fontWeight: 600, color: '#ffffff', fontSize: '0.9rem' }}>{medicine.name}</div>
-                                            <div style={{ fontSize: '0.875rem', color: '#9ca3af' }}>₹{medicine.price}</div>
+                                            <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.9rem' }}>{medicine.name}</div>
+                                            <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>₹{medicine.price}</div>
                                         </div>
-                                        <button style={{ width: 32, height: 32, borderRadius: '50%', border: 'none', background: 'linear-gradient(135deg, #f97316, #fb923c)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <button className="ud-buy-again-btn">
                                             <FiPlus />
                                         </button>
                                     </div>
                                 ))}
                             </div>
-                            <div style={{ padding: '0.75rem', borderTop: '1px solid #f1f5f9', textAlign: 'center' }}>
-                                <Link to="/user/catalog" style={{ ...styles.viewAllLink, justifyContent: 'center' }}>
+                            <div style={{ padding: '0.75rem', borderTop: '1px solid var(--border-light)', textAlign: 'center' }}>
+                                <Link to="/user/catalog" className="ud-view-all" style={{ justifyContent: 'center' }}>
                                     Browse All Medicines
                                 </Link>
                             </div>
@@ -527,24 +276,6 @@ const UserDashboard = () => {
                     </div>
                 </div>
             </main>
-
-            <style>{`
-                @media (max-width: 1024px) {
-                    .dashboard-main > div:nth-child(2) { grid-template-columns: repeat(2, 1fr) !important; }
-                    .dashboard-main > div:nth-child(4) { grid-template-columns: repeat(2, 1fr) !important; }
-                    .dashboard-main > div:last-child { grid-template-columns: 1fr !important; }
-                }
-                @media (max-width: 768px) {
-                    .dashboard-main > div:nth-child(2) { grid-template-columns: repeat(2, 1fr) !important; }
-                    .dashboard-main > div:nth-child(4) { grid-template-columns: repeat(2, 1fr) !important; }
-                    .dashboard-main > div:last-child { grid-template-columns: 1fr !important; }
-                }
-                @media (max-width: 640px) {
-                    .dashboard-main > div:nth-child(2) { grid-template-columns: 1fr !important; }
-                    .dashboard-main > div:nth-child(4) { grid-template-columns: repeat(2, 1fr) !important; }
-                    .dashboard-main { padding: 1rem !important; }
-                }
-            `}</style>
         </div>
     );
 };

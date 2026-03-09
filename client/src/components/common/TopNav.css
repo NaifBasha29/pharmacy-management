@@ -1,15 +1,15 @@
-/* Top Navigation Bar - Black & Green Theme */
-
+/* Top Navigation Bar - Theme Adaptable */
 .top-nav {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 50px;
-    background: #000000;
-    border-bottom: 1px solid rgba(249, 115, 22, 0.1);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-light);
     z-index: 100;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-md);
+    transition: background-color 0.3s ease;
 }
 
 .top-nav-container {
@@ -45,7 +45,7 @@
 .brand-text {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #e5e5e5;
+    color: var(--text-primary);
 }
 
 /* Navigation Links */
@@ -57,7 +57,7 @@
 
 .nav-item {
     padding: 0.5rem 1rem;
-    color: #9ca3af;
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 500;
@@ -66,8 +66,8 @@
 }
 
 .nav-item:hover {
-    color: #e5e5e5;
-    background: rgba(249, 115, 22, 0.1);
+    color: var(--primary-500);
+    background: var(--surface-hover);
 }
 
 .nav-item.active {
@@ -133,4 +133,3 @@
         font-size: 0.9rem;
     }
 }
-

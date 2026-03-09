@@ -1,26 +1,31 @@
-/* Clinic Dashboard Styles */
+/* Clinic Dashboard Layout */
 .clinic-dashboard {
     display: flex;
     min-height: 100vh;
-    background: #f8fafc;
+    background: var(--bg-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text-primary);
 }
 
 /* Sidebar */
 .clinic-sidebar {
     width: 280px;
-    background: linear-gradient(180deg, #0f766e 0%, #115e59 100%);
-    color: white;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     position: fixed;
     height: 100vh;
     left: 0;
     top: 0;
+    border-right: 1px solid var(--border-light);
+    box-shadow: var(--shadow-xl);
+    z-index: 50;
 }
 
 .sidebar-header {
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-light);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -29,7 +34,7 @@
 .clinic-logo {
     width: 50px;
     height: 50px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-hover);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -45,7 +50,7 @@
 
 .default-logo-icon {
     font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--primary-500);
 }
 
 .clinic-info h2 {
@@ -53,12 +58,14 @@
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
+    color: var(--text-primary);
 }
 
 .clinic-code {
     font-size: 0.75rem;
     opacity: 0.7;
     font-family: monospace;
+    color: var(--text-secondary);
 }
 
 /* Navigation */
@@ -73,7 +80,7 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.875rem 1.5rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 0.95rem;
     transition: all 0.2s ease;
@@ -81,14 +88,14 @@
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--surface-hover);
+    color: var(--primary-500);
 }
 
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border-left-color: #5eead4;
+    background: var(--surface-hover);
+    color: var(--primary-600);
+    border-left-color: var(--primary-500);
 }
 
 .nav-item svg {
@@ -98,7 +105,7 @@
 /* Sidebar Footer */
 .sidebar-footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border-light);
 }
 
 .logout-btn {
@@ -107,17 +114,19 @@
     gap: 0.75rem;
     width: 100%;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: none;
+    background: var(--surface-hover);
+    color: var(--text-primary);
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--surface);
+    color: var(--error);
+    border-color: var(--error);
 }
 
 /* Main Content */
@@ -125,6 +134,7 @@
     flex: 1;
     margin-left: 280px;
     padding: 2rem;
+    background: var(--bg-primary);
 }
 
 .clinic-header {
@@ -134,12 +144,12 @@
 .clinic-header h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0 0 0.5rem;
 }
 
 .clinic-header p {
-    color: #9ca3af;
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -152,14 +162,14 @@
 }
 
 .stat-card {
-    background: white;
+    background: var(--bg-secondary);
     border-radius: 16px;
     padding: 1.5rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
 }
 
 .stat-icon {
@@ -173,23 +183,23 @@
 }
 
 .stat-icon.patients {
-    background: #dbeafe;
-    color: #ea580c;
+    background: var(--primary-100);
+    color: var(--primary-600);
 }
 
 .stat-icon.medicines {
-    background: #dcfce7;
-    color: #16a34a;
+    background: var(--secondary-100);
+    color: var(--secondary-600);
 }
 
 .stat-icon.orders {
-    background: #fef3c7;
-    color: #d97706;
+    background: var(--primary-50);
+    color: var(--primary-500);
 }
 
 .stat-icon.revenue {
-    background: #f3e8ff;
-    color: #9333ea;
+    background: var(--gray-100);
+    color: var(--gray-700);
 }
 
 .stat-content {
@@ -200,32 +210,32 @@
 .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--text-primary);
 }
 
 .stat-label {
     font-size: 0.875rem;
-    color: #9ca3af;
+    color: var(--text-secondary);
 }
 
 /* Welcome Card */
 .welcome-card {
-    background: white;
+    background: var(--bg-secondary);
     border-radius: 16px;
     padding: 2rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
 }
 
 .welcome-card h2 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary);
     margin: 0 0 1rem;
 }
 
 .welcome-card p {
-    color: #9ca3af;
+    color: var(--text-secondary);
     margin: 0 0 1rem;
 }
 
@@ -237,8 +247,8 @@
 
 .welcome-card li {
     padding: 0.75rem 0;
-    color: #475569;
-    border-bottom: 1px solid #f1f5f9;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .welcome-card li:last-child {
@@ -267,4 +277,3 @@
         grid-template-columns: 1fr;
     }
 }
-

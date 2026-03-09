@@ -37,8 +37,8 @@
 }
 
 .brand-logo-img {
-    width: 150px;
-    height: 150px;
+    width: 220px;
+    height: 220px;
     object-fit: contain;
     margin-bottom: var(--space-4);
     border-radius: 12px;
@@ -297,5 +297,3 @@
 .back-to-user-btn:hover {
     color: #ea580c;
 }
-
-
