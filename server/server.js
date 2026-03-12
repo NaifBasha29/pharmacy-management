@@ -67,16 +67,7 @@ app.use(helmet({
 
 // CORS configuration
 app.use(cors({
-  origin: [
-    'http://localhost:5173',          // Vite client
-    'http://localhost:3000',          // CRA / Next
-    'http://localhost:8081',          // Expo web
-    'http://localhost:8082',          // Expo web (fallback port)
-    'http://192.168.29.190:8081',     // Expo LAN
-    'http://192.168.29.190:8082',     // Expo LAN fallback
-    'http://192.168.6.88:8081',       // old IP
-    'http://localhost:5005',          // Self
-  ],
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
