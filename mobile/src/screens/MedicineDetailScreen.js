@@ -235,8 +235,7 @@ export default function MedicineDetailScreen({ route, navigation }) {
           <Text style={styles.sectionTitle}>Storage</Text>
           <Text style={styles.sectionText}>
             {medicine.storage || 
-             'Store at room temperature between 20-25°C (68-77°F). Keep away from moisture and direct sunlight. 
-             Keep out of reach of children and pets. Do not use after the expiration date.'}
+             'Store at room temperature between 20-25°C (68-77°F). Keep away from moisture and direct sunlight. Keep out of reach of children and pets. Do not use after the expiration date.'}
           </Text>
         </View>
 

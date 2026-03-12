@@ -11,26 +11,26 @@ const darkColors = {
   primaryMuted: 'rgba(249,115,22,0.15)',
 
   // Backgrounds
-  background: '#000000',
-  surface: '#0a0a0a',
-  surfaceHighlight: '#1a1a1a',
+  background: '#0f0f0f',
+  surface: '#1a1a1a',
+  surfaceHighlight: '#242424',
   surfaceElevated: '#2a2a2a',
   card: '#1e1e1e',
   overlay: 'rgba(0,0,0,0.6)',
 
   // Navigation
   tabBar: '#141414',
-  navBar: '#000000',
+  navBar: '#0f0f0f',
 
   // Text
-  textPrimary: '#ffffff',
-  textSecondary: '#9ca3af',
-  textTertiary: '#6b7280',
-  textInverse: '#000000',
+  textPrimary: '#f4f4f5',
+  textSecondary: '#a1a1aa',
+  textTertiary: '#71717a',
+  textInverse: '#0f0f0f',
 
   // Status
-  success: '#10b981',
-  successMuted: 'rgba(16,185,129,0.15)',
+  success: '#22c55e',
+  successMuted: 'rgba(34,197,94,0.15)',
   error: '#ef4444',
   errorMuted: 'rgba(239,68,68,0.15)',
   warning: '#f59e0b',
@@ -39,11 +39,11 @@ const darkColors = {
   infoMuted: 'rgba(59,130,246,0.15)',
 
   // UI
-  border: '#333333',
-  borderStrong: '#4b5563',
+  border: '#2e2e2e',
+  borderStrong: '#3f3f46',
   divider: '#262626',
-  inputBackground: '#171717',
-  placeholder: '#525252',
+  inputBackground: '#1c1c1c',
+  placeholder: '#52525b',
   buttonText: '#ffffff',
   badge: '#ef4444',
   chip: '#27272a',
@@ -63,9 +63,9 @@ const lightColors = {
   primaryMuted: 'rgba(249,115,22,0.1)',
 
   // Backgrounds
-  background: '#f8fafc',
+  background: '#f4f4f5',
   surface: '#ffffff',
-  surfaceHighlight: '#f1f5f9',
+  surfaceHighlight: '#f9fafb',
   surfaceElevated: '#ffffff',
   card: '#ffffff',
   overlay: 'rgba(0,0,0,0.5)',
@@ -75,36 +75,36 @@ const lightColors = {
   navBar: '#ffffff',
 
   // Text
-  textPrimary: '#1e293b',
-  textSecondary: '#64748b',
-  textTertiary: '#94a3b8',
+  textPrimary: '#18181b',
+  textSecondary: '#52525b',
+  textTertiary: '#a1a1aa',
   textInverse: '#ffffff',
 
   // Status
-  success: '#10b981',
-  successMuted: 'rgba(16,185,129,0.1)',
-  error: '#ef4444',
-  errorMuted: 'rgba(239,68,68,0.1)',
-  warning: '#f59e0b',
-  warningMuted: 'rgba(245,158,11,0.1)',
-  info: '#3b82f6',
-  infoMuted: 'rgba(59,130,246,0.1)',
+  success: '#16a34a',
+  successMuted: 'rgba(22,163,74,0.1)',
+  error: '#dc2626',
+  errorMuted: 'rgba(220,38,38,0.1)',
+  warning: '#d97706',
+  warningMuted: 'rgba(217,119,6,0.1)',
+  info: '#2563eb',
+  infoMuted: 'rgba(37,99,235,0.1)',
 
   // UI
-  border: '#e2e8f0',
-  borderStrong: '#cbd5e1',
-  divider: '#f1f5f9',
-  inputBackground: '#f8fafc',
-  placeholder: '#94a3b8',
+  border: '#e4e4e7',
+  borderStrong: '#d4d4d8',
+  divider: '#f1f1f1',
+  inputBackground: '#f9fafb',
+  placeholder: '#a1a1aa',
   buttonText: '#ffffff',
   badge: '#ef4444',
-  chip: '#f1f5f9',
-  chipText: '#475569',
-  disabled: '#e2e8f0',
-  disabledText: '#94a3b8',
+  chip: '#f4f4f5',
+  chipText: '#3f3f46',
+  disabled: '#e4e4e7',
+  disabledText: '#a1a1aa',
 
   // Shadow
-  shadow: '#000000',
+  shadow: '#71717a',
 };
 
 // ─── Typography ───────────────────────────────────────────────────────────────
@@ -201,22 +201,10 @@ export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
-    // Load saved theme preference
     AsyncStorage.getItem('theme_mode').then((val) => {
-      if (val === 'light') {
-        setIsDark(false);
-      } else if (val === 'dark') {
-        setIsDark(true);
-      } else {
-        // Default to dark theme if no preference saved
-        setIsDark(true);
-        AsyncStorage.setItem('theme_mode', 'dark').catch(() => {});
-      }
-    }).catch(() => {
-      // Default to dark theme on error
-      setIsDark(true);
-      AsyncStorage.setItem('theme_mode', 'dark').catch(() => {});
-    });
+      if (val === 'light') setIsDark(false);
+      if (val === 'dark') setIsDark(true);
+    }).catch(() => {});
   }, []);
 
   const toggleTheme = () => {
@@ -225,25 +213,10 @@ export const ThemeProvider = ({ children }) => {
     AsyncStorage.setItem('theme_mode', next ? 'dark' : 'light').catch(() => {});
   };
 
-  const setTheme = (theme) => {
-    const shouldBeDark = theme === 'dark';
-    setIsDark(shouldBeDark);
-    AsyncStorage.setItem('theme_mode', theme).catch(() => {});
-  };
-
   const theme = isDark ? darkColors : lightColors;
 
   return (
-    <ThemeContext.Provider value={{ 
-      isDark, 
-      theme, 
-      toggleTheme, 
-      setTheme,
-      typography, 
-      spacing, 
-      radius, 
-      getShadow 
-    }}>
+    <ThemeContext.Provider value={{ isDark, theme, toggleTheme, typography, spacing, radius, getShadow }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -252,11 +225,5 @@ export const ThemeProvider = ({ children }) => {
 export const useTheme = () => {
   const ctx = useContext(ThemeContext);
   if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return {
-    ...ctx,
-    colors: ctx.theme,
-    isLight: !ctx.isDark,
-    isDarkTheme: ctx.isDark,
-    isLightTheme: !ctx.isDark
-  };
+  return ctx;
 };

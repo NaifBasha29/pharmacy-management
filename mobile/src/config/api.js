@@ -2,7 +2,6 @@ import axios from 'axios';
 import * as SecureStore from '../utils/storage';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import { refreshAccessToken } from '../utils/tokenRefresh';
 
 const API_PORT = 5005;
 
@@ -63,31 +62,7 @@ api.interceptors.response.use(
     console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
     return response;
   },
-  async (error) => {
-    const originalRequest = error.config;
-
-    // Check if error is 401 TOKEN_EXPIRED and we haven't already tried to refresh
-    if (error.response?.status === 401 && 
-        error.response?.data?.code === 'TOKEN_EXPIRED' && 
-        !originalRequest._retry) {
-      
-      originalRequest._retry = true;
-      
-      try {
-        // Try to refresh the token
-        const newToken = await refreshAccessToken();
-        
-        // Update the authorization header with new token
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        
-        // Retry the original request
-        return api(originalRequest);
-      } catch (refreshError) {
-        // Refresh failed, return the original error
-        console.log('Token refresh failed in interceptor, proceeding with error');
-      }
-    }
-
+  (error) => {
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('❌ API ERROR DETAILS:');
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
