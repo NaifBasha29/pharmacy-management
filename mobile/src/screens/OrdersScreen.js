@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  RefreshControl,
-  ActivityIndicator,
-  Alert
+  View, Text, FlatList, TouchableOpacity, StyleSheet,
+  RefreshControl, ActivityIndicator, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -15,17 +9,17 @@ import { useTheme } from '../context/ThemeContext';
 import api from '../config/api';
 
 const STATUS_CONFIG = {
-  pending: { color: '#f59e0b', icon: 'clock-outline', label: 'Pending' },
-  confirmed: { color: '#3b82f6', icon: 'check-circle-outline', label: 'Confirmed' },
-  processing: { color: '#8b5cf6', icon: 'cog-outline', label: 'Processing' },
-  dispatched: { color: '#06b6d4', icon: 'truck-delivery-outline', label: 'Dispatched' },
-  delivered: { color: '#10b981', icon: 'package-variant-closed-check', label: 'Delivered' },
-  cancelled: { color: '#ef4444', icon: 'close-circle-outline', label: 'Cancelled' },
+  pending:    { color: '#f59e0b', icon: 'clock-outline',                label: 'Pending'    },
+  confirmed:  { color: '#3b82f6', icon: 'check-circle-outline',         label: 'Confirmed'  },
+  processing: { color: '#8b5cf6', icon: 'cog-outline',                  label: 'Processing' },
+  dispatched: { color: '#06b6d4', icon: 'truck-delivery-outline',       label: 'Dispatched' },
+  delivered:  { color: '#10b981', icon: 'package-variant-closed-check', label: 'Delivered'  },
+  cancelled:  { color: '#ef4444', icon: 'close-circle-outline',         label: 'Cancelled'  },
 };
 
 const TABS = [
-  { key: 'all', label: 'All' },
-  { key: 'active', label: 'Active' },
+  { key: 'all',       label: 'All'       },
+  { key: 'active',    label: 'Active'    },
   { key: 'completed', label: 'Completed' },
   { key: 'cancelled', label: 'Cancelled' },
 ];
@@ -36,22 +30,15 @@ export default function OrdersScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
-  const [expandedOrder, setExpandedOrder] = useState(null);
-  const styles = createStyles(theme);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  useEffect(() => { fetchOrders(); }, []);
 
   const fetchOrders = async () => {
     try {
       const res = await api.get('/orders');
       setOrders(res.data.data.orders || []);
-    } catch (error) {
-      console.log('Error fetching orders:', error);
-    } finally {
-      setLoading(false);
-    }
+    } catch (_) {}
+    finally { setLoading(false); }
   };
 
   const onRefresh = useCallback(() => {
@@ -59,137 +46,118 @@ export default function OrdersScreen({ navigation }) {
     fetchOrders().then(() => setRefreshing(false));
   }, []);
 
-  const handleCancelOrder = async (orderId) => {
-    Alert.alert(
-      'Cancel Order',
-      'Are you sure you want to cancel this order?',
-      [
-        { text: 'No', style: 'cancel' },
-        {
-          text: 'Yes, Cancel',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await api.put(`/orders/${orderId}/cancel`);
-              Alert.alert('Success', 'Order cancelled successfully');
-              fetchOrders();
-            } catch (error) {
-              Alert.alert('Error', 'Failed to cancel order');
-            }
+  const handleCancelOrder = (orderId) => {
+    Alert.alert('Cancel Order', 'Are you sure you want to cancel this order?', [
+      { text: 'No', style: 'cancel' },
+      {
+        text: 'Yes, Cancel', style: 'destructive',
+        onPress: async () => {
+          try {
+            await api.put(`/orders/${orderId}/cancel`);
+            fetchOrders();
+          } catch (_) {
+            Alert.alert('Error', 'Failed to cancel order');
           }
-        }
-      ]
-    );
+        },
+      },
+    ]);
   };
 
-  const getFilteredOrders = () => {
-    if (activeTab === 'all') return orders;
-    if (activeTab === 'active') {
-      return orders.filter(o => ['pending', 'confirmed', 'processing', 'dispatched'].includes(o.status));
-    }
+  const filteredOrders = (() => {
+    if (activeTab === 'active') return orders.filter(o => ['pending','confirmed','processing','dispatched'].includes(o.status));
     if (activeTab === 'completed') return orders.filter(o => o.status === 'delivered');
     if (activeTab === 'cancelled') return orders.filter(o => o.status === 'cancelled');
     return orders;
-  };
+  })();
 
-  const filteredOrders = getFilteredOrders();
-
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
   const renderOrderItem = ({ item }) => {
     const status = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
-    const isExpanded = expandedOrder === item._id;
+    const canCancel = ['pending', 'confirmed'].includes(item.status);
 
     return (
       <TouchableOpacity
-        style={styles.orderCard}
+        style={[s.card, { backgroundColor: theme.card, borderColor: theme.border }]}
         activeOpacity={0.9}
         onPress={() => navigation.navigate('OrderDetail', { orderId: item._id })}
       >
-        <View style={styles.orderHeader}>
-          <View>
-            <Text style={styles.orderId}>Order #{item._id?.slice(-8).toUpperCase()}</Text>
-            <Text style={styles.orderDate}>{formatDate(item.createdAt)}</Text>
+        <View style={s.cardTop}>
+          <View style={s.cardLeft}>
+            <Text style={[s.orderId, { color: theme.textPrimary }]}>
+              #{item._id?.slice(-8).toUpperCase()}
+            </Text>
+            <Text style={[s.orderDate, { color: theme.textSecondary }]}>
+              {item.createdAt ? formatDate(item.createdAt) : ''}
+            </Text>
           </View>
-          <View style={[styles.statusBadge, { backgroundColor: `${status.color}20` }]}>
-            <Icon name={status.icon} size={14} color={status.color} />
-            <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+          <View style={[s.statusBadge, { backgroundColor: status.color + '20' }]}>
+            <Icon name={status.icon} size={13} color={status.color} />
+            <Text style={[s.statusText, { color: status.color }]}>{status.label}</Text>
           </View>
         </View>
 
-        <View style={styles.orderSummary}>
-          <Text style={styles.itemCount}>{item.items?.length || 0} items</Text>
-          <Text style={styles.orderTotal}>${item.totalAmount?.toFixed(2)}</Text>
+        <View style={[s.divider, { backgroundColor: theme.border }]} />
+
+        <View style={s.cardMid}>
+          <View style={s.itemsRow}>
+            <Icon name="pill" size={16} color={theme.textTertiary} />
+            <Text style={[s.itemCount, { color: theme.textSecondary }]}>
+              {item.items?.length || 0} item{(item.items?.length || 0) !== 1 ? 's' : ''}
+            </Text>
+          </View>
+          <Text style={[s.total, { color: theme.primary }]}>
+            ${item.totalAmount?.toFixed(2) ?? '0.00'}
+          </Text>
         </View>
 
-        {isExpanded && (
-          <View style={styles.orderDetails}>
-            <View style={styles.divider} />
-            {item.items?.map((orderItem, index) => (
-              <View key={index} style={styles.orderItemRow}>
-                <Text style={styles.orderItemName}>
-                  {orderItem.medicine?.name || 'Medicine'} x{orderItem.quantity}
-                </Text>
-                <Text style={styles.orderItemPrice}>
-                  ${((orderItem.price || 0) * (orderItem.quantity || 0)).toFixed(2)}
-                </Text>
-              </View>
-            ))}
-
-            {['pending', 'confirmed'].includes(item.status) && (
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => handleCancelOrder(item._id)}
-              >
-                <Icon name="close-circle-outline" size={18} color="#ef4444" />
-                <Text style={styles.cancelButtonText}>Cancel Order</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+        {canCancel && (
+          <TouchableOpacity
+            style={[s.cancelBtn, { borderColor: '#ef444440', backgroundColor: '#ef444412' }]}
+            onPress={() => handleCancelOrder(item._id)}
+            activeOpacity={0.8}
+          >
+            <Icon name="close-circle-outline" size={16} color="#ef4444" />
+            <Text style={s.cancelBtnText}>Cancel Order</Text>
+          </TouchableOpacity>
         )}
-
-        <View style={styles.expandIndicator}>
-          <Icon
-            name={isExpanded ? 'chevron-up' : 'chevron-down'}
-            size={20}
-            color={theme.textTertiary}
-          />
-        </View>
       </TouchableOpacity>
     );
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <Text style={styles.title}>My Orders</Text>
+    <SafeAreaView style={[s.root, { backgroundColor: theme.background }]} edges={['top']}>
+      <View style={[s.header, { borderBottomColor: theme.border }]}>
+        <Text style={[s.title, { color: theme.textPrimary }]}>My Orders</Text>
+        <View style={[s.countBadge, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Text style={[s.countText, { color: theme.textSecondary }]}>{orders.length}</Text>
+        </View>
       </View>
 
-      {/* Tabs */}
-      <View style={styles.tabsContainer}>
-        {TABS.map((tab) => (
-          <TouchableOpacity
-            key={tab.key}
-            style={[styles.tab, activeTab === tab.key && styles.tabActive]}
-            onPress={() => setActiveTab(tab.key)}
-          >
-            <Text style={[styles.tabText, activeTab === tab.key && styles.tabTextActive]}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      <View style={s.tabsRow}>
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.key;
+          return (
+            <TouchableOpacity
+              key={tab.key}
+              style={[
+                s.tab,
+                { backgroundColor: isActive ? theme.primary : theme.card, borderColor: isActive ? theme.primary : theme.border },
+              ]}
+              onPress={() => setActiveTab(tab.key)}
+              activeOpacity={0.8}
+            >
+              <Text style={[s.tabText, { color: isActive ? '#fff' : theme.textSecondary }]}>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       {loading ? (
-        <View style={styles.loadingContainer}>
+        <View style={s.center}>
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
       ) : (
@@ -197,15 +165,16 @@ export default function OrdersScreen({ navigation }) {
           data={filteredOrders}
           renderItem={renderOrderItem}
           keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.ordersList}
+          contentContainerStyle={s.list}
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.primary} />}
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Icon name="package-variant" size={64} color={theme.textTertiary} />
-              <Text style={styles.emptyText}>No orders found</Text>
+            <View style={s.center}>
+              <Icon name="package-variant" size={60} color={theme.textTertiary} />
+              <Text style={[s.emptyTitle, { color: theme.textPrimary }]}>No orders found</Text>
+              <Text style={[s.emptyDesc, { color: theme.textSecondary }]}>
+                {activeTab === 'all' ? 'Your order history will appear here' : `No ${activeTab} orders`}
+              </Text>
             </View>
           }
         />
@@ -214,157 +183,42 @@ export default function OrdersScreen({ navigation }) {
   );
 }
 
-const createStyles = (theme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background,
-  },
+const s = StyleSheet.create({
+  root: { flex: 1 },
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: 1,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: theme.textPrimary,
+  title: { fontSize: 24, fontWeight: '800', lineHeight: 30 },
+  countBadge: {
+    paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, borderWidth: 1,
   },
-  tabsContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  tab: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginRight: 8,
-    backgroundColor: theme.surface,
-  },
-  tabActive: {
-    backgroundColor: theme.primary,
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: theme.textSecondary,
-  },
-  tabTextActive: {
-    color: '#fff',
-  },
-  ordersList: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  orderCard: {
-    backgroundColor: theme.surface,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-  },
-  orderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  orderId: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: theme.textPrimary,
-  },
-  orderDate: {
-    fontSize: 12,
-    color: theme.textSecondary,
-    marginTop: 4,
-  },
+  countText: { fontSize: 13, fontWeight: '600' },
+  tabsRow: { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingVertical: 12 },
+  tab: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, borderWidth: 1 },
+  tabText: { fontSize: 13, fontWeight: '600' },
+  list: { padding: 16, paddingBottom: 120 },
+  card: { borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1 },
+  cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  cardLeft: { gap: 4 },
+  orderId: { fontSize: 15, fontWeight: '700', lineHeight: 20 },
+  orderDate: { fontSize: 12, lineHeight: 16 },
   statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 20,
-    gap: 4,
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20,
   },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
+  statusText: { fontSize: 12, fontWeight: '600' },
+  divider: { height: 1, marginVertical: 12 },
+  cardMid: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  itemsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  itemCount: { fontSize: 14, lineHeight: 20 },
+  total: { fontSize: 20, fontWeight: '800', lineHeight: 26 },
+  cancelBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+    marginTop: 12, paddingVertical: 10, borderRadius: 10, borderWidth: 1,
   },
-  orderSummary: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  itemCount: {
-    fontSize: 14,
-    color: theme.textSecondary,
-  },
-  orderTotal: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: theme.primary,
-  },
-  orderDetails: {
-    marginTop: 12,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: theme.border,
-    marginBottom: 12,
-  },
-  orderItemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-  },
-  orderItemName: {
-    fontSize: 14,
-    color: theme.textSecondary,
-    flex: 1,
-  },
-  orderItemPrice: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: theme.textPrimary,
-  },
-  cancelButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-    paddingVertical: 12,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: theme.errorMuted,
-    backgroundColor: theme.errorMuted,
-    gap: 6,
-  },
-  cancelButtonText: {
-    color: theme.error,
-    fontWeight: '600',
-  },
-  expandIndicator: {
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 60,
-  },
-  emptyText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: theme.textSecondary,
-  },
+  cancelBtnText: { color: '#ef4444', fontSize: 14, fontWeight: '600' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 80, gap: 10 },
+  emptyTitle: { fontSize: 18, fontWeight: '700', lineHeight: 24 },
+  emptyDesc: { fontSize: 14, lineHeight: 20, textAlign: 'center', paddingHorizontal: 32 },
 });

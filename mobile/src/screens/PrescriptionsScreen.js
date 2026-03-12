@@ -1,16 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  RefreshControl,
-  ActivityIndicator,
-  Alert,
-  Modal
+  View, Text, ScrollView, FlatList, TouchableOpacity, StyleSheet,
+  Image, RefreshControl, ActivityIndicator, Alert, Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -19,15 +10,18 @@ import { useTheme } from '../context/ThemeContext';
 import api from '../config/api';
 
 const STATUS_CONFIG = {
-  pending: { color: '#f59e0b', icon: 'clock-outline', label: 'Pending' },
-  approved: { color: '#10b981', icon: 'check-circle-outline', label: 'Approved' },
-  rejected: { color: '#ef4444', icon: 'close-circle-outline', label: 'Rejected' },
+  pending:  { color: '#f59e0b', icon: 'clock-outline',          label: 'Pending'  },
+  approved: { color: '#10b981', icon: 'check-circle-outline',   label: 'Approved' },
+  rejected: { color: '#ef4444', icon: 'close-circle-outline',   label: 'Rejected' },
 };
 
-const STATS_CONFIG = {
-  approved: { label: 'Approved', color: '#10b981', bgColor: 'rgba(16,185,129,0.1)' },
-  pending: { label: 'Pending', color: '#f59e0b', bgColor: 'rgba(245,158,11,0.1)' },
-  rejected: { label: 'Rejected', color: '#ef4444', bgColor: 'rgba(239,68,68,0.1)' },
+const getRelativeTime = (date) => {
+  const diffDays = Math.floor((Date.now() - new Date(date)) / 86400000);
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return '1 day ago';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+  return `${Math.floor(diffDays / 30)} months ago`;
 };
 
 export default function PrescriptionsScreen() {
@@ -40,31 +34,22 @@ export default function PrescriptionsScreen() {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [stats, setStats] = useState({ approved: 0, pending: 0, rejected: 0 });
-  const styles = createStyles(theme);
 
   const fetchPrescriptions = async () => {
     try {
       const res = await api.get('/prescriptions');
-      const prescriptionsData = res.data.data.prescriptions || [];
-      setPrescriptions(prescriptionsData);
-      
-      // Calculate stats from prescriptions
-      const calculatedStats = {
-        approved: prescriptionsData.filter(p => p.status === 'approved').length,
-        pending: prescriptionsData.filter(p => p.status === 'pending').length,
-        rejected: prescriptionsData.filter(p => p.status === 'rejected').length,
-      };
-      setStats(calculatedStats);
-    } catch (error) {
-      console.log('Error fetching prescriptions:', error);
-    } finally {
-      setLoading(false);
-    }
+      const data = res.data.data.prescriptions || [];
+      setPrescriptions(data);
+      setStats({
+        approved: data.filter(p => p.status === 'approved').length,
+        pending: data.filter(p => p.status === 'pending').length,
+        rejected: data.filter(p => p.status === 'rejected').length,
+      });
+    } catch (_) {}
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    fetchPrescriptions();
-  }, []);
+  useEffect(() => { fetchPrescriptions(); }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -73,60 +58,29 @@ export default function PrescriptionsScreen() {
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission needed', 'Please grant camera roll permissions to upload prescriptions.');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.8,
-    });
-
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0]);
-    }
+    if (status !== 'granted') { Alert.alert('Permission needed', 'Grant gallery access to upload prescriptions.'); return; }
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, quality: 0.8 });
+    if (!result.canceled) setSelectedImage(result.assets[0]);
   };
 
   const takePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission needed', 'Please grant camera permissions to take photos.');
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.8,
-    });
-
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0]);
-    }
+    if (status !== 'granted') { Alert.alert('Permission needed', 'Grant camera access to take photos.'); return; }
+    const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.8 });
+    if (!result.canceled) setSelectedImage(result.assets[0]);
   };
 
   const handleUpload = async () => {
     if (!selectedImage) return;
-
     try {
       setUploading(true);
       const formData = new FormData();
-      formData.append('prescription', {
-        uri: selectedImage.uri,
-        type: 'image/jpeg',
-        name: 'prescription.jpg',
-      });
-
-      await api.post('/prescriptions/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
+      formData.append('prescription', { uri: selectedImage.uri, type: 'image/jpeg', name: 'prescription.jpg' });
+      await api.post('/prescriptions/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       Alert.alert('Success', 'Prescription uploaded successfully!');
       setSelectedImage(null);
       fetchPrescriptions();
-    } catch (error) {
-      console.log('Upload error:', error);
+    } catch (_) {
       Alert.alert('Error', 'Failed to upload prescription. Please try again.');
     } finally {
       setUploading(false);
@@ -134,442 +88,210 @@ export default function PrescriptionsScreen() {
   };
 
   const showImageOptions = () => {
-    Alert.alert(
-      'Upload Prescription',
-      'Choose an option',
-      [
-        { text: 'Take Photo', onPress: takePhoto },
-        { text: 'Choose from Gallery', onPress: pickImage },
-        { text: 'Cancel', style: 'cancel' },
-      ]
-    );
+    Alert.alert('Upload Prescription', 'Choose an option', [
+      { text: 'Take Photo', onPress: takePhoto },
+      { text: 'Choose from Gallery', onPress: pickImage },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
   };
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  const STAT_ITEMS = [
+    { key: 'approved', label: 'Approved', color: '#10b981', bg: 'rgba(16,185,129,0.12)', icon: 'check-circle-outline' },
+    { key: 'pending',  label: 'Pending',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  icon: 'clock-outline'         },
+    { key: 'rejected', label: 'Rejected', color: '#ef4444', bg: 'rgba(239,68,68,0.12)',   icon: 'close-circle-outline'  },
+  ];
 
-  const getRelativeTime = (date) => {
-    const now = new Date();
-    const past = new Date(date);
-    const diffMs = now - past;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return '1 day ago';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return `${Math.floor(diffDays / 30)} months ago`;
-  };
+  return (
+    <SafeAreaView style={[s.root, { backgroundColor: theme.background }]} edges={['top']}>
+      <View style={[s.header, { borderBottomColor: theme.border }]}>
+        <Text style={[s.title, { color: theme.textPrimary }]}>Prescriptions</Text>
+      </View>
 
-  const selectImage = showImageOptions;
-
-  const renderPrescription = ({ item }) => {
-    const status = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
-    const imageUrl = item.image?.startsWith('http') 
-      ? item.image 
-      : `${api.defaults.baseURL?.replace('/api', '')}/${item.image}`;
-
-    return (
-      <View style={[styles.prescriptionCard, { backgroundColor: theme.card }]}>
-        <Image
-          source={{ uri: imageUrl }}
-          style={styles.prescriptionImage}
-          resizeMode="cover"
-        />
-        <View style={styles.prescriptionContent}>
-          <View style={styles.prescriptionHeader}>
-            <Text style={[styles.medicineName, { color: theme.textPrimary }]}>
-              {item.medicineName || 'Unknown Script'}
-            </Text>
-            <View style={[styles.statusBadge, { backgroundColor: `${status.color}20` }]}>
-              <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={s.scroll}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.primary} />}
+      >
+        <View style={[s.uploadCard, { backgroundColor: theme.card, borderColor: theme.primary + '40' }]}>
+          {selectedImage ? (
+            <View style={s.previewArea}>
+              <Image source={{ uri: selectedImage.uri }} style={s.previewImg} resizeMode="cover" />
+              <View style={s.previewActions}>
+                <TouchableOpacity
+                  style={[s.previewBtn, { borderColor: theme.border, backgroundColor: theme.background }]}
+                  onPress={() => setSelectedImage(null)}
+                  activeOpacity={0.8}
+                >
+                  <Icon name="close" size={18} color={theme.error} />
+                  <Text style={[s.previewBtnText, { color: theme.textSecondary }]}>Remove</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[s.previewBtn, { backgroundColor: theme.primary, borderColor: theme.primary }]}
+                  onPress={handleUpload}
+                  disabled={uploading}
+                  activeOpacity={0.85}
+                >
+                  {uploading ? (
+                    <ActivityIndicator color="#fff" size="small" />
+                  ) : (
+                    <>
+                      <Icon name="cloud-upload-outline" size={18} color="#fff" />
+                      <Text style={[s.previewBtnText, { color: '#fff' }]}>Upload</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-          <Text style={[styles.uploadDate, { color: theme.textSecondary }]}>
-            Uploaded on {formatDate(item.createdAt)}
-          </Text>
-          {item.note && (
-            <View style={styles.noteContainer}>
-              <Text style={[styles.noteLabel, { color: theme.primary }]}>Pharmacist Note:</Text>
-              <Text style={[styles.noteText, { color: theme.textSecondary }]}>{item.note}</Text>
+          ) : (
+            <View style={s.uploadEmpty}>
+              <View style={[s.uploadIcon, { backgroundColor: theme.primary + '18' }]}>
+                <Icon name="file-document-outline" size={36} color={theme.primary} />
+              </View>
+              <Text style={[s.uploadTitle, { color: theme.textPrimary }]}>Upload Prescription</Text>
+              <Text style={[s.uploadSub, { color: theme.textSecondary }]}>
+                Snap a photo or choose from gallery
+              </Text>
+              <View style={s.uploadBtns}>
+                <TouchableOpacity
+                  style={[s.uploadBtn, { backgroundColor: theme.primary + '15', borderColor: theme.primary + '40' }]}
+                  onPress={takePhoto}
+                  activeOpacity={0.8}
+                >
+                  <Icon name="camera-outline" size={18} color={theme.primary} />
+                  <Text style={[s.uploadBtnText, { color: theme.primary }]}>Camera</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[s.uploadBtn, { backgroundColor: theme.primary, borderColor: theme.primary }]}
+                  onPress={pickImage}
+                  activeOpacity={0.85}
+                >
+                  <Icon name="image-outline" size={18} color="#fff" />
+                  <Text style={[s.uploadBtnText, { color: '#fff' }]}>Gallery</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
         </View>
-      </View>
-    );
-  };
 
-  return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn}>
-          <Icon name="arrow-back" size={24} color={theme.textPrimary} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Prescriptions</Text>
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {/* Upload Section */}
-        <View style={styles.uploadSection}>
-          <View style={[styles.uploadCardMinimal, { backgroundColor: theme.card, borderColor: theme.border }]}>
-            <Icon name="file-upload-outline" size={32} color={theme.primary} />
-            <Text style={[styles.uploadTitle, { color: theme.textPrimary }]}>Upload Prescription</Text>
-            <Text style={[styles.uploadSubtitle, { color: theme.textSecondary }]}>
-              Select an image or PDF file
-            </Text>
-            <TouchableOpacity 
-              style={[styles.uploadBtn, { backgroundColor: theme.primary }]} 
-              onPress={showImageOptions}
-              disabled={uploading}
-            >
-              <Text style={styles.uploadBtnText}>Select File</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={s.statsRow}>
+          {STAT_ITEMS.map((item) => (
+            <View key={item.key} style={[s.statCard, { backgroundColor: item.bg }]}>
+              <Icon name={item.icon} size={20} color={item.color} />
+              <Text style={[s.statValue, { color: item.color }]}>{stats[item.key]}</Text>
+              <Text style={[s.statLabel, { color: item.color }]}>{item.label}</Text>
+            </View>
+          ))}
         </View>
 
-        {/* Status Overview */}
-        <View style={styles.statusOverview}>
-          <View style={[styles.statusItem, { backgroundColor: STATS_CONFIG.approved.bgColor }]}>
-            <Text style={[styles.statusValue, { color: STATS_CONFIG.approved.color }]}>{stats.approved}</Text>
-            <Text style={[styles.statusLabel, { color: STATS_CONFIG.approved.color }]}>Approved</Text>
-          </View>
-          <View style={[styles.statusItem, { backgroundColor: STATS_CONFIG.pending.bgColor }]}>
-            <Text style={[styles.statusValue, { color: STATS_CONFIG.pending.color }]}>{stats.pending}</Text>
-            <Text style={[styles.statusLabel, { color: STATS_CONFIG.pending.color }]}>Pending</Text>
-          </View>
-          <View style={[styles.statusItem, { backgroundColor: STATS_CONFIG.rejected.bgColor }]}>
-            <Text style={[styles.statusValue, { color: STATS_CONFIG.rejected.color }]}>{stats.rejected}</Text>
-            <Text style={[styles.statusLabel, { color: STATS_CONFIG.rejected.color }]}>Rejected</Text>
-          </View>
-        </View>
+        <View style={s.section}>
+          <Text style={[s.sectionTitle, { color: theme.textPrimary }]}>History</Text>
 
-        {/* Recent Prescriptions */}
-        <View style={styles.recentSection}>
-          <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Recent Prescriptions</Text>
-          <View style={styles.prescriptionsList}>
-            {prescriptions.length > 0 ? (
-              prescriptions.slice(0, 3).map((prescription) => (
-                <View key={prescription._id} style={[styles.prescriptionItem, { backgroundColor: theme.card, borderColor: theme.border }]}>
-                  <View style={[styles.prescriptionIcon, { backgroundColor: theme.primary + '10' }]}>
-                    <Icon name="file-document-outline" size={20} color={theme.primary} />
-                  </View>
-                  <View style={styles.prescriptionInfo}>
-                    <Text style={[styles.prescriptionName, { color: theme.textPrimary }]}>
-                      {prescription.medicineName || 'Prescription'}
+          {loading ? (
+            <ActivityIndicator color={theme.primary} style={{ marginTop: 12 }} />
+          ) : prescriptions.length > 0 ? (
+            prescriptions.map((rx) => {
+              const status = STATUS_CONFIG[rx.status] || STATUS_CONFIG.pending;
+              const imageUrl = rx.image?.startsWith('http')
+                ? rx.image
+                : `${api.defaults.baseURL?.replace('/api', '')}/${rx.image}`;
+              return (
+                <TouchableOpacity
+                  key={rx._id}
+                  style={[s.rxCard, { backgroundColor: theme.card, borderColor: theme.border }]}
+                  onPress={() => { setPreviewImage(imageUrl); setPreviewVisible(true); }}
+                  activeOpacity={0.85}
+                >
+                  <Image source={{ uri: imageUrl }} style={s.rxThumb} resizeMode="cover" />
+                  <View style={s.rxInfo}>
+                    <Text style={[s.rxName, { color: theme.textPrimary }]} numberOfLines={1}>
+                      {rx.medicineName || 'Prescription'}
                     </Text>
-                    <Text style={[styles.prescriptionDate, { color: theme.textSecondary }]}>
-                      {getRelativeTime(prescription.createdAt)}
+                    <Text style={[s.rxDate, { color: theme.textSecondary }]}>
+                      {getRelativeTime(rx.createdAt)}
                     </Text>
+                    {rx.note && (
+                      <Text style={[s.rxNote, { color: theme.textSecondary }]} numberOfLines={2}>
+                        📋 {rx.note}
+                      </Text>
+                    )}
                   </View>
-                  <View style={[
-                    styles.prescriptionStatus,
-                    { backgroundColor: STATUS_CONFIG[prescription.status].color }
-                  ]}>
-                    <Text style={styles.prescriptionStatusText}>
-                      {STATUS_CONFIG[prescription.status].label}
-                    </Text>
+                  <View style={[s.statusBadge, { backgroundColor: status.color + '20' }]}>
+                    <Icon name={status.icon} size={12} color={status.color} />
+                    <Text style={[s.statusText, { color: status.color }]}>{status.label}</Text>
                   </View>
-                </View>
-              ))
-            ) : (
-              <View style={styles.emptyPrescriptions}>
-                <Icon name="file-document-outline" size={32} color={theme.textSecondary} />
-                <Text style={[styles.emptyPrescriptionsText, { color: theme.textSecondary }]}>
-                  No prescriptions yet
-                </Text>
-                <Text style={[styles.emptyPrescriptionsSubtext, { color: theme.textSecondary }]}>
-                  Upload your first prescription to get started
-                </Text>
-              </View>
-            )}
-          </View>
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <View style={[s.emptyBox, { backgroundColor: theme.card, borderColor: theme.border }]}>
+              <Icon name="file-document-outline" size={48} color={theme.textTertiary} />
+              <Text style={[s.emptyTitle, { color: theme.textPrimary }]}>No prescriptions yet</Text>
+              <Text style={[s.emptySub, { color: theme.textSecondary }]}>
+                Upload your first prescription above to get started
+              </Text>
+            </View>
+          )}
         </View>
-
       </ScrollView>
 
-      {/* Image Preview Modal */}
-      <Modal
-        visible={previewVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setPreviewVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <TouchableOpacity
-            style={styles.modalClose}
-            onPress={() => setPreviewVisible(false)}
-          >
+      <Modal visible={previewVisible} transparent animationType="fade" onRequestClose={() => setPreviewVisible(false)}>
+        <View style={s.modalBg}>
+          <TouchableOpacity style={s.modalClose} onPress={() => setPreviewVisible(false)}>
             <Icon name="close" size={28} color="#fff" />
           </TouchableOpacity>
-          <Image
-            source={{ uri: previewImage }}
-            style={styles.modalImage}
-            resizeMode="contain"
-          />
+          <Image source={{ uri: previewImage }} style={s.modalImg} resizeMode="contain" />
         </View>
       </Modal>
     </SafeAreaView>
   );
 }
 
-const createStyles = (theme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background,
-  },
+const s = StyleSheet.create({
+  root: { flex: 1 },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.border,
+    paddingHorizontal: 16, paddingVertical: 16, borderBottomWidth: 1,
   },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+  title: { fontSize: 24, fontWeight: '800', lineHeight: 30 },
+  scroll: { padding: 16, paddingBottom: 100 },
+  uploadCard: {
+    borderRadius: 18, borderWidth: 1.5, borderStyle: 'dashed', overflow: 'hidden', marginBottom: 16,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: theme.textPrimary,
-    flex: 1,
-    textAlign: 'center',
-    marginRight: 40,
+  uploadEmpty: { padding: 24, alignItems: 'center', gap: 10 },
+  uploadIcon: { width: 70, height: 70, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+  uploadTitle: { fontSize: 17, fontWeight: '700', lineHeight: 22 },
+  uploadSub: { fontSize: 13, lineHeight: 18, textAlign: 'center' },
+  uploadBtns: { flexDirection: 'row', gap: 10, marginTop: 4 },
+  uploadBtn: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 12, borderWidth: 1 },
+  uploadBtnText: { fontSize: 14, fontWeight: '600' },
+  previewArea: { padding: 16, gap: 12 },
+  previewImg: { width: '100%', height: 180, borderRadius: 12 },
+  previewActions: { flexDirection: 'row', gap: 10 },
+  previewBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, borderWidth: 1 },
+  previewBtnText: { fontSize: 14, fontWeight: '600' },
+  statsRow: { flexDirection: 'row', gap: 10, marginBottom: 24 },
+  statCard: { flex: 1, borderRadius: 14, padding: 14, alignItems: 'center', gap: 6 },
+  statValue: { fontSize: 24, fontWeight: '800', lineHeight: 30 },
+  statLabel: { fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.4 },
+  section: {},
+  sectionTitle: { fontSize: 17, fontWeight: '700', lineHeight: 22, marginBottom: 12 },
+  rxCard: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    borderRadius: 14, padding: 12, marginBottom: 10, borderWidth: 1,
   },
-  scrollContent: { paddingBottom: 100 },
-  // Upload Section
-  uploadSection: { paddingHorizontal: 20, marginBottom: 24 },
-  uploadCardMinimal: {
-    padding: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    alignItems: 'center',
-    gap: 16,
-  },
-  uploadTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  uploadSubtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  uploadBtn: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  uploadBtnText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  // Status Overview
-  statusOverview: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    gap: 12,
-    marginBottom: 24,
-  },
-  statusItem: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  statusValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  statusLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-  },
-  // Recent Prescriptions
-  recentSection: { paddingHorizontal: 20, marginBottom: 24 },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  prescriptionsList: {
-    gap: 12,
-  },
-  prescriptionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    gap: 12,
-  },
-  prescriptionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  prescriptionInfo: {
-    flex: 1,
-  },
-  prescriptionName: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  prescriptionDate: {
-    fontSize: 12,
-  },
-  prescriptionStatus: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  prescriptionStatusText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-  },
-  emptyPrescriptions: {
-    padding: 48,
-    alignItems: 'center',
-    gap: 12,
-  },
-  emptyPrescriptionsText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  emptyPrescriptionsSubtext: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  historySection: { paddingHorizontal: 16 },
-  historyHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  historyTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: theme.textPrimary,
-  },
-  viewAllText: {
-    fontSize: 14,
-    fontWeight: 'semibold',
-    color: theme.primary,
-  },
-  prescriptionCard: {
-    flexDirection: 'row',
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: theme.border,
-  },
-  prescriptionImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 12,
-    marginRight: 16,
-  },
-  prescriptionContent: { flex: 1 },
-  prescriptionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 4,
-  },
-  medicineName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    flex: 1,
-    marginRight: 8,
-  },
+  rxThumb: { width: 64, height: 64, borderRadius: 10 },
+  rxInfo: { flex: 1, gap: 4 },
+  rxName: { fontSize: 14, fontWeight: '700', lineHeight: 20 },
+  rxDate: { fontSize: 12, lineHeight: 16 },
+  rxNote: { fontSize: 12, lineHeight: 16 },
   statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 8, paddingVertical: 5, borderRadius: 10,
   },
-  statusText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  uploadDate: {
-    fontSize: 12,
-    marginBottom: 8,
-  },
-  noteContainer: {
-    backgroundColor: theme.primary + '10',
-    padding: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.primary + '30',
-  },
-  noteLabel: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 2,
-  },
-  noteText: {
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    color: theme.textSecondary,
-    marginTop: 12,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingTop: 40,
-  },
-  emptyText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: theme.textSecondary,
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalClose: {
-    position: 'absolute',
-    top: 50,
-    right: 20,
-    zIndex: 10,
-  },
-  modalImage: {
-    width: '90%',
-    height: '70%',
-  },
+  statusText: { fontSize: 11, fontWeight: '600' },
+  emptyBox: { borderRadius: 16, padding: 36, alignItems: 'center', gap: 10, borderWidth: 1 },
+  emptyTitle: { fontSize: 16, fontWeight: '700', lineHeight: 22 },
+  emptySub: { fontSize: 13, lineHeight: 20, textAlign: 'center' },
+  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.92)', justifyContent: 'center', alignItems: 'center' },
+  modalClose: { position: 'absolute', top: 52, right: 20, zIndex: 10, padding: 8 },
+  modalImg: { width: '92%', height: '72%' },
 });

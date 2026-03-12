@@ -1,308 +1,285 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, TouchableOpacity,
-  StatusBar, Dimensions,
+  StatusBar, Dimensions, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import api from '../config/api';
-import PharmacyLogo from '../components/PharmacyLogo';
-import MedicineIcon from '../components/MedicineIcon';
-import OrderIcon from '../components/OrderIcon';
-import UserIcon from '../components/UserIcon';
 
 const { width } = Dimensions.get('window');
+const CARD_W = (width - 48) / 2;
+
+const STATUS_COLOR = {
+  delivered: '#10b981', completed: '#10b981',
+  processing: '#3b82f6', confirmed: '#3b82f6',
+  pending: '#f59e0b', dispatched: '#06b6d4',
+  cancelled: '#ef4444',
+};
 
 export default function HomeScreen({ navigation }) {
   const { user } = useAuth();
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
 
-  const firstName = (user?.name || 'U').charAt(0).toUpperCase();
+  const firstName = user?.name?.split(' ')[0] || 'there';
+  const avatarLetter = (user?.name || 'U').charAt(0).toUpperCase();
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
-  const [stats, setStats] = useState([
-    { label: 'Orders', value: '0', icon: 'order' },
-    { label: 'Active', value: '0', icon: 'shopping' },
-    { label: 'Completed', value: '0', icon: 'check-circle' },
-    { label: 'Prescriptions', value: '0', icon: 'prescription' },
-  ]);
-
+  const [statsData, setStatsData] = useState({ total: 0, active: 0, completed: 0, prescriptions: 0 });
   const [recentActivity, setRecentActivity] = useState([]);
-
-  const quickActions = [
-    { label: 'Catalog', icon: 'medicine', screen: 'Catalog' },
-    { label: 'Orders', icon: 'order', screen: 'Orders' },
-    { label: 'Prescriptions', icon: 'prescription', screen: 'Prescriptions' },
-    { label: 'Profile', icon: 'user', screen: 'Profile' },
-  ];
-
-  const fetchDashboardData = async () => {
-    try {
-      // Fetch orders stats
-      const ordersRes = await api.get('/orders/stats');
-      const ordersData = ordersRes.data.data;
-      
-      // Fetch prescriptions stats
-      const prescriptionsRes = await api.get('/prescriptions/stats');
-      const prescriptionsData = prescriptionsRes.data.data;
-      
-      // Update stats
-      setStats([
-        { label: 'Orders', value: ordersData.total?.toString() || '0', icon: 'order' },
-        { label: 'Active', value: ordersData.active?.toString() || '0', icon: 'shopping' },
-        { label: 'Completed', value: ordersData.completed?.toString() || '0', icon: 'check-circle' },
-        { label: 'Prescriptions', value: prescriptionsData.total?.toString() || '0', icon: 'prescription' },
-      ]);
-      
-      // Fetch recent activity
-      const activityRes = await api.get('/orders/recent?limit=2');
-      setRecentActivity(activityRes.data.data.orders || []);
-      
-    } catch (error) {
-      console.log('Error fetching dashboard data:', error);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDashboardData();
+    (async () => {
+      try {
+        const [ordersRes, prescriptionsRes, activityRes] = await Promise.allSettled([
+          api.get('/orders/stats'),
+          api.get('/prescriptions/stats'),
+          api.get('/orders/recent?limit=3'),
+        ]);
+        if (ordersRes.status === 'fulfilled') {
+          const d = ordersRes.value.data.data;
+          setStatsData(prev => ({ ...prev, total: d.total || 0, active: d.active || 0, completed: d.completed || 0 }));
+        }
+        if (prescriptionsRes.status === 'fulfilled') {
+          const d = prescriptionsRes.value.data.data;
+          setStatsData(prev => ({ ...prev, prescriptions: d.total || 0 }));
+        }
+        if (activityRes.status === 'fulfilled') {
+          setRecentActivity(activityRes.value.data.data.orders || []);
+        }
+      } catch (_) {}
+      setLoading(false);
+    })();
   }, []);
 
+  const STAT_CARDS = [
+    { label: 'Total Orders', value: statsData.total, icon: 'package-variant', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+    { label: 'Active', value: statsData.active, icon: 'clock-outline', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+    { label: 'Completed', value: statsData.completed, icon: 'check-circle-outline', color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+    { label: 'Prescriptions', value: statsData.prescriptions, icon: 'file-document-outline', color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
+  ];
+
+  const QUICK_ACTIONS = [
+    { label: 'Medicines', icon: 'pill', screen: 'Catalog', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+    { label: 'My Orders', icon: 'package-variant', screen: 'Orders', color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+    { label: 'Rx Upload', icon: 'file-document-outline', screen: 'Prescriptions', color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
+    { label: 'Profile', icon: 'account-circle-outline', screen: 'Profile', color: '#f97316', bg: 'rgba(249,115,22,0.12)' },
+  ];
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-      <StatusBar style="light" backgroundColor="#000000" />
+    <SafeAreaView style={[s.root, { backgroundColor: theme.background }]} edges={['top']}>
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} backgroundColor={theme.background} />
 
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{firstName}</Text>
-            </View>
-            <View style={styles.onlineDot} />
-            <View style={styles.headerText}>
-              <PharmacyLogo size={24} color={theme.primary} />
-              <Text style={styles.subTitle}>RxHub</Text>
-            </View>
+      <View style={[s.header, { backgroundColor: theme.background, borderBottomColor: theme.border }]}>
+        <View style={s.headerLeft}>
+          <View style={[s.avatar, { backgroundColor: theme.primary }]}>
+            <Text style={s.avatarLetter}>{avatarLetter}</Text>
           </View>
-          <TouchableOpacity style={styles.notificationBtn}>
-            <Icon name="notifications" size={24} color="#fff" />
-            <View style={styles.notificationBadge} />
-          </TouchableOpacity>
-        </View>
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-
-        {/* Welcome Section */}
-        <View style={styles.welcomeSection}>
-          <View style={styles.welcomeRow}>
-            <View style={[styles.avatarSmall, { backgroundColor: theme.primary }]}>
-              <Text style={styles.avatarTextSmall}>{firstName}</Text>
-            </View>
-            <View style={styles.welcomeTextContainer}>
-              <Text style={[styles.welcomeText, { color: theme.textPrimary }]}>Welcome back,</Text>
-              <Text style={[styles.userName, { color: theme.textPrimary }]}>{user?.name?.split(' ')[0] || 'Alex'}</Text>
-            </View>
+          <View>
+            <Text style={[s.greeting, { color: theme.textSecondary }]}>{greeting} 👋</Text>
+            <Text style={[s.userName, { color: theme.textPrimary }]} numberOfLines={1}>{firstName}</Text>
           </View>
         </View>
+        <TouchableOpacity style={[s.bellBtn, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Icon name="bell-outline" size={21} color={theme.textPrimary} />
+          <View style={[s.bellDot, { backgroundColor: theme.primary }]} />
+        </TouchableOpacity>
+      </View>
 
-        {/* Stats Cards */}
-        <View style={styles.statsGrid}>
-          {stats.map((stat, index) => {
-            const renderIcon = (iconName) => {
-              switch(iconName) {
-                case 'order': return <OrderIcon size={20} color={theme.primary} />;
-                case 'shopping': return <Icon name="shopping-outline" size={20} color={theme.primary} />;
-                case 'check-circle': return <Icon name="check-circle-outline" size={20} color={theme.primary} />;
-                case 'prescription': return <PrescriptionIcon size={20} color={theme.primary} />;
-                default: return <Icon name="help-circle-outline" size={20} color={theme.primary} />;
-              }
-            };
-            return (
-              <View key={index} style={[styles.statCardMinimal, { backgroundColor: theme.card, borderColor: theme.border }]}>
-                {renderIcon(stat.icon)}
-                <Text style={[styles.statValue, { color: theme.textPrimary }]}>{stat.value}</Text>
-                <Text style={[styles.statLabel, { color: theme.textSecondary }]}>{stat.label}</Text>
-              </View>
-            );
-          })}
-        </View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
 
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Quick Actions</Text>
-          <View style={styles.quickActionsGrid}>
-            {quickActions.map((action, index) => {
-              const renderIcon = (iconName) => {
-                switch(iconName) {
-                  case 'medicine': return <MedicineIcon size={24} color={theme.primary} />;
-                  case 'order': return <OrderIcon size={24} color={theme.primary} />;
-                  case 'prescription': return <PrescriptionIcon size={24} color={theme.primary} />;
-                  case 'user': return <UserIcon size={24} color={theme.primary} />;
-                  default: return <Icon name="help-circle-outline" size={24} color={theme.primary} />;
-                }
-              };
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={[styles.quickActionMinimal, { backgroundColor: theme.card, borderColor: theme.border }]}
-                  onPress={() => navigation.navigate(action.screen)}
-                >
-                  {renderIcon(action.icon)}
-                  <Text style={[styles.quickActionText, { color: theme.textSecondary }]}>{action.label}</Text>
-                </TouchableOpacity>
-              );
-            })}
+        <View style={[s.banner, { backgroundColor: theme.primary }]}>
+          <View style={s.bannerLeft}>
+            <Text style={s.bannerTitle}>💊 PharmaCare</Text>
+            <Text style={s.bannerSub}>Your health, delivered fast</Text>
+            <TouchableOpacity
+              style={s.bannerBtn}
+              onPress={() => navigation.navigate('Catalog')}
+              activeOpacity={0.85}
+            >
+              <Text style={[s.bannerBtnText, { color: theme.primary }]}>Shop Now</Text>
+            </TouchableOpacity>
           </View>
+          <Text style={s.bannerIcon}>🏥</Text>
         </View>
 
-        {/* Recent Activity */}
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Recent Activity</Text>
-          <View style={[styles.activityCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
-            {recentActivity.length > 0 ? (
-              recentActivity.map((activity, index) => (
-                <View key={activity._id} style={[
-                  styles.activityItem, 
-                  index < recentActivity.length - 1 && { borderBottomWidth: 1, borderBottomColor: theme.border }
-                ]}>
-                  <MedicineIcon size={16} color={theme.primary} />
-                  <Text style={[styles.activityText, { color: theme.textPrimary }]}>
-                    {activity.medicineName || activity.items?.[0]?.name || 'Order'}
-                  </Text>
-                  <Text style={[styles.activityStatus, { color: theme.textSecondary }]}>
-                    {activity.status || 'Processing'}
-                  </Text>
+        <View style={s.section}>
+          <Text style={[s.sectionTitle, { color: theme.textPrimary }]}>Overview</Text>
+          {loading ? (
+            <ActivityIndicator color={theme.primary} style={{ marginTop: 8 }} />
+          ) : (
+            <View style={s.grid}>
+              {STAT_CARDS.map((card) => (
+                <View key={card.label} style={[s.statCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                  <View style={[s.statIcon, { backgroundColor: card.bg }]}>
+                    <Icon name={card.icon} size={20} color={card.color} />
+                  </View>
+                  <Text style={[s.statValue, { color: theme.textPrimary }]}>{card.value}</Text>
+                  <Text style={[s.statLabel, { color: theme.textSecondary }]}>{card.label}</Text>
                 </View>
-              ))
-            ) : (
-              <View style={styles.emptyActivity}>
-                <Text style={[styles.emptyActivityText, { color: theme.textSecondary }]}>No recent activity</Text>
-              </View>
-            )}
+              ))}
+            </View>
+          )}
+        </View>
+
+        <View style={s.section}>
+          <Text style={[s.sectionTitle, { color: theme.textPrimary }]}>Quick Access</Text>
+          <View style={s.grid}>
+            {QUICK_ACTIONS.map((action) => (
+              <TouchableOpacity
+                key={action.label}
+                style={[s.actionCard, { backgroundColor: theme.card, borderColor: theme.border }]}
+                onPress={() => navigation.navigate(action.screen)}
+                activeOpacity={0.8}
+              >
+                <View style={[s.actionIcon, { backgroundColor: action.bg }]}>
+                  <Icon name={action.icon} size={26} color={action.color} />
+                </View>
+                <Text style={[s.actionLabel, { color: theme.textPrimary }]}>{action.label}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
+        <View style={s.section}>
+          <View style={s.rowBetween}>
+            <Text style={[s.sectionTitle, { color: theme.textPrimary }]}>Recent Orders</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Orders')} activeOpacity={0.7}>
+              <Text style={[s.viewAll, { color: theme.primary }]}>View all</Text>
+            </TouchableOpacity>
+          </View>
+
+          {loading ? (
+            <ActivityIndicator color={theme.primary} style={{ marginTop: 8 }} />
+          ) : recentActivity.length > 0 ? (
+            recentActivity.map((order, i) => {
+              const status = order.status || 'pending';
+              const sc = STATUS_COLOR[status] || theme.textSecondary;
+              return (
+                <View key={order._id || i} style={[s.actRow, { backgroundColor: theme.card, borderColor: theme.border }]}>
+                  <View style={[s.actDot, { backgroundColor: sc }]} />
+                  <View style={s.actInfo}>
+                    <Text style={[s.actName, { color: theme.textPrimary }]} numberOfLines={1}>
+                      {order.items?.[0]?.name || order.medicineName || 'Order'}
+                    </Text>
+                    <Text style={[s.actDate, { color: theme.textSecondary }]}>
+                      {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : ''}
+                    </Text>
+                  </View>
+                  <View style={[s.chip, { backgroundColor: sc + '22' }]}>
+                    <Text style={[s.chipText, { color: sc }]}>
+                      {status.charAt(0).toUpperCase() + status.slice(1)}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })
+          ) : (
+            <View style={[s.emptyBox, { backgroundColor: theme.card, borderColor: theme.border }]}>
+              <Icon name="package-variant-closed" size={44} color={theme.textTertiary} />
+              <Text style={[s.emptyLabel, { color: theme.textSecondary }]}>No recent orders</Text>
+              <TouchableOpacity
+                style={[s.emptyBtn, { backgroundColor: theme.primary }]}
+                onPress={() => navigation.navigate('Catalog')}
+                activeOpacity={0.85}
+              >
+                <Text style={s.emptyBtnText}>Browse Medicines</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        <View style={[s.section, { marginBottom: 32 }]}>
+          <Text style={[s.sectionTitle, { color: theme.textPrimary }]}>Health Tips</Text>
+          {[
+            { icon: '💧', title: 'Stay Hydrated', desc: 'Drink 8 glasses of water daily for optimal health.' },
+            { icon: '💊', title: 'Take Meds on Time', desc: 'Consistency is key to effective medication.' },
+            { icon: '🛏️', title: 'Rest & Recover', desc: 'Quality sleep boosts your immune system.' },
+          ].map((tip) => (
+            <View key={tip.title} style={[s.tipCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+              <Text style={s.tipIcon}>{tip.icon}</Text>
+              <View style={s.tipBody}>
+                <Text style={[s.tipTitle, { color: theme.textPrimary }]}>{tip.title}</Text>
+                <Text style={[s.tipDesc, { color: theme.textSecondary }]}>{tip.desc}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
 
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1 },
+const s = StyleSheet.create({
+  root: { flex: 1 },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#000000',
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1,
   },
-  headerLeft: { flexDirection: 'row', alignItems: 'center' },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f97415',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
+  headerLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
+  avatar: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
+  avatarLetter: { color: '#fff', fontSize: 18, fontWeight: '800' },
+  greeting: { fontSize: 12, fontWeight: '500', lineHeight: 16 },
+  userName: { fontSize: 17, fontWeight: '700', lineHeight: 22 },
+  bellBtn: {
+    width: 42, height: 42, borderRadius: 13, justifyContent: 'center', alignItems: 'center',
+    borderWidth: 1, position: 'relative',
   },
-  avatarText: { color: '#fff', fontSize: 18, fontWeight: '800' },
-  onlineDot: {
-    position: 'absolute',
-    bottom: 0,
-    right: 12,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#10b981',
-    borderWidth: 2,
-    borderColor: '#000000',
+  bellDot: { position: 'absolute', top: 9, right: 9, width: 8, height: 8, borderRadius: 4 },
+  scroll: { paddingBottom: 16 },
+  banner: {
+    marginHorizontal: 16, marginTop: 16, borderRadius: 20,
+    padding: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
   },
-  headerText: { marginLeft: 8 },
-  appTitle: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
-  subTitle: { color: '#888', fontSize: 12 },
-  notificationBtn: { position: 'relative', padding: 8 },
-  notificationBadge: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#f97415',
+  bannerLeft: { flex: 1 },
+  bannerTitle: { color: '#fff', fontSize: 20, fontWeight: '800', lineHeight: 26, marginBottom: 4 },
+  bannerSub: { color: 'rgba(255,255,255,0.85)', fontSize: 13, lineHeight: 18, marginBottom: 16 },
+  bannerBtn: {
+    alignSelf: 'flex-start', backgroundColor: '#fff', borderRadius: 10,
+    paddingVertical: 9, paddingHorizontal: 20,
   },
-  // Welcome Section
-  welcomeSection: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 16 },
-  welcomeRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  avatarSmall: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+  bannerBtnText: { fontSize: 13, fontWeight: '700' },
+  bannerIcon: { fontSize: 54, marginLeft: 10 },
+  section: { paddingHorizontal: 16, marginTop: 24 },
+  sectionTitle: { fontSize: 17, fontWeight: '700', lineHeight: 22, marginBottom: 12 },
+  rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  viewAll: { fontSize: 13, fontWeight: '600' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  statCard: { width: CARD_W, borderRadius: 14, padding: 14, borderWidth: 1, gap: 8 },
+  statIcon: { width: 40, height: 40, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  statValue: { fontSize: 26, fontWeight: '800', lineHeight: 32 },
+  statLabel: { fontSize: 12, fontWeight: '500', lineHeight: 16 },
+  actionCard: {
+    width: CARD_W, borderRadius: 14, padding: 16, borderWidth: 1,
+    alignItems: 'center', gap: 10,
   },
-  avatarTextSmall: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  welcomeTextContainer: { flex: 1 },
-  welcomeText: { fontSize: 14, color: '#9ca3af', marginBottom: 2 },
-  userName: { fontSize: 20, fontWeight: 'bold' },
-  // Stats Cards
-  statsGrid: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    gap: 12,
-    marginBottom: 24,
+  actionIcon: { width: 56, height: 56, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
+  actionLabel: { fontSize: 13, fontWeight: '600', lineHeight: 18, textAlign: 'center' },
+  actRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1,
   },
-  statCardMinimal: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: 'center',
-    gap: 8,
+  actDot: { width: 10, height: 10, borderRadius: 5 },
+  actInfo: { flex: 1 },
+  actName: { fontSize: 14, fontWeight: '600', lineHeight: 20 },
+  actDate: { fontSize: 12, lineHeight: 16, marginTop: 2 },
+  chip: { borderRadius: 8, paddingVertical: 4, paddingHorizontal: 10 },
+  chipText: { fontSize: 12, fontWeight: '600' },
+  emptyBox: { borderRadius: 16, padding: 32, alignItems: 'center', gap: 10, borderWidth: 1 },
+  emptyLabel: { fontSize: 14, fontWeight: '500', lineHeight: 20 },
+  emptyBtn: { borderRadius: 10, paddingVertical: 10, paddingHorizontal: 20, marginTop: 4 },
+  emptyBtnText: { color: '#fff', fontSize: 14, fontWeight: '600' },
+  tipCard: {
+    flexDirection: 'row', alignItems: 'flex-start', gap: 12,
+    borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1,
   },
-  statValue: { fontSize: 20, fontWeight: 'bold' },
-  statLabel: { fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.5 },
-  section: { paddingHorizontal: 20, marginBottom: 24 },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold' },
-  viewAllText: { fontSize: 14, fontWeight: 'semibold' },
-  quickActionsGrid: { 
-    flexDirection: 'row', 
-    paddingHorizontal: 20, 
-    gap: 12,
-    marginBottom: 24,
-  },
-  quickActionMinimal: {
-    flex: 1,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: 'center',
-    gap: 8,
-  },
-  quickActionText: { fontSize: 12, textAlign: 'center', fontWeight: '500' },
-  // Recent Activity
-  activityCard: {
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  activityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    gap: 12,
-  },
-  activityText: { flex: 1, fontSize: 14, fontWeight: '500' },
-  activityStatus: { fontSize: 12, fontWeight: '500' },
-  emptyActivity: {
-    padding: 32,
-    alignItems: 'center',
-  },
-  emptyActivityText: {
-    fontSize: 14,
-    fontStyle: 'italic',
-  },
+  tipIcon: { fontSize: 28 },
+  tipBody: { flex: 1 },
+  tipTitle: { fontSize: 14, fontWeight: '700', lineHeight: 20, marginBottom: 4 },
+  tipDesc: { fontSize: 13, lineHeight: 20 },
 });

@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  ActivityIndicator,
-  RefreshControl,
-  Dimensions
+  View, Text, FlatList, TextInput, TouchableOpacity,
+  StyleSheet, Image, ActivityIndicator, RefreshControl, Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
@@ -18,7 +10,7 @@ import { useCart } from '../context/CartContext';
 import api from '../config/api';
 
 const { width } = Dimensions.get('window');
-const CARD_WIDTH = (width - 48) / 2;
+const CARD_W = (width - 48) / 2;
 
 export default function CatalogScreen({ navigation }) {
   const { theme } = useTheme();
@@ -29,27 +21,19 @@ export default function CatalogScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { addToCart, cartCount } = useCart();
-  const styles = createStyles(theme);
+
+  useEffect(() => { fetchCategories(); fetchMedicines(); }, []);
 
   useEffect(() => {
-    fetchCategories();
-    fetchMedicines();
-  }, []);
-
-  useEffect(() => {
-    const delaySearch = setTimeout(() => {
-      fetchMedicines();
-    }, 500);
-    return () => clearTimeout(delaySearch);
+    const t = setTimeout(fetchMedicines, 500);
+    return () => clearTimeout(t);
   }, [search, selectedCategory]);
 
   const fetchCategories = async () => {
     try {
       const res = await api.get('/categories');
       setCategories(res.data.data.categories || []);
-    } catch (error) {
-      console.log('Error fetching categories:', error);
-    }
+    } catch (_) {}
   };
 
   const fetchMedicines = async () => {
@@ -58,14 +42,10 @@ export default function CatalogScreen({ navigation }) {
       const params = {};
       if (search) params.search = search;
       if (selectedCategory) params.category = selectedCategory;
-      
       const res = await api.get('/medicines', { params });
       setMedicines(res.data.data.medicines || []);
-    } catch (error) {
-      console.log('Error fetching medicines:', error);
-    } finally {
-      setLoading(false);
-    }
+    } catch (_) {}
+    finally { setLoading(false); }
   };
 
   const onRefresh = useCallback(() => {
@@ -73,68 +53,49 @@ export default function CatalogScreen({ navigation }) {
     fetchMedicines().then(() => setRefreshing(false));
   }, [search, selectedCategory]);
 
-  const handleAddToCart = (medicine) => {
-    addToCart(medicine, 1);
-  };
-
-  const renderCategory = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.categoryChip,
-        selectedCategory === item._id && styles.categoryChipActive
-      ]}
-      onPress={() => setSelectedCategory(selectedCategory === item._id ? '' : item._id)}
-    >
-      <Text style={[
-        styles.categoryText,
-        selectedCategory === item._id && styles.categoryTextActive
-      ]}>
-        {item.name}
-      </Text>
-    </TouchableOpacity>
-  );
-
   const renderMedicine = ({ item }) => (
     <TouchableOpacity
-      style={[styles.card, { backgroundColor: theme.card }]}
+      style={[s.card, { backgroundColor: theme.card, borderColor: theme.border }]}
       activeOpacity={0.9}
       onPress={() => navigation.navigate('MedicineDetail', { medicineId: item._id })}
     >
-      <View style={styles.imageContainer}>
+      <View style={s.imgWrap}>
         <Image
-          source={{ uri: item.image || 'https://via.placeholder.com/150?text=Medicine' }}
-          style={styles.image}
+          source={{ uri: item.image || 'https://placehold.co/150x120/e2e8f0/64748b?text=💊' }}
+          style={s.img}
           resizeMode="cover"
         />
-        <View style={styles.categoryBadge}>
-          <Text style={styles.categoryBadgeText}>{item.category?.name || 'General'}</Text>
+        <View style={[s.catBadge, { backgroundColor: 'rgba(59,130,246,0.18)' }]}>
+          <Text style={s.catBadgeText}>{item.category?.name || 'General'}</Text>
         </View>
-        {item.stock < 10 && item.stock > 0 && (
-          <View style={styles.lowStockBadge}>
-            <Text style={styles.lowStockText}>Low Stock</Text>
+        {item.stock === 0 && (
+          <View style={s.outBadge}>
+            <Text style={s.outBadgeText}>Out of Stock</Text>
           </View>
         )}
-        {item.stock === 0 && (
-          <View style={styles.outOfStockBadge}>
-            <Text style={styles.outOfStockText}>Out of Stock</Text>
+        {item.stock > 0 && item.stock < 10 && (
+          <View style={[s.outBadge, { backgroundColor: '#f59e0b' }]}>
+            <Text style={s.outBadgeText}>Low Stock</Text>
           </View>
         )}
       </View>
-      <View style={styles.cardContent}>
-        <Text style={[styles.medicineName, { color: theme.textPrimary }]} numberOfLines={1}>
-          {item.name}
+
+      <View style={s.cardBody}>
+        <Text style={[s.medName, { color: theme.textPrimary }]} numberOfLines={2}>{item.name}</Text>
+        <Text style={[s.medDesc, { color: theme.textSecondary }]} numberOfLines={2}>
+          {item.description || 'Pharmaceutical medicine'}
         </Text>
-        <Text style={[styles.medicineDesc, { color: theme.textSecondary }]} numberOfLines={2}>
-          {item.description || 'Medicine description'}
-        </Text>
-        <View style={styles.cardFooter}>
-          <Text style={[styles.price, { color: theme.primary }]}>₹{item.price?.toFixed(2)}</Text>
+        <View style={s.cardFoot}>
+          <Text style={[s.price, { color: theme.primary }]}>
+            ${item.price?.toFixed(2) ?? '—'}
+          </Text>
           <TouchableOpacity
-            style={[styles.addButton, item.stock === 0 && styles.addButtonDisabled]}
-            onPress={() => handleAddToCart(item)}
+            style={[s.addBtn, { backgroundColor: item.stock === 0 ? theme.textTertiary : theme.primary }]}
+            onPress={() => addToCart(item, 1)}
             disabled={item.stock === 0}
+            activeOpacity={0.85}
           >
-            <Icon name="add" size={20} color="#fff" />
+            <Icon name="plus" size={18} color="#fff" />
           </TouchableOpacity>
         </View>
       </View>
@@ -142,63 +103,71 @@ export default function CatalogScreen({ navigation }) {
   );
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn}>
-          <Icon name="arrow-back" size={24} color={theme.textPrimary} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Medicine Catalog</Text>
+    <SafeAreaView style={[s.root, { backgroundColor: theme.background }]} edges={['top']}>
+      <View style={[s.header, { borderBottomColor: theme.border }]}>
+        <Text style={[s.title, { color: theme.textPrimary }]}>Medicine Catalog</Text>
         <TouchableOpacity
-          style={styles.cartButton}
+          style={[s.cartBtn, { backgroundColor: theme.card, borderColor: theme.border }]}
           onPress={() => navigation.navigate('Cart')}
         >
-          <Icon name="cart-outline" size={24} color={theme.textPrimary} />
+          <Icon name="cart-outline" size={22} color={theme.textPrimary} />
           {cartCount > 0 && (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{cartCount}</Text>
+            <View style={[s.cartBadge, { backgroundColor: theme.primary }]}>
+              <Text style={s.cartBadgeText}>{cartCount}</Text>
             </View>
           )}
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
+      <View style={[s.searchBar, { backgroundColor: theme.card, borderColor: theme.border }]}>
         <Icon name="magnify" size={20} color={theme.textTertiary} />
         <TextInput
-          style={styles.searchInput}
+          style={[s.searchInput, { color: theme.textPrimary }]}
           placeholder="Search medicines, symptoms..."
           placeholderTextColor={theme.placeholder}
           value={search}
           onChangeText={setSearch}
+          returnKeyType="search"
         />
+        {search.length > 0 && (
+          <TouchableOpacity onPress={() => setSearch('')}>
+            <Icon name="close-circle" size={18} color={theme.textTertiary} />
+          </TouchableOpacity>
+        )}
       </View>
 
-      {/* Filter Buttons */}
-      <View style={styles.filtersContainer}>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Icon name="filter-list" size={16} color={theme.primary} />
-          <Text style={styles.filterText}>Filters</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterText}>Category</Text>
-          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterText}>Min Price</Text>
-          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Text style={styles.filterText}>Max Price</Text>
-          <Icon name="chevron-down" size={16} color={theme.textSecondary} />
-        </TouchableOpacity>
-      </View>
+      {categories.length > 0 && (
+        <FlatList
+          horizontal
+          data={[{ _id: '', name: 'All' }, ...categories]}
+          keyExtractor={(item) => item._id}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={s.catList}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                s.catChip,
+                { backgroundColor: theme.card, borderColor: theme.border },
+                selectedCategory === item._id && { backgroundColor: theme.primary, borderColor: theme.primary },
+              ]}
+              onPress={() => setSelectedCategory(item._id)}
+              activeOpacity={0.8}
+            >
+              <Text style={[
+                s.catChipText, { color: theme.textSecondary },
+                selectedCategory === item._id && { color: '#fff' },
+              ]}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      )}
 
-      {/* Medicines Grid */}
       {loading && medicines.length === 0 ? (
-        <View style={styles.loadingContainer}>
+        <View style={s.center}>
           <ActivityIndicator size="large" color={theme.primary} />
-          <Text style={styles.loadingText}>Loading medicines...</Text>
+          <Text style={[s.loadingText, { color: theme.textSecondary }]}>Loading medicines...</Text>
         </View>
       ) : (
         <FlatList
@@ -206,15 +175,19 @@ export default function CatalogScreen({ navigation }) {
           renderItem={renderMedicine}
           keyExtractor={(item) => item._id}
           numColumns={2}
-          contentContainerStyle={styles.medicinesList}
+          contentContainerStyle={s.list}
+          columnWrapperStyle={s.row}
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.primary} />}
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Icon name="pill-off" size={64} color={theme.textTertiary} />
-              <Text style={styles.emptyText}>No medicines found</Text>
+            <View style={s.center}>
+              <Icon name="pill-off" size={60} color={theme.textTertiary} />
+              <Text style={[s.emptyText, { color: theme.textSecondary }]}>No medicines found</Text>
+              {search.length > 0 && (
+                <TouchableOpacity style={[s.clearBtn, { borderColor: theme.primary }]} onPress={() => setSearch('')}>
+                  <Text style={[s.clearBtnText, { color: theme.primary }]}>Clear search</Text>
+                </TouchableOpacity>
+              )}
             </View>
           }
         />
@@ -223,251 +196,59 @@ export default function CatalogScreen({ navigation }) {
   );
 }
 
-const createStyles = (theme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background,
-  },
+const s = StyleSheet.create({
+  root: { flex: 1 },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: theme.background,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1,
   },
-  backBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: theme.textPrimary,
-    flex: 1,
-    textAlign: 'center',
-  },
-  cartButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
+  title: { fontSize: 20, fontWeight: '800', lineHeight: 26 },
+  cartBtn: {
+    width: 42, height: 42, borderRadius: 13, justifyContent: 'center', alignItems: 'center',
+    borderWidth: 1, position: 'relative',
   },
   cartBadge: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: theme.primary,
-    borderRadius: 10,
-    minWidth: 18,
-    height: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18,
+    borderRadius: 9, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 4,
   },
-  cartBadgeText: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: 'bold',
+  cartBadgeText: { color: '#fff', fontSize: 10, fontWeight: '700' },
+  searchBar: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    marginHorizontal: 16, marginVertical: 12, paddingHorizontal: 14,
+    borderRadius: 14, borderWidth: 1, minHeight: 48,
   },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.surface,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+  searchInput: { flex: 1, fontSize: 15, lineHeight: 24, paddingVertical: 0 },
+  catList: { paddingHorizontal: 16, paddingBottom: 12, gap: 8 },
+  catChip: {
+    paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, borderWidth: 1,
   },
-  searchInput: {
-    flex: 1,
-    paddingVertical: 14,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    color: theme.textPrimary,
-  },
-  filtersContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  filterBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: theme.surface,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: theme.border,
-  },
-  filterText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.textSecondary,
-  },
-  categoriesList: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  categoryChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: theme.surface,
-    borderRadius: 20,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: theme.border,
-  },
-  categoryChipActive: {
-    backgroundColor: theme.primary,
-    borderColor: theme.primary,
-  },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: theme.textSecondary,
-  },
-  categoryTextActive: {
-    color: '#fff',
-  },
-  medicinesList: {
-    padding: 8,
-    paddingBottom: 100,
-  },
+  catChipText: { fontSize: 13, fontWeight: '600' },
+  list: { padding: 16, paddingBottom: 120 },
+  row: { justifyContent: 'space-between' },
   card: {
-    width: CARD_WIDTH,
-    backgroundColor: theme.surface,
-    borderRadius: 16,
-    margin: 8,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: theme.border,
+    width: CARD_W, borderRadius: 16, marginBottom: 12, borderWidth: 1, overflow: 'hidden',
   },
-  imageContainer: {
-    height: 120,
-    position: 'relative',
+  imgWrap: { height: 120, position: 'relative' },
+  img: { width: '100%', height: '100%' },
+  catBadge: {
+    position: 'absolute', top: 8, left: 8,
+    paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6,
   },
-  image: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: theme.surfaceHighlight,
-    opacity: 0.9,
+  catBadgeText: { color: '#3b82f6', fontSize: 10, fontWeight: '700', letterSpacing: 0.3 },
+  outBadge: {
+    position: 'absolute', bottom: 8, right: 8, backgroundColor: '#ef4444',
+    paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6,
   },
-  categoryBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 123, 255, 0.3)',
-  },
-  categoryBadgeText: {
-    color: '#007bff',
-    fontSize: 10,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  lowStockBadge: {
-    position: 'absolute',
-    bottom: 8,
-    right: 8,
-    backgroundColor: '#f59e0b',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  lowStockText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  outOfStockBadge: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: '#ef4444',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  outOfStockText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  cardContent: {
-    padding: 12,
-    flex: 1,
-  },
-  medicineName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  medicineDesc: {
-    fontSize: 12,
-    marginBottom: 8,
-    lineHeight: 16,
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  addButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: theme.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButtonDisabled: {
-    backgroundColor: theme.textTertiary,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 12,
-    color: theme.textSecondary,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 60,
-  },
-  emptyText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: theme.textSecondary,
-  },
+  outBadgeText: { color: '#fff', fontSize: 10, fontWeight: '700' },
+  cardBody: { padding: 12 },
+  medName: { fontSize: 14, fontWeight: '700', lineHeight: 20, marginBottom: 4 },
+  medDesc: { fontSize: 12, lineHeight: 18, marginBottom: 8 },
+  cardFoot: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  price: { fontSize: 16, fontWeight: '800' },
+  addBtn: { width: 34, height: 34, borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 60, gap: 12 },
+  loadingText: { fontSize: 14, lineHeight: 20 },
+  emptyText: { fontSize: 16, fontWeight: '500', lineHeight: 24 },
+  clearBtn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, borderWidth: 1.5, marginTop: 4 },
+  clearBtnText: { fontSize: 14, fontWeight: '600' },
 });
