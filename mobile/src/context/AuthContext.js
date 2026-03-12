@@ -31,29 +31,11 @@ export const AuthProvider = ({ children }) => {
         }
       }
     } catch (e) {
-      // Check if token expired
-      if (e.response?.status === 401 && e.response?.data?.code === 'TOKEN_EXPIRED') {
-        try {
-          // Try to refresh the token
-          await refreshToken();
-          // Retry getting user data with new token
-          const response = await api.get('/auth/me');
-          if (response.data.success) {
-            setUser(response.data.data.user);
-          } else {
-            setUser(null);
-          }
-        } catch (refreshError) {
-          // Refresh failed, user will be set to null by refreshToken
-          console.log('Token refresh failed in checkLoginStatus');
-        }
-      } else {
-        console.log('Failed to restore token', e);
-        // Token expired or invalid - clear stored tokens
-        await SecureStore.deleteItemAsync('userToken');
-        await SecureStore.deleteItemAsync('refreshToken');
-        setUser(null);
-      }
+      console.log('Failed to restore token', e);
+      // Token expired or invalid - clear stored tokens
+      await SecureStore.deleteItemAsync('userToken');
+      await SecureStore.deleteItemAsync('refreshToken');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -91,37 +73,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const refreshToken = async () => {
-    try {
-      const storedRefreshToken = await SecureStore.getItemAsync('refreshToken');
-      if (!storedRefreshToken) {
-        throw new Error('No refresh token available');
-      }
-
-      const response = await api.post('/auth/refresh-token', {
-        refreshToken: storedRefreshToken
-      });
-
-      if (response.data.success) {
-        const { accessToken, refreshToken: newRefreshToken } = response.data.data;
-        
-        await SecureStore.setItemAsync('userToken', accessToken);
-        await SecureStore.setItemAsync('refreshToken', newRefreshToken);
-        
-        return accessToken;
-      } else {
-        throw new Error(response.data.message || 'Token refresh failed');
-      }
-    } catch (e) {
-      console.log('Token refresh failed', e);
-      // Clear tokens on refresh failure
-      await SecureStore.deleteItemAsync('userToken');
-      await SecureStore.deleteItemAsync('refreshToken');
-      setUser(null);
-      throw e;
-    }
-  };
-
   const logout = async () => {
     setLoading(true);
     try {
@@ -144,7 +95,6 @@ export const AuthProvider = ({ children }) => {
         error,
         login,
         logout,
-        refreshToken,
         checkLoginStatus
       }}
     >

@@ -77,6 +77,11 @@ const Catalog = () => {
         setPagination(prev => ({ ...prev, page: 1 }));
     };
 
+    const handleCategorySelect = (categoryId) => {
+        setFilters(prev => ({ ...prev, category: prev.category === categoryId ? '' : categoryId }));
+        setPagination(prev => ({ ...prev, page: 1 }));
+    };
+
     const handleAddToCart = (medicine) => {
         addToCart(medicine, 1);
         toast.success(`Added ${medicine.name} to cart`);
@@ -90,7 +95,7 @@ const Catalog = () => {
             padding: '2rem'
         },
         header: {
-            marginBottom: '2rem'
+            marginBottom: '1.5rem'
         },
         title: {
             fontSize: '1.875rem',
@@ -108,68 +113,96 @@ const Catalog = () => {
             color: '#9ca3af',
             fontSize: '1rem'
         },
-        filterPanel: {
-            background: '#0a0a0a',
-            borderRadius: '1rem',
-            padding: '1.5rem',
-            marginBottom: '2rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            border: '1px solid rgba(0,0,0,0.04)'
+        /* Search bar */
+        searchBar: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            background: '#111111',
+            border: '1px solid #1f1f1f',
+            borderRadius: '0.875rem',
+            padding: '0.25rem 1.25rem',
+            marginBottom: '1rem',
+            transition: 'border-color 0.2s'
         },
-        filterGrid: {
-            display: 'grid',
-            gridTemplateColumns: '2fr 1fr 1fr 1fr',
-            gap: '1rem',
-            alignItems: 'end'
+        searchIcon: {
+            color: '#6b7280',
+            fontSize: '1.125rem',
+            flexShrink: 0
         },
-        label: {
-            display: 'block',
-            fontSize: '0.875rem',
-            fontWeight: '600',
+        searchInput: {
+            flex: 1,
+            padding: '0.875rem 0',
+            fontSize: '0.9375rem',
             color: '#e5e5e5',
-            marginBottom: '0.5rem'
+            background: 'transparent',
+            border: 'none',
+            outline: 'none'
         },
-        inputWrapper: {
-            position: 'relative'
+        /* Filter chips row */
+        chipsRow: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            marginBottom: '1.5rem',
+            overflowX: 'auto',
+            paddingBottom: '4px',
+            scrollbarWidth: 'none',
         },
-        inputIcon: {
-            position: 'absolute',
-            left: '12px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: '#9ca3af',
-            fontSize: '1.125rem'
-        },
-        input: {
-            width: '100%',
-            padding: '0.75rem 1rem 0.75rem 2.5rem',
-            fontSize: '0.9375rem',
-            border: '1px solid #e5e7eb',
-            borderRadius: '0.75rem',
-            outline: 'none',
-            transition: 'all 0.2s',
-            background: '#f9fafb'
-        },
-        inputNoIcon: {
-            width: '100%',
-            padding: '0.75rem 1rem',
-            fontSize: '0.9375rem',
-            border: '1px solid #e5e7eb',
-            borderRadius: '0.75rem',
-            outline: 'none',
-            transition: 'all 0.2s',
-            background: '#f9fafb'
-        },
-        select: {
-            width: '100%',
-            padding: '0.75rem 1rem 0.75rem 2.5rem',
-            fontSize: '0.9375rem',
-            border: '1px solid #e5e7eb',
-            borderRadius: '0.75rem',
-            outline: 'none',
-            background: '#f9fafb',
+        chip: {
+            padding: '0.5rem 1.125rem',
+            fontSize: '0.8125rem',
+            fontWeight: '500',
+            color: '#a1a1aa',
+            background: '#141414',
+            border: '1px solid #27272a',
+            borderRadius: '9999px',
             cursor: 'pointer',
-            appearance: 'none'
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+        },
+        chipActive: {
+            padding: '0.5rem 1.125rem',
+            fontSize: '0.8125rem',
+            fontWeight: '600',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #f97316, #ea580c)',
+            border: '1px solid transparent',
+            borderRadius: '9999px',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+            boxShadow: '0 2px 8px rgba(249,115,22,0.3)',
+        },
+        /* Price filter row */
+        priceRow: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            marginBottom: '1.5rem',
+        },
+        priceLabel: {
+            fontSize: '0.8125rem',
+            fontWeight: '500',
+            color: '#6b7280',
+            flexShrink: 0
+        },
+        priceInput: {
+            width: '110px',
+            padding: '0.5rem 0.75rem',
+            fontSize: '0.875rem',
+            color: '#e5e5e5',
+            background: '#111111',
+            border: '1px solid #27272a',
+            borderRadius: '0.5rem',
+            outline: 'none',
+            transition: 'border-color 0.2s',
+        },
+        priceDash: {
+            color: '#3f3f46',
+            fontSize: '0.875rem'
         },
         grid: {
             display: 'grid',
@@ -180,15 +213,15 @@ const Catalog = () => {
             background: '#0a0a0a',
             borderRadius: '1rem',
             overflow: 'hidden',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            border: '1px solid rgba(0,0,0,0.04)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            border: '1px solid #1a1a1a',
             display: 'flex',
             flexDirection: 'column',
             transition: 'all 0.3s ease'
         },
         cardImage: {
             height: '180px',
-            background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+            background: 'linear-gradient(135deg, #111111 0%, #0a0a0a 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -208,8 +241,8 @@ const Catalog = () => {
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
             padding: '0.25rem 0.625rem',
-            background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
-            color: '#ea580c',
+            background: 'rgba(249,115,22,0.15)',
+            color: '#fb923c',
             borderRadius: '9999px',
             marginBottom: '0.75rem'
         },
@@ -236,7 +269,7 @@ const Catalog = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             paddingTop: '1rem',
-            borderTop: '1px solid #f1f5f9'
+            borderTop: '1px solid #1f1f1f'
         },
         price: {
             fontSize: '1.375rem',
@@ -265,9 +298,9 @@ const Catalog = () => {
             padding: '0.625rem 1rem',
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#9ca3af',
-            background: '#f1f5f9',
-            border: 'none',
+            color: '#52525b',
+            background: '#1a1a1a',
+            border: '1px solid #27272a',
             borderRadius: '0.625rem',
             cursor: 'not-allowed'
         },
@@ -288,12 +321,12 @@ const Catalog = () => {
             padding: '4rem 2rem',
             background: '#0a0a0a',
             borderRadius: '1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            border: '1px solid #1a1a1a'
         },
         emptyIcon: {
             width: '80px',
             height: '80px',
-            background: '#f1f5f9',
+            background: '#141414',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
@@ -317,7 +350,7 @@ const Catalog = () => {
             fontWeight: '500',
             color: '#e5e5e5',
             background: '#0a0a0a',
-            border: '1px solid #e5e7eb',
+            border: '1px solid #27272a',
             borderRadius: '0.625rem',
             cursor: 'pointer',
             transition: 'all 0.2s'
@@ -329,9 +362,9 @@ const Catalog = () => {
             padding: '0.625rem 1.25rem',
             fontSize: '0.875rem',
             fontWeight: '500',
-            color: '#9ca3af',
-            background: '#f9fafb',
-            border: '1px solid #e5e7eb',
+            color: '#52525b',
+            background: '#111111',
+            border: '1px solid #1f1f1f',
             borderRadius: '0.625rem',
             cursor: 'not-allowed'
         },
@@ -341,7 +374,7 @@ const Catalog = () => {
             fontWeight: '600',
             color: '#e5e5e5',
             background: '#0a0a0a',
-            border: '1px solid #e5e7eb',
+            border: '1px solid #27272a',
             borderRadius: '0.625rem'
         }
     };
@@ -358,66 +391,64 @@ const Catalog = () => {
                     <p style={styles.subtitle}>Browse and shop for medicines you need</p>
                 </div>
 
-                {/* Filters */}
-                <div style={styles.filterPanel}>
-                    <div style={styles.filterGrid}>
-                        <div>
-                            <label style={styles.label}>Search</label>
-                            <div style={styles.inputWrapper}>
-                                <FiSearch style={styles.inputIcon} />
-                                <input
-                                    type="text"
-                                    name="search"
-                                    value={filters.search}
-                                    onChange={handleFilterChange}
-                                    placeholder="Search medicines..."
-                                    style={styles.input}
-                                />
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label style={styles.label}>Category</label>
-                            <div style={styles.inputWrapper}>
-                                <FiTag style={styles.inputIcon} />
-                                <select
-                                    name="category"
-                                    value={filters.category}
-                                    onChange={handleFilterChange}
-                                    style={styles.select}
-                                >
-                                    <option value="">All Categories</option>
-                                    {categories.map(cat => (
-                                        <option key={cat._id} value={cat._id}>{cat.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
+                {/* Search Bar */}
+                <div style={styles.searchBar}>
+                    <FiSearch style={styles.searchIcon} />
+                    <input
+                        type="text"
+                        name="search"
+                        value={filters.search}
+                        onChange={handleFilterChange}
+                        placeholder="Search medicines, symptoms..."
+                        style={styles.searchInput}
+                    />
+                    {filters.search && (
+                        <button
+                            onClick={() => { setFilters(prev => ({ ...prev, search: '' })); setPagination(prev => ({ ...prev, page: 1 })); }}
+                            style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '1.25rem', padding: '0.25rem' }}
+                        >×</button>
+                    )}
+                </div>
 
-                        <div>
-                            <label style={styles.label}>Min Price</label>
-                            <input
-                                type="number"
-                                name="minPrice"
-                                value={filters.minPrice}
-                                onChange={handleFilterChange}
-                                placeholder="₹0"
-                                style={styles.inputNoIcon}
-                            />
-                        </div>
+                {/* Category Chips */}
+                <div style={styles.chipsRow} className="catalog-chips-row">
+                    <button
+                        onClick={() => handleCategorySelect('')}
+                        style={filters.category === '' ? styles.chipActive : styles.chip}
+                    >
+                        All
+                    </button>
+                    {categories.map(cat => (
+                        <button
+                            key={cat._id}
+                            onClick={() => handleCategorySelect(cat._id)}
+                            style={filters.category === cat._id ? styles.chipActive : styles.chip}
+                        >
+                            {cat.name}
+                        </button>
+                    ))}
+                </div>
 
-                        <div>
-                            <label style={styles.label}>Max Price</label>
-                            <input
-                                type="number"
-                                name="maxPrice"
-                                value={filters.maxPrice}
-                                onChange={handleFilterChange}
-                                placeholder="₹10000"
-                                style={styles.inputNoIcon}
-                            />
-                        </div>
-                    </div>
+                {/* Price Filters */}
+                <div style={styles.priceRow}>
+                    <span style={styles.priceLabel}>Price:</span>
+                    <input
+                        type="number"
+                        name="minPrice"
+                        value={filters.minPrice}
+                        onChange={handleFilterChange}
+                        placeholder="Min"
+                        style={styles.priceInput}
+                    />
+                    <span style={styles.priceDash}>—</span>
+                    <input
+                        type="number"
+                        name="maxPrice"
+                        value={filters.maxPrice}
+                        onChange={handleFilterChange}
+                        placeholder="Max"
+                        style={styles.priceInput}
+                    />
                 </div>
 
                 {/* Content */}
@@ -428,7 +459,7 @@ const Catalog = () => {
                     </div>
                 ) : medicines.length > 0 ? (
                     <>
-                        <div style={styles.grid}>
+                        <div style={styles.grid} className="catalog-grid">
                             {medicines.map(medicine => (
                                 <div key={medicine._id} style={styles.card}>
                                     <div style={styles.cardImage}>
@@ -514,16 +545,20 @@ const Catalog = () => {
             </main>
 
             <style>{`
+                .catalog-chips-row::-webkit-scrollbar { display: none; }
+                .catalog-chips-row button:hover {
+                    background: #1f1f1f;
+                    border-color: #3f3f46;
+                    color: #e5e5e5;
+                }
                 @media (max-width: 1280px) {
-                    .dashboard-main > div:nth-child(3) { grid-template-columns: repeat(3, 1fr) !important; }
+                    .dashboard-main .catalog-grid { grid-template-columns: repeat(3, 1fr) !important; }
                 }
                 @media (max-width: 1024px) {
-                    .dashboard-main > div:nth-child(2) > div:first-child { grid-template-columns: 1fr 1fr !important; }
-                    .dashboard-main > div:nth-child(3) { grid-template-columns: repeat(2, 1fr) !important; }
+                    .dashboard-main .catalog-grid { grid-template-columns: repeat(2, 1fr) !important; }
                 }
                 @media (max-width: 640px) {
-                    .dashboard-main > div:nth-child(2) > div:first-child { grid-template-columns: 1fr !important; }
-                    .dashboard-main > div:nth-child(3) { grid-template-columns: 1fr !important; }
+                    .dashboard-main .catalog-grid { grid-template-columns: 1fr !important; }
                 }
             `}</style>
         </div>

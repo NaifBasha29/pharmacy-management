@@ -17,7 +17,6 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import VerifyOTPScreen from './src/screens/VerifyOTPScreen';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
-import HomeScreen from './src/screens/HomeScreen';
 import CatalogScreen from './src/screens/CatalogScreen';
 import CartScreen from './src/screens/CartScreen';
 import OrdersScreen from './src/screens/OrdersScreen';
@@ -69,20 +68,10 @@ const TabNavigator = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
         name="Catalog"
         component={CatalogScreen}
         options={{
-          tabBarLabel: 'Catalog',
+          tabBarLabel: 'Shop',
           tabBarIcon: ({ color, size }) => (
             <Icon name="store-outline" size={size} color={color} />
           ),
@@ -109,14 +98,20 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="MoreTab"
+        component={MorePlaceholder}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: 'More',
           tabBarIcon: ({ color, size }) => (
-            <Icon name="account-outline" size={size} color={color} />
+            <Icon name="dots-horizontal" size={size} color={color} />
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('MoreMenu');
+          },
+        })}
       />
     </Tab.Navigator>
   );
