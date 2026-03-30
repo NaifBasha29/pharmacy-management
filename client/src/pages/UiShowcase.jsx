@@ -11,7 +11,7 @@ import {
   FiShoppingCart,
   FiUsers
 } from 'react-icons/fi';
-import heroVisual from '../../assets/lp.png';
+import uiPreviewImage from '../../assets/lp.png';
 import logo from '../../assets/logo.png';
 import './UiShowcase.css';
 
@@ -22,15 +22,17 @@ const roleCards = [
     badge: 'Role: admin',
     link: '/admin/login',
     accent: '#f97316',
-    highlights: ['Clinics & users', 'Inventory alerts', 'Audit logs']
+    highlights: ['Clinics & users', 'Inventory alerts', 'Audit logs'],
+    shortName: 'Admin'
   },
   {
     title: 'Clinic Portal',
     description: 'Manage clinic profile, enrollments, and prescriptions in one place.',
-    badge: 'Role: clinic_admin',
+    badge: 'Role: clinic admin',
     link: '/clinic/login',
     accent: '#22c55e',
-    highlights: ['Clinic enrollment', 'Patient linkage', 'Status controls']
+    highlights: ['Clinic enrollment', 'Patient linkage', 'Status controls'],
+    shortName: 'Clinic'
   },
   {
     title: 'Pharmacist Workspace',
@@ -38,7 +40,8 @@ const roleCards = [
     badge: 'Role: pharmacist',
     link: '/pharmacist',
     accent: '#06b6d4',
-    highlights: ['Verify scripts', 'Low-stock cues', 'Patient records']
+    highlights: ['Verify scripts', 'Low-stock cues', 'Patient records'],
+    shortName: 'Pharmacist'
   },
   {
     title: 'Patient Dashboard',
@@ -46,7 +49,8 @@ const roleCards = [
     badge: 'Role: user',
     link: '/user/login',
     accent: '#8b5cf6',
-    highlights: ['Browse catalog', 'Track orders', 'Upload prescriptions']
+    highlights: ['Browse catalog', 'Track orders', 'Upload prescriptions'],
+    shortName: 'Patient'
   }
 ];
 
@@ -85,7 +89,7 @@ const UiShowcase = () => {
 
       <section className="ui-hero">
         <div className="ui-hero__content">
-          <div className="ui-badge">UI only · No backend required to explore visuals</div>
+          <div className="ui-badge">UI only — No backend required to explore visuals</div>
           <h1>Explore the complete client experience</h1>
           <p>
             Quickly preview every role-based screen, navigation pattern, and layout without needing API connectivity.
@@ -100,13 +104,13 @@ const UiShowcase = () => {
             <div className="ui-chip"><FiLayers /> Layouts: Dashboards, tables, forms</div>
             <div className="ui-chip"><FiCheckCircle /> Guards: Protected routes per role</div>
           </div>
-        </div>
-        <div className="ui-hero__visual">
-          <div className="ui-hero__image">
-            <img src={heroVisual} alt="UI preview" />
           </div>
-          <div className="ui-hero__stats">
-            {previewStats.map((s) => (
+          <div className="ui-hero__visual">
+            <div className="ui-hero__image">
+              <img src={uiPreviewImage} alt="UI preview" />
+            </div>
+            <div className="ui-hero__stats">
+              {previewStats.map((s) => (
               <div key={s.label} className={`ui-hero__stat ui-hero__stat--${s.tone}`}>
                 <span>{s.label}</span>
                 <strong>{s.value}</strong>
@@ -136,7 +140,7 @@ const UiShowcase = () => {
                 ))}
               </div>
               <Link to={role.link} className="ui-card__link" style={{ color: role.accent }}>
-                Open {role.title.split(' ')[0]} →
+                Open {role.shortName} →
               </Link>
             </div>
           ))}

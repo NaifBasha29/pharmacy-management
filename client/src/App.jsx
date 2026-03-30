@@ -114,7 +114,7 @@ function AppRoutes() {
     <Routes>
        {/* Root - Landing Page */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/ui-preview" element={<UiShowcase />} />
+      <Route path="/ui-showcase" element={<UiShowcase />} />
 
       {/* Auth Routes */}
       <Route path="/admin/login" element={
@@ -305,6 +305,5 @@ function App() {
 }
 
 export default App;
-
 
 
