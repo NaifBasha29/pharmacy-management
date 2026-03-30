@@ -67,6 +67,7 @@ const LandingPage = () => {
                         <a href="#features" className={`nav-link ${activeSection === 'features' ? 'active' : ''}`} onClick={() => setActiveSection('features')}>Features</a>
                         <a href="#about" className={`nav-link ${activeSection === 'about' ? 'active' : ''}`} onClick={() => setActiveSection('about')}>About</a>
                         <a href="#contact" className={`nav-link ${activeSection === 'contact' ? 'active' : ''}`} onClick={() => setActiveSection('contact')}>Contact</a>
+                        <Link to="/ui-preview" className="nav-link">UI Preview</Link>
                     </div>
                     <div className="nav-actions">
                         <Link to="/user/login" className="btn-cta">Sign In</Link>
@@ -99,6 +100,7 @@ const LandingPage = () => {
                                 Sign In
                                 <FaArrowRight className="btn-icon" />
                             </Link>
+                            <Link to="/ui-preview" className="btn-secondary">View UI Preview</Link>
                             <a href="#features" className="btn-secondary">Learn More</a>
                         </div>
                         <div className="hero-stats">
@@ -378,7 +380,6 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
 
 
 

@@ -12,6 +12,7 @@ import PatientLogin from './pages/auth/PatientLogin';
 
 // Landing Page
 import LandingPage from './pages/LandingPage';
+import UiShowcase from './pages/UiShowcase';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -111,8 +112,9 @@ const HomeRedirect = () => {
 function AppRoutes() {
   return (
     <Routes>
-      {/* Root - Landing Page */}
+       {/* Root - Landing Page */}
       <Route path="/" element={<LandingPage />} />
+      <Route path="/ui-preview" element={<UiShowcase />} />
 
       {/* Auth Routes */}
       <Route path="/admin/login" element={
@@ -303,7 +305,6 @@ function App() {
 }
 
 export default App;
-
 
 
 
