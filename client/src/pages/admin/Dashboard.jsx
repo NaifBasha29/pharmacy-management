@@ -219,13 +219,13 @@ const AdminDashboard = () => {
                           <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
                       <XAxis dataKey="_id" tick={{ fontSize: 12 }} />
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip
                         contentStyle={{
-                          background: 'rgba(255,255,255,0.95)',
-                          border: '1px solid #e5e7eb',
+                          background: 'var(--bg-secondary)',
+                          border: '1px solid var(--border-light)',
                           borderRadius: '8px'
                         }}
                         formatter={(value) => [`₹${value.toLocaleString()}`, 'Revenue']}

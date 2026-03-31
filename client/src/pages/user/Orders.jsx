@@ -53,7 +53,7 @@ const Orders = () => {
     // Styles
     const styles = {
         page: {
-            background: '#000000',
+            background: 'var(--bg-primary)',
             minHeight: '100vh',
             padding: '2rem'
         },
@@ -63,7 +63,7 @@ const Orders = () => {
         title: {
             fontSize: '1.875rem',
             fontWeight: '700',
-            color: '#ffffff',
+            color: 'var(--text-primary)',
             marginBottom: '0.5rem'
         },
         gradientText: {
@@ -73,24 +73,24 @@ const Orders = () => {
             backgroundClip: 'text'
         },
         subtitle: {
-            color: '#9ca3af',
+            color: 'var(--text-secondary)',
             fontSize: '1rem'
         },
         tabs: {
             display: 'inline-flex',
-            background: '#0a0a0a',
+            background: 'var(--bg-secondary)',
             borderRadius: '0.75rem',
             padding: '0.375rem',
             gap: '0.25rem',
             marginBottom: '2rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            boxShadow: 'var(--shadow-sm)'
         },
         tab: (active) => ({
             padding: '0.625rem 1.25rem',
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: active ? '#ea580c' : '#9ca3af',
-            background: active ? '#eff6ff' : 'transparent',
+            color: active ? '#ea580c' : 'var(--text-secondary)',
+            background: active ? 'var(--primary-50)' : 'transparent',
             border: 'none',
             borderRadius: '0.5rem',
             cursor: 'pointer',
@@ -98,11 +98,11 @@ const Orders = () => {
             textTransform: 'capitalize'
         }),
         orderCard: {
-            background: '#0a0a0a',
+            background: 'var(--bg-secondary)',
             borderRadius: '1rem',
             marginBottom: '1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-            border: '1px solid rgba(0,0,0,0.04)',
+            boxShadow: 'var(--shadow-sm)',
+            border: '1px solid var(--border-light)',
             overflow: 'hidden'
         },
         orderHeader: {
@@ -121,7 +121,7 @@ const Orders = () => {
         orderIcon: {
             width: '48px',
             height: '48px',
-            background: 'linear-gradient(135deg, #eff6ff, #dbeafe)',
+            background: 'linear-gradient(135deg, var(--primary-50), var(--primary-100))',
             borderRadius: '0.75rem',
             display: 'flex',
             alignItems: 'center',
@@ -132,7 +132,7 @@ const Orders = () => {
         orderId: {
             fontSize: '1rem',
             fontWeight: '700',
-            color: '#ffffff',
+            color: 'var(--text-primary)',
             marginBottom: '0.25rem'
         },
         orderMeta: {
@@ -140,7 +140,7 @@ const Orders = () => {
             alignItems: 'center',
             gap: '1rem',
             fontSize: '0.875rem',
-            color: '#9ca3af'
+            color: 'var(--text-secondary)'
         },
         badge: (status) => {
             const colors = {
@@ -151,7 +151,7 @@ const Orders = () => {
                 delivered: { bg: '#dcfce7', color: '#16a34a' },
                 cancelled: { bg: '#fee2e2', color: '#dc2626' }
             };
-            const c = colors[status] || { bg: '#f1f5f9', color: '#9ca3af' };
+            const c = colors[status] || { bg: 'var(--bg-tertiary)', color: 'var(--text-secondary)' };
             return {
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -187,15 +187,15 @@ const Orders = () => {
             color: '#dc2626'
         },
         btnExpand: {
-            background: '#f1f5f9',
-            color: '#475569'
+            background: 'var(--bg-tertiary)',
+            color: 'var(--text-primary)'
         },
         orderDetails: (expanded) => ({
             maxHeight: expanded ? '500px' : '0',
             overflow: 'hidden',
             transition: 'max-height 0.3s ease',
-            background: '#f8fafc',
-            borderTop: expanded ? '1px solid #e5e7eb' : 'none'
+            background: 'var(--bg-tertiary)',
+            borderTop: expanded ? '1px solid var(--border-light)' : 'none'
         }),
         detailsInner: {
             padding: '1.5rem'
@@ -203,24 +203,24 @@ const Orders = () => {
         itemsTitle: {
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#e5e5e5',
+            color: 'var(--text-primary)',
             marginBottom: '1rem',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
         },
         itemsList: {
-            background: '#0a0a0a',
+            background: 'var(--bg-secondary)',
             borderRadius: '0.75rem',
             padding: '1rem',
-            border: '1px solid #e5e7eb'
+            border: '1px solid var(--border-light)'
         },
         item: {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '0.75rem 0',
-            borderBottom: '1px dashed #e5e7eb'
+            borderBottom: '1px dashed var(--border-light)'
         },
         itemInfo: {
             display: 'flex',
@@ -230,7 +230,7 @@ const Orders = () => {
         itemIcon: {
             width: '40px',
             height: '40px',
-            background: '#f1f5f9',
+            background: 'var(--bg-tertiary)',
             borderRadius: '0.5rem',
             display: 'flex',
             alignItems: 'center',
@@ -239,16 +239,16 @@ const Orders = () => {
         },
         itemName: {
             fontWeight: '600',
-            color: '#ffffff',
+            color: 'var(--text-primary)',
             marginBottom: '0.125rem'
         },
         itemQty: {
             fontSize: '0.75rem',
-            color: '#9ca3af'
+            color: 'var(--text-secondary)'
         },
         itemPrice: {
             fontWeight: '700',
-            color: '#ffffff'
+            color: 'var(--text-primary)'
         },
         totalRow: {
             display: 'flex',
@@ -256,19 +256,19 @@ const Orders = () => {
             alignItems: 'center',
             marginTop: '1rem',
             paddingTop: '1rem',
-            borderTop: '2px solid #e5e7eb'
+            borderTop: '2px solid var(--border-light)'
         },
         emptyState: {
             textAlign: 'center',
             padding: '4rem 2rem',
-            background: '#0a0a0a',
+            background: 'var(--bg-secondary)',
             borderRadius: '1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            boxShadow: 'var(--shadow-sm)'
         },
         emptyIcon: {
             width: '80px',
             height: '80px',
-            background: '#f1f5f9',
+            background: 'var(--bg-tertiary)',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
@@ -319,7 +319,7 @@ const Orders = () => {
                 {loading ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
                         <div className="spinner" style={{ width: 48, height: 48, marginBottom: '1rem' }} />
-                        <p style={{ color: '#9ca3af', fontWeight: 500 }}>Loading orders...</p>
+                        <p style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Loading orders...</p>
                     </div>
                 ) : filteredOrders.length > 0 ? (
                     <div>
@@ -340,7 +340,7 @@ const Orders = () => {
                                                     <FiCalendar size={14} />
                                                     {new Date(order.createdAt).toLocaleDateString()}
                                                 </span>
-                                                <span style={{ fontWeight: 600, color: '#ffffff' }}>
+                                                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
                                                     ₹{order.total?.toLocaleString()}
                                                 </span>
                                                 <span style={styles.badge(order.status)}>
@@ -374,7 +374,7 @@ const Orders = () => {
                                         </div>
                                         <div style={styles.itemsList}>
                                             {order.items?.map((item, index) => (
-                                                <div key={index} style={{ ...styles.item, borderBottom: index === order.items.length - 1 ? 'none' : '1px dashed #e5e7eb' }}>
+                                                <div key={index} style={{ ...styles.item, borderBottom: index === order.items.length - 1 ? 'none' : '1px dashed var(--border-light)' }}>
                                                     <div style={styles.itemInfo}>
                                                         <div style={styles.itemIcon}>💊</div>
                                                         <div>
@@ -386,8 +386,8 @@ const Orders = () => {
                                                 </div>
                                             ))}
                                             <div style={styles.totalRow}>
-                                                <span style={{ fontSize: '0.875rem', fontWeight: 500, color: '#9ca3af' }}>Order Total</span>
-                                                <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>₹{order.total?.toLocaleString()}</span>
+                                                <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Order Total</span>
+                                                <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>₹{order.total?.toLocaleString()}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -398,10 +398,10 @@ const Orders = () => {
                 ) : (
                     <div style={styles.emptyState}>
                         <div style={styles.emptyIcon}>📦</div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.5rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                             No orders found
                         </h3>
-                        <p style={{ color: '#9ca3af' }}>
+                        <p style={{ color: 'var(--text-secondary)' }}>
                             {activeTab !== 'all' ? `You have no ${activeTab} orders` : "You haven't placed any orders yet"}
                         </p>
                     </div>

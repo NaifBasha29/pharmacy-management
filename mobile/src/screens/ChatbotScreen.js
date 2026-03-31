@@ -103,7 +103,7 @@ export default function ChatbotScreen({ navigation }) {
               <View key={med._id} style={styles.medItem}>
                 <View style={styles.medInfo}>
                   <Text style={styles.medName}>{med.name}</Text>
-                  <Text style={styles.medPrice}>${med.price?.toFixed(2)}</Text>
+                  <Text style={styles.medPrice}>₹{(med.price || 0).toLocaleString('en-IN')}</Text>
                 </View>
                 <TouchableOpacity
                   style={[styles.addBtn, med.stock <= 0 && styles.disabledBtn]}

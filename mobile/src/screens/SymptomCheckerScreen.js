@@ -152,7 +152,7 @@ export default function SymptomCheckerScreen({ navigation }) {
                       {med.dosageForm && (
                         <Text style={styles.medDosage}>{med.dosageForm} {med.strength || ''}</Text>
                       )}
-                      <Text style={styles.medPrice}>${med.price?.toFixed(2)}</Text>
+                      <Text style={styles.medPrice}>₹{(med.price || 0).toLocaleString('en-IN')}</Text>
                       <Text style={[styles.medStock, med.stock <= 0 && { color: theme.error }]}>
                         {med.stock > 0 ? `${med.stock} available` : 'Out of stock'}
                       </Text>

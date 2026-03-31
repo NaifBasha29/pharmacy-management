@@ -3,14 +3,23 @@ import { Server } from 'socket.io';
 let io;
 
 export const initSocket = (server) => {
+  const allowedOrigins = [
+    process.env.CLIENT_URL,
+    process.env.MOBILE_URL,
+    'http://localhost:5000',
+    'http://localhost:5173', // Vite client
+    'http://localhost:4173',
+    'http://localhost:8081', // Expo
+    'http://192.168.6.88:8081'
+  ].filter(Boolean);
+
   io = new Server(server, {
     cors: {
-      origin: [
-        'http://localhost:5173', // Vite client
-        'http://localhost:8081', // Expo
-        'http://192.168.6.88:8081', // Expo LAN
-        'http://localhost:5005'
-      ],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        return callback(new Error('Not allowed by Socket.IO CORS'));
+      },
       methods: ['GET', 'POST'],
       credentials: true
     }

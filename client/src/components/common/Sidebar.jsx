@@ -1,16 +1,29 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { useNotifications } from '../../context/NotificationContext';
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useNotifications } from "../../context/NotificationContext";
 import {
-  FiHome, FiUsers, FiPackage, FiShoppingCart, FiFileText,
-  FiSettings, FiLogOut, FiMenu, FiX, FiBell, FiActivity,
-  FiClipboard, FiAlertCircle, FiTruck, FiHeart, FiHelpCircle,
-  FiCrosshair // Using an icon instead of logo for now
-} from 'react-icons/fi';
-import ThemeToggle from './ThemeToggle';
-import './Sidebar.css';
-import logo from '../../../assets/logo.png';
+  FiHome,
+  FiUsers,
+  FiPackage,
+  FiShoppingCart,
+  FiFileText,
+  FiTrendingUp,
+  FiSettings,
+  FiLogOut,
+  FiMenu,
+  FiX,
+  FiBell,
+  FiActivity,
+  FiClipboard,
+  FiAlertCircle,
+  FiTruck,
+  FiHeart,
+  FiHelpCircle,
+  FiCrosshair, // Using an icon instead of logo for now
+} from "react-icons/fi";
+import ThemeToggle from "./ThemeToggle";
+import "./Sidebar.css";
 
 const Sidebar = () => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
@@ -26,32 +39,59 @@ const Sidebar = () => {
   };
 
   const adminLinks = [
-    { path: '/admin', icon: <FiHome />, label: 'Dashboard' },
-    { path: '/admin/clinics', icon: <FiHeart />, label: 'Clinics' },
-    { path: '/admin/inventory', icon: <FiPackage />, label: 'Inventory' },
-    { path: '/admin/prescriptions', icon: <FiClipboard />, label: 'Prescriptions' },
-    { path: '/admin/orders', icon: <FiShoppingCart />, label: 'Orders' },
-    { path: '/admin/reports', icon: <FiActivity />, label: 'Reports' },
-    { path: '/admin/audit-logs', icon: <FiFileText />, label: 'Compliance' },
-    { path: '/admin/support', icon: <FiHelpCircle />, label: 'Support' },
-    { path: '/admin/settings', icon: <FiSettings />, label: 'Settings' }
+    { path: "/admin", icon: <FiHome />, label: "Dashboard" },
+    { path: "/admin/clinics", icon: <FiHeart />, label: "Clinics" },
+    { path: "/admin/inventory", icon: <FiPackage />, label: "Inventory" },
+    {
+      path: "/admin/prescriptions",
+      icon: <FiClipboard />,
+      label: "Prescriptions",
+    },
+    { path: "/admin/orders", icon: <FiShoppingCart />, label: "Orders" },
+    { path: "/admin/reports", icon: <FiActivity />, label: "Reports" },
+    { path: "/admin/audit-logs", icon: <FiFileText />, label: "Compliance" },
+    { path: "/admin/support", icon: <FiHelpCircle />, label: "Support" },
+    { path: "/admin/settings", icon: <FiSettings />, label: "Settings" },
   ];
 
   const pharmacistLinks = [
-    { path: '/pharmacist', icon: <FiHome />, label: 'Dashboard' },
-    { path: '/pharmacist/patients', icon: <FiHeart />, label: 'Patients' }
+    { path: "/pharmacist", icon: <FiHome />, label: "Dashboard" },
+    { path: "/pharmacist/inventory", icon: <FiPackage />, label: "Inventory" },
+    { path: "/pharmacist/orders", icon: <FiShoppingCart />, label: "Orders" },
+    {
+      path: "/pharmacist/prescriptions",
+      icon: <FiClipboard />,
+      label: "Prescriptions",
+    },
+    {
+      path: "/pharmacist/ai-drug-check",
+      icon: <FiActivity />,
+      label: "AI Drug Check",
+    },
+    { path: "/pharmacist/billing", icon: <FiFileText />, label: "Billing" },
+    { path: "/pharmacist/reports", icon: <FiTrendingUp />, label: "Reports" },
+    { path: "/pharmacist/patients", icon: <FiUsers />, label: "Patients" },
   ];
 
   const userLinks = [
-    { path: '/user', icon: <FiHome />, label: 'Dashboard' },
-    { path: '/user/catalog', icon: <FiPackage />, label: 'Medicine Catalog' },
-    { path: '/user/orders', icon: <FiShoppingCart />, label: 'My Orders' },
-    { path: '/user/prescriptions', icon: <FiFileText />, label: 'Prescriptions' },
-    { path: '/user/profile', icon: <FiUsers />, label: 'Profile' },
-    { path: '/user/support', icon: <FiHelpCircle />, label: 'Support' }
+    { path: "/user", icon: <FiHome />, label: "Dashboard" },
+    { path: "/user/catalog", icon: <FiPackage />, label: "Medicine Catalog" },
+    { path: "/user/cart", icon: <FiShoppingCart />, label: "My Cart" },
+    { path: "/user/orders", icon: <FiShoppingCart />, label: "My Orders" },
+    {
+      path: "/user/prescriptions",
+      icon: <FiFileText />,
+      label: "Prescriptions",
+    },
+    { path: "/user/profile", icon: <FiUsers />, label: "Profile" },
+    { path: "/user/support", icon: <FiHelpCircle />, label: "Support" },
   ];
 
-  const links = isAdmin ? adminLinks : isPharmacist ? pharmacistLinks : userLinks;
+  const links = isAdmin
+    ? adminLinks
+    : isPharmacist
+      ? pharmacistLinks
+      : userLinks;
 
   return (
     <>
@@ -65,10 +105,15 @@ const Sidebar = () => {
 
       {/* Overlay for mobile */}
       {isMobileOpen && (
-        <div className="sidebar-overlay" onClick={() => setIsMobileOpen(false)} />
+        <div
+          className="sidebar-overlay"
+          onClick={() => setIsMobileOpen(false)}
+        />
       )}
 
-      <aside className={`sidebar ${isOpen ? 'open' : 'collapsed'} ${isMobileOpen ? 'mobile-open' : ''}`}>
+      <aside
+        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isMobileOpen ? "mobile-open" : ""}`}
+      >
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <FiCrosshair className="logo-icon" size={28} color="#f97316" />
@@ -81,7 +126,7 @@ const Sidebar = () => {
 
         <div className="sidebar-user">
           <div className="user-avatar">
-            {user?.name?.charAt(0).toUpperCase() || 'U'}
+            {user?.name?.charAt(0).toUpperCase() || "U"}
           </div>
           {isOpen && (
             <div className="user-info">
@@ -96,7 +141,7 @@ const Sidebar = () => {
             <Link
               key={link.path}
               to={link.path}
-              className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
+              className={`nav-link ${location.pathname === link.path ? "active" : ""}`}
               onClick={() => setIsMobileOpen(false)}
             >
               <span className="nav-icon">{link.icon}</span>
@@ -106,8 +151,11 @@ const Sidebar = () => {
         </nav>
 
         <div className="sidebar-footer">
-          <div className={`video-call-controls ${!isOpen ? 'collapsed' : ''}`} style={{ padding: '0 0.5rem 0.5rem' }}>
-            <ThemeToggle className={!isOpen ? 'w-full' : ''} />
+          <div
+            className={`video-call-controls ${!isOpen ? "collapsed" : ""}`}
+            style={{ padding: "0 0.5rem 0.5rem" }}
+          >
+            <ThemeToggle className={!isOpen ? "w-full" : ""} />
           </div>
 
           <button className="nav-link notification-btn">
@@ -121,7 +169,9 @@ const Sidebar = () => {
           </button>
 
           <button className="nav-link logout-btn" onClick={handleLogout}>
-            <span className="nav-icon"><FiLogOut /></span>
+            <span className="nav-icon">
+              <FiLogOut />
+            </span>
             <span className="nav-label">Logout</span>
           </button>
         </div>
@@ -131,8 +181,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-
-
-
-

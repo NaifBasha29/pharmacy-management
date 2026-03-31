@@ -18,7 +18,7 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0.4rem 0.75rem;
-    background: #0a0a0a;
+    background: var(--bg-secondary);
     border: 1px solid rgba(249, 115, 22, 0.2);
     border-radius: 6px;
     color: #f97316;
@@ -131,14 +131,14 @@
 
 .detail-row .label {
     font-size: 0.7rem;
-    color: #6b7280;
+    color: var(--text-secondary);
     font-weight: 500;
     min-width: 100px;
 }
 
 .detail-row .value {
     font-size: 0.75rem;
-    color: #e5e5e5;
+    color: var(--text-primary);
     font-weight: 500;
     text-align: right;
 }
@@ -154,7 +154,7 @@
     padding: 0.5rem;
     border-radius: 4px;
     font-size: 0.7rem;
-    color: #9ca3af;
+    color: var(--text-secondary);
     width: 100%;
 }
 
@@ -168,7 +168,7 @@
 }
 
 .status-text.inactive {
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .status-text.suspended {
@@ -197,7 +197,7 @@
 
 .status-badge.inactive {
     background: rgba(107, 114, 128, 0.15);
-    color: #9ca3af;
+    color: var(--text-secondary);
 }
 
 .status-badge.suspended {

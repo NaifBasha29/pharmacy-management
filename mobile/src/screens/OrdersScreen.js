@@ -108,7 +108,7 @@ export default function OrdersScreen({ navigation }) {
             </Text>
           </View>
           <Text style={[s.total, { color: theme.primary }]}>
-            ${item.totalAmount?.toFixed(2) ?? '0.00'}
+            ₹{(item.totalAmount ?? item.total ?? 0).toLocaleString('en-IN')}
           </Text>
         </View>
 

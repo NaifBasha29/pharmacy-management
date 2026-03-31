@@ -92,8 +92,7 @@ const patientSchema = new mongoose.Schema({
 // Generate patient ID before saving
 patientSchema.pre('save', async function (next) {
   if (!this.patientId) {
-    const count = await mongoose.model('Patient').countDocuments();
-    this.patientId = `PAT${(count + 1).toString().padStart(6, '0')}`;
+    this.patientId = 'PAT' + Date.now().toString(36).toUpperCase();
   }
 
   // Calculate age from date of birth

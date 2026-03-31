@@ -57,6 +57,7 @@ export const AuthProvider = ({ children }) => {
         
         await SecureStore.setItemAsync('userToken', accessToken);
         await SecureStore.setItemAsync('refreshToken', refreshToken);
+        await SecureStore.setItemAsync('userData', JSON.stringify(user));
         
         setUser(user);
         return true;

@@ -67,10 +67,10 @@ const AuditLogs = () => {
             UPDATE: '#f97316',
             DELETE: '#ef4444',
             LOGIN: '#8b5cf6',
-            LOGOUT: '#6b7280',
+            LOGOUT: 'var(--text-secondary)',
             VIEW: '#f59e0b'
         };
-        return colors[action] || '#6b7280';
+        return colors[action] || 'var(--text-secondary)';
     };
 
     if (loading && logs.length === 0) {

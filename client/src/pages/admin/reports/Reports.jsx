@@ -178,11 +178,11 @@ const Reports = () => {
                         <ResponsiveContainer width="100%" height={300}>
                             <LineChart data={reportData.revenue}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                                <XAxis dataKey="name" stroke="#9ca3af" />
-                                <YAxis stroke="#9ca3af" />
+                                <XAxis dataKey="name" stroke="var(--text-secondary)" />
+                                <YAxis stroke="var(--text-secondary)" />
                                 <Tooltip
-                                    contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
-                                    labelStyle={{ color: '#f9fafb' }}
+                                    contentStyle={{ background: 'var(--border-light)', border: '1px solid var(--border-light)', borderRadius: '8px' }}
+                                    labelStyle={{ color: 'var(--text-primary)' }}
                                 />
                                 <Line type="monotone" dataKey="value" stroke="#f97316" strokeWidth={2} dot={{ fill: '#f97316' }} />
                             </LineChart>
@@ -194,11 +194,11 @@ const Reports = () => {
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={reportData.orders}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                                <XAxis dataKey="name" stroke="#9ca3af" />
-                                <YAxis stroke="#9ca3af" />
+                                <XAxis dataKey="name" stroke="var(--text-secondary)" />
+                                <YAxis stroke="var(--text-secondary)" />
                                 <Tooltip
-                                    contentStyle={{ background: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
-                                    labelStyle={{ color: '#f9fafb' }}
+                                    contentStyle={{ background: 'var(--border-light)', border: '1px solid var(--border-light)', borderRadius: '8px' }}
+                                    labelStyle={{ color: 'var(--text-primary)' }}
                                 />
                                 <Bar dataKey="value" fill="#f97316" radius={[4, 4, 0, 0]} />
                             </BarChart>

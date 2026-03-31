@@ -157,7 +157,7 @@ router.post('/register', userValidation.register, asyncHandler(async (req, res) 
   }
 
   // Allow only specific roles
-  const allowedRoles = ['admin', 'pharmacist', 'user'];
+  const allowedRoles = ['pharmacist', 'user'];
   const userRole = (role && allowedRoles.includes(role)) ? role : 'user';
 
   // Create user
@@ -498,20 +498,66 @@ router.post('/refresh-token', asyncHandler(async (req, res) => {
 
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const user = await User.findById(decoded.id).select('+refreshToken');
+    const userId = decoded.id;
+    let user = await User.findById(userId).select('+refreshToken');
+    let userType = 'user';
 
-    if (!user || user.refreshToken !== refreshToken) {
+    if (!user) {
+      const patient = await Patient.findById(userId);
+      if (patient) {
+        user = patient;
+        userType = 'patient';
+      }
+    }
+
+    if (!user) {
+      const clinic = await Clinic.findById(userId);
+      if (clinic) {
+        user = clinic;
+        userType = 'clinic';
+      }
+    }
+
+    if (!user) {
       return res.status(401).json({
         success: false,
         message: 'Invalid refresh token'
       });
     }
 
-    const newAccessToken = generateToken(user._id);
-    const newRefreshToken = generateRefreshToken(user._id);
+    const activeSession = await Session.findOne({
+      userId: user._id,
+      refreshTokenHash: Session.hashToken(refreshToken),
+      isActive: true,
+      expiresAt: { $gt: new Date() }
+    });
 
-    user.refreshToken = newRefreshToken;
-    await user.save({ validateBeforeSave: false });
+    if (!activeSession) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid refresh token'
+      });
+    }
+
+    if (userType === 'user' && user.refreshToken !== refreshToken) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid refresh token'
+      });
+    }
+
+    const newAccessToken = generateToken(user._id, userType);
+    const newRefreshToken = generateRefreshToken(user._id, userType);
+
+    activeSession.accessTokenHash = Session.hashToken(newAccessToken);
+    activeSession.refreshTokenHash = Session.hashToken(newRefreshToken);
+    activeSession.expiresAt = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000));
+    await activeSession.save();
+
+    if (userType === 'user') {
+      user.refreshToken = newRefreshToken;
+      await user.save({ validateBeforeSave: false });
+    }
 
     res.json({
       success: true,
@@ -656,10 +702,22 @@ router.put('/change-password', protect, asyncHandler(async (req, res) => {
     });
   }
 
-  const user = await User.findById(req.user._id).select('+password');
+  let userDoc;
 
-  // Verify current password
-  const isMatch = await user.comparePassword(currentPassword);
+  if (req.user?.type === 'patient') {
+    userDoc = await Patient.findById(req.user._id).select('+password');
+  } else {
+    userDoc = await User.findById(req.user._id).select('+password');
+  }
+
+  if (!userDoc) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found'
+    });
+  }
+
+  const isMatch = await userDoc.comparePassword(currentPassword);
   if (!isMatch) {
     return res.status(401).json({
       success: false,
@@ -668,17 +726,17 @@ router.put('/change-password', protect, asyncHandler(async (req, res) => {
   }
 
   // Update password
-  user.password = newPassword;
-  user.passwordChangedAt = new Date();
-  await user.save();
+  userDoc.password = newPassword;
+  userDoc.passwordChangedAt = new Date();
+  await userDoc.save();
 
   // Log action
   await AuditLog.log({
     user: req.user._id,
     action: 'PASSWORD_CHANGE',
-    resource: 'User',
+    resource: req.user?.type === 'patient' ? 'Patient' : 'User',
     resourceId: req.user._id,
-    description: `Password changed for user: ${req.user.email}`,
+    description: `Password changed for user: ${req.user.email || req.user.patientId}`,
     ipAddress: req.ip
   });
 

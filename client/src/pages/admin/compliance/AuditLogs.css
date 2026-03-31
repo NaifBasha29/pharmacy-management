@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 12px;
     white-space: nowrap;
 }
@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #e5e5e5;
+    color: var(--text-primary);
     font-size: 13px;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .description-cell {
-    color: #d1d5db;
+    color: var(--text-primary);
     font-size: 12px;
     max-width: 300px;
     overflow: hidden;
@@ -43,7 +43,7 @@
 
 .ip-cell {
     font-family: monospace;
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 12px;
 }
 

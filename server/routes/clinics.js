@@ -31,11 +31,21 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+    const allowedTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/pjpeg',
+        'image/png',
+        'image/gif',
+        'application/pdf'
+    ];
+
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Only JPEG, PNG, GIF and PDF are allowed.'), false);
+        const error = new Error('Invalid file type. Only JPEG, PNG, GIF and PDF are allowed.');
+        error.statusCode = 400;
+        cb(error, false);
     }
 };
 
@@ -143,7 +153,29 @@ router.post('/',
         { name: 'licenseDocument', maxCount: 1 }
     ]),
     asyncHandler(async (req, res) => {
-        const clinicData = JSON.parse(req.body.clinicData || '{}');
+        const rawClinicData = req.body.clinicData;
+        let clinicData = {};
+
+        try {
+            clinicData = typeof rawClinicData === 'string'
+                ? JSON.parse(rawClinicData || '{}')
+                : (rawClinicData || {});
+        } catch (err) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid clinic data format. Ensure clinicData is valid JSON.'
+            });
+        }
+
+        const missingSections = ['name', 'registrationNumber', 'type', 'contact', 'address', 'regulatory', 'adminAccount']
+            .filter(field => !clinicData[field]);
+
+        if (missingSections.length) {
+            return res.status(400).json({
+                success: false,
+                message: `Missing required clinic sections: ${missingSections.join(', ')}`
+            });
+        }
 
         // Handle file uploads
         if (req.files) {

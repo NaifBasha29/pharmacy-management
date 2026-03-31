@@ -10,12 +10,12 @@
 
 .dash {
     min-height: 100vh;
-    background: #000000 !important;
+    background: var(--bg-primary) !important;
     background-image:
-        radial-gradient(ellipse at top right, rgba(249, 115, 22, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(249, 115, 22, 0.05) 0%, transparent 50%) !important;
+        radial-gradient(ellipse at top right, var(--bg-tertiary) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, transparent 0%, transparent 50%) !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    color: #e5e5e5 !important;
+    color: var(--text-primary) !important;
 }
 
 /* Reset child elements */
@@ -25,14 +25,14 @@
 .dash select {
     background-color: transparent;
     color: inherit;
-    border-color: rgba(249, 115, 22, 0.15);
+    border-color: var(--border-light);
 }
 
 /* Loader */
 .loader-wrap {
     position: fixed;
     inset: 0;
-    background: #000000;
+    background: var(--bg-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -41,7 +41,7 @@
 .loader {
     width: 32px;
     height: 32px;
-    border: 2px solid #0a0a0a;
+    border: 2px solid var(--bg-secondary);
     border-top-color: #f97316;
     border-radius: 50%;
     animation: spin .7s linear infinite;
@@ -59,8 +59,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 24px;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.95) 0%, rgba(5, 5, 5, 0.98) 100%);
-    border-bottom: 1px solid rgba(249, 115, 22, 0.15);
+    background: linear-gradient(90deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .header-l {
@@ -84,7 +84,7 @@
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    color: #fff;
+    color: var(--text-primary);
     font-weight: bold;
 }
 
@@ -102,7 +102,7 @@
 .nav-link {
     padding: 6px 12px;
     border-radius: 4px;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 11px;
     font-weight: 500;
@@ -114,7 +114,7 @@
 }
 
 .nav-link.active {
-    background: rgba(249, 115, 22, 0.15);
+    background: var(--border-light);
     color: #f97316;
 }
 
@@ -126,7 +126,7 @@
 
 .admin-txt {
     font-size: 11px;
-    color: #9ca3af;
+    color: var(--text-secondary);
 }
 
 .avatar {
@@ -164,18 +164,18 @@
 }
 
 .dash .stat-box {
-    background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%) !important;
-    border: 1px solid rgba(249, 115, 22, 0.2) !important;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%) !important;
+    border: 1px solid var(--border-light) !important;
     border-radius: 8px !important;
     padding: 14px 16px !important;
-    color: #fff !important;
-    box-shadow: 0 0 20px rgba(249, 115, 22, 0.05) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 0 20px transparent !important;
     transition: all 0.2s ease;
 }
 
 .dash .stat-box:hover {
-    border-color: rgba(249, 115, 22, 0.4) !important;
-    box-shadow: 0 0 30px rgba(249, 115, 22, 0.1) !important;
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 30px var(--border-light) !important;
 }
 
 .stat-top {
@@ -197,7 +197,7 @@
 
 .stat-lbl {
     font-size: 10px;
-    color: #6b7280;
+    color: var(--text-secondary);
     margin-top: 4px;
     display: block;
     text-transform: uppercase;
@@ -219,8 +219,8 @@
 
 /* Box */
 .box {
-    background: linear-gradient(135deg, #050505 0%, #0a0a0a 100%);
-    border: 1px solid rgba(249, 115, 22, 0.12);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%);
+    border: 1px solid var(--border-light);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -230,7 +230,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 14px;
-    border-bottom: 1px solid rgba(249, 115, 22, 0.1);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .box-title {
@@ -248,7 +248,7 @@
 .manage-btn {
     padding: 4px 8px;
     background: transparent;
-    border: 1px solid rgba(249, 115, 22, 0.25);
+    border: 1px solid var(--border-light);
     color: #f97316;
     border-radius: 4px;
     font-size: 9px;
@@ -257,16 +257,16 @@
 }
 
 .manage-btn:hover {
-    background: rgba(249, 115, 22, 0.1);
-    border-color: rgba(249, 115, 22, 0.4);
+    background: var(--border-light);
+    border-color: var(--primary-500);
 }
 
 .grid-btn {
     width: 22px;
     height: 22px;
-    border: 1px solid rgba(249, 115, 22, 0.2);
+    border: 1px solid var(--border-light);
     background: transparent;
-    color: #6b7280;
+    color: var(--text-secondary);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -276,19 +276,19 @@
 }
 
 .grid-btn:hover {
-    border-color: rgba(249, 115, 22, 0.4);
+    border-color: var(--primary-500);
     color: #f97316;
 }
 
 .grid-btn.active {
-    background: rgba(249, 115, 22, 0.2);
+    background: var(--border-light);
     border-color: #f97316;
     color: #f97316;
 }
 
 .redec {
     font-size: 9px;
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .box-body {
@@ -322,7 +322,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 10px;
-    background: rgba(249, 115, 22, 0.03);
+    background: var(--bg-tertiary);
     border-radius: 6px;
     font-size: 11px;
     border: 1px solid transparent;
@@ -330,8 +330,8 @@
 }
 
 .row-item:hover {
-    background: rgba(249, 115, 22, 0.08);
-    border-color: rgba(249, 115, 22, 0.15);
+    background: var(--bg-tertiary);
+    border-color: var(--border-light);
 }
 
 .color-sq {
@@ -349,7 +349,7 @@
 
 .row-txt {
     flex: 1;
-    color: #d1d5db;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
@@ -359,7 +359,7 @@
 }
 
 .row-meta {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 10px;
 }
 
@@ -369,7 +369,7 @@
 }
 
 .row-stock {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 10px;
     margin-left: auto;
 }
@@ -393,7 +393,7 @@
 }
 
 .row-time {
-    color: #4b5563;
+    color: var(--text-secondary);
     font-size: 9px;
 }
 
@@ -406,7 +406,7 @@
     flex-direction: column;
     gap: 14px;
     font-size: 8px;
-    color: #4b5563;
+    color: var(--text-secondary);
 }
 
 .rev-y-labels {
@@ -417,7 +417,7 @@
     flex-direction: column;
     gap: 16px;
     font-size: 8px;
-    color: #4b5563;
+    color: var(--text-secondary);
     text-align: right;
 }
 
@@ -459,7 +459,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 10px;
-    background: rgba(249, 115, 22, 0.03);
+    background: var(--bg-tertiary);
     border-radius: 6px;
     font-size: 11px;
     border: 1px solid transparent;
@@ -467,18 +467,18 @@
 }
 
 .expiry-item:hover {
-    background: rgba(249, 115, 22, 0.08);
-    border-color: rgba(249, 115, 22, 0.15);
+    background: var(--bg-tertiary);
+    border-color: var(--border-light);
 }
 
 .exp-name {
     flex: 1;
-    color: #d1d5db;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
 .exp-units {
-    color: #9ca3af;
+    color: var(--text-secondary);
     font-size: 10px;
 }
 
@@ -495,8 +495,8 @@
 /* Period select */
 .period-sel {
     padding: 4px 10px;
-    background: rgba(249, 115, 22, 0.08);
-    border: 1px solid rgba(249, 115, 22, 0.2);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-light);
     border-radius: 4px;
     color: #f97316;
     font-size: 9px;
@@ -515,7 +515,7 @@
     gap: 16px;
     margin-top: 10px;
     font-size: 9px;
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .rev-legend span {
@@ -531,7 +531,7 @@
 }
 
 .leg-d.gray {
-    background: #6b7280;
+    background: var(--text-secondary);
 }
 
 .leg-d.blue {
@@ -630,7 +630,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(249, 115, 22, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--border-light), transparent);
 }
 
 /* New Dashboard Styles */
@@ -650,7 +650,7 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: rgba(249, 115, 22, 0.1);
+    background: var(--border-light);
     border: 1px solid rgba(249, 115, 22, 0.3);
     border-radius: 6px;
     color: #f97316;
@@ -660,7 +660,7 @@
 }
 
 .refresh-btn:hover {
-    background: rgba(249, 115, 22, 0.2);
+    background: var(--border-light);
     border-color: #f97316;
 }
 
@@ -696,7 +696,7 @@ a.stat-box {
 }
 
 .stat-arrow {
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 16px;
     transition: transform 0.2s;
 }
@@ -718,13 +718,13 @@ a.stat-box:hover .stat-arrow {
     align-items: center;
     gap: 10px;
     padding: 10px 12px;
-    background: rgba(249, 115, 22, 0.03);
+    background: var(--bg-tertiary);
     border-radius: 8px;
     transition: all 0.15s;
 }
 
 .alert-item:hover {
-    background: rgba(249, 115, 22, 0.08);
+    background: var(--bg-tertiary);
 }
 
 .alert-dot {
@@ -743,13 +743,13 @@ a.stat-box:hover .stat-arrow {
 
 .alert-name {
     font-size: 12px;
-    color: #e5e5e5;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
 .alert-meta {
     font-size: 10px;
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .alert-badge {
@@ -776,13 +776,13 @@ a.stat-box:hover .stat-arrow {
 
 .expiry-name {
     font-size: 12px;
-    color: #e5e5e5;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
 .expiry-stock {
     font-size: 10px;
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .expiry-days {
@@ -802,14 +802,14 @@ a.stat-box:hover .stat-arrow {
     flex-direction: column;
     gap: 4px;
     padding: 12px;
-    background: rgba(249, 115, 22, 0.03);
+    background: var(--bg-tertiary);
     border-radius: 8px;
-    border: 1px solid rgba(249, 115, 22, 0.1);
+    border: 1px solid var(--border-light);
 }
 
 .qs-label {
     font-size: 10px;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-transform: uppercase;
 }
 
@@ -839,7 +839,7 @@ a.stat-box:hover .stat-arrow {
     align-items: center;
     justify-content: center;
     padding: 32px 16px;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-align: center;
     gap: 12px;
 }
@@ -862,12 +862,12 @@ a.stat-box:hover .stat-arrow {
 
 .error-state h2 {
     font-size: 18px;
-    color: #e5e5e5;
+    color: var(--text-primary);
 }
 
 .error-state p {
     font-size: 14px;
-    color: #6b7280;
+    color: var(--text-secondary);
 }
 
 .retry-btn {
@@ -891,7 +891,7 @@ a.stat-box:hover .stat-arrow {
 /* Loader text */
 .loader-wrap p {
     margin-top: 16px;
-    color: #6b7280;
+    color: var(--text-secondary);
     font-size: 12px;
 }
 

@@ -8,7 +8,7 @@
 }
 
 .prescription-stats .stat-box {
-    background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%);
     border: 1px solid rgba(249, 115, 22, 0.2);
     border-radius: 10px;
     padding: 20px;
@@ -55,7 +55,7 @@
 
 .prescription-stats .stat-text {
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--text-secondary);
     text-transform: uppercase;
 }
 
@@ -75,13 +75,13 @@
 .prescription-detail-grid label {
     display: block;
     font-size: 11px;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-transform: uppercase;
     margin-bottom: 4px;
 }
 
 .prescription-detail-grid p {
-    color: #e5e5e5;
+    color: var(--text-primary);
     font-size: 14px;
 }
 
@@ -92,7 +92,7 @@
 .prescription-image label {
     display: block;
     font-size: 11px;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-transform: uppercase;
     margin-bottom: 8px;
 }
@@ -110,13 +110,13 @@
 .prescription-notes label {
     display: block;
     font-size: 11px;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-transform: uppercase;
     margin-bottom: 4px;
 }
 
 .prescription-notes p {
-    color: #d1d5db;
+    color: var(--text-primary);
     font-size: 13px;
 }
 

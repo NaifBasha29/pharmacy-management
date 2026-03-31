@@ -92,7 +92,7 @@ const AdminSupport = () => {
             case 'open': return <FiAlertCircle color="#f59e0b" />;
             case 'in_progress': return <FiClock color="#f97316" />;
             case 'resolved': return <FiCheckCircle color="#f97316" />;
-            default: return <FiMessageCircle color="#6b7280" />;
+            default: return <FiMessageCircle color="var(--text-secondary)" />;
         }
     };
 

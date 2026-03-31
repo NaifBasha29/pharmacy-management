@@ -29,8 +29,13 @@ const orderSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    refPath: 'userModel',
     required: true
+  },
+  userModel: {
+    type: String,
+    enum: ['User', 'Patient'],
+    default: 'Patient'
   },
   items: [orderItemSchema],
   prescription: {
@@ -110,11 +115,7 @@ const orderSchema = new mongoose.Schema({
 // Generate order number before saving
 orderSchema.pre('save', async function(next) {
   if (!this.orderNumber) {
-    const date = new Date();
-    const year = date.getFullYear().toString().slice(-2);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const count = await mongoose.model('Order').countDocuments();
-    this.orderNumber = `ORD${year}${month}${(count + 1).toString().padStart(6, '0')}`;
+    this.orderNumber = 'ORD' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,5).toUpperCase();
   }
   next();
 });

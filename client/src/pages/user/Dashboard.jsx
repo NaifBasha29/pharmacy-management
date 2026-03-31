@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiPackage, FiFileText, FiClock, FiActivity, FiUser, FiRefreshCcw, FiArrowRight, FiTrendingUp, FiCalendar, FiPlus } from 'react-icons/fi';
-import { ordersAPI, medicinesAPI, prescriptionsAPI } from '../../services/api';
+import { ordersAPI, medicinesAPI, prescriptionsAPI, authAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from '../../components/common/Sidebar';
 import './UserDashboard.css';
@@ -17,6 +17,7 @@ const UserDashboard = () => {
     });
     const [recentOrders, setRecentOrders] = useState([]);
     const [featuredMedicines, setFeaturedMedicines] = useState([]);
+    const [healthData, setHealthData] = useState({ bloodGroup: '', allergies: [] });
     const [loading, setLoading] = useState(true);
 
     // BACK BUTTON PROTECTION - Prevent leaving dashboard via browser back button
@@ -37,10 +38,11 @@ const UserDashboard = () => {
 
     const fetchDashboardData = async () => {
         try {
-            const [ordersRes, medicinesRes, prescriptionsRes] = await Promise.all([
-                ordersAPI.getAll({ limit: 5 }),
+            const [ordersRes, medicinesRes, prescriptionsRes, meRes] = await Promise.all([
+                ordersAPI.getAll({ limit: 50 }),
                 medicinesAPI.getAll({ limit: 8, inStock: true }),
-                prescriptionsAPI.getAll()
+                prescriptionsAPI.getAll(),
+                authAPI.getMe()
             ]);
 
             const orders = ordersRes.data.data.orders;
@@ -48,6 +50,11 @@ const UserDashboard = () => {
             setFeaturedMedicines(medicinesRes.data.data.medicines);
 
             const prescriptions = prescriptionsRes.data.data.prescriptions;
+            const profile = meRes.data?.data?.user || {};
+            setHealthData({
+                bloodGroup: profile.bloodGroup || '',
+                allergies: Array.isArray(profile.allergies) ? profile.allergies : []
+            });
 
             setStats({
                 totalOrders: ordersRes.data.data.pagination?.total || orders.length,
@@ -230,11 +237,11 @@ const UserDashboard = () => {
                             <div style={{ padding: '0.5rem 0' }}>
                                 <div className="ud-health-item">
                                     <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Blood Group</span>
-                                    <span style={{ fontWeight: 700, padding: '0.25rem 0.75rem', background: '#fee2e2', color: '#dc2626', borderRadius: '9999px', fontSize: '0.875rem' }}>B+</span>
+                                    <span style={{ fontWeight: 700, padding: '0.25rem 0.75rem', background: '#fee2e2', color: '#dc2626', borderRadius: '9999px', fontSize: '0.875rem' }}>{healthData.bloodGroup || '—'}</span>
                                 </div>
                                 <div className="ud-health-item">
                                     <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Allergies</span>
-                                    <span style={{ fontWeight: 600, padding: '0.25rem 0.75rem', background: '#fef3c7', color: '#d97706', borderRadius: '9999px', fontSize: '0.75rem' }}>None</span>
+                                    <span style={{ fontWeight: 600, padding: '0.25rem 0.75rem', background: '#fef3c7', color: '#d97706', borderRadius: '9999px', fontSize: '0.75rem' }}>{healthData.allergies?.length ? healthData.allergies.join(', ') : '—'}</span>
                                 </div>
                             </div>
                             <div style={{ padding: '0.75rem 1.25rem', borderTop: '1px solid var(--border-light)' }}>
@@ -251,7 +258,7 @@ const UserDashboard = () => {
                                     <FiRefreshCcw style={{ color: '#f97316' }} /> Buy Again
                                 </h3>
                             </div>
-                            <div style={styles.buyAgainContainer}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '0.5rem 1.25rem' }}>
                                 {featuredMedicines.slice(0, 3).map((medicine) => (
                                     <div key={medicine._id} className="ud-buy-again-item">
                                         <div className="ud-buy-again-icon">

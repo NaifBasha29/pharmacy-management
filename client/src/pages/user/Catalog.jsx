@@ -90,7 +90,7 @@ const Catalog = () => {
     // Inline styles
     const styles = {
         page: {
-            background: '#000000',
+            background: 'var(--bg-primary)',
             minHeight: '100vh',
             padding: '2rem'
         },
@@ -100,7 +100,7 @@ const Catalog = () => {
         title: {
             fontSize: '1.875rem',
             fontWeight: '700',
-            color: '#ffffff',
+            color: 'var(--text-primary)',
             marginBottom: '0.5rem'
         },
         gradientText: {
@@ -110,7 +110,7 @@ const Catalog = () => {
             backgroundClip: 'text'
         },
         subtitle: {
-            color: '#9ca3af',
+            color: 'var(--text-secondary)',
             fontSize: '1rem'
         },
         /* Search bar */
@@ -118,15 +118,15 @@ const Catalog = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
-            background: '#111111',
-            border: '1px solid #1f1f1f',
+            background: 'var(--bg-tertiary)',
+            border: '1px solid var(--border-light)',
             borderRadius: '0.875rem',
             padding: '0.25rem 1.25rem',
             marginBottom: '1rem',
             transition: 'border-color 0.2s'
         },
         searchIcon: {
-            color: '#6b7280',
+            color: 'var(--text-secondary)',
             fontSize: '1.125rem',
             flexShrink: 0
         },
@@ -134,7 +134,7 @@ const Catalog = () => {
             flex: 1,
             padding: '0.875rem 0',
             fontSize: '0.9375rem',
-            color: '#e5e5e5',
+            color: 'var(--text-primary)',
             background: 'transparent',
             border: 'none',
             outline: 'none'
@@ -153,9 +153,9 @@ const Catalog = () => {
             padding: '0.5rem 1.125rem',
             fontSize: '0.8125rem',
             fontWeight: '500',
-            color: '#a1a1aa',
-            background: '#141414',
-            border: '1px solid #27272a',
+            color: 'var(--text-secondary)',
+            background: 'var(--bg-secondary)',
+            border: '1px solid var(--border-light)',
             borderRadius: '9999px',
             cursor: 'pointer',
             transition: 'all 0.2s ease',
@@ -166,7 +166,7 @@ const Catalog = () => {
             padding: '0.5rem 1.125rem',
             fontSize: '0.8125rem',
             fontWeight: '600',
-            color: '#ffffff',
+            color: 'var(--text-primary)',
             background: 'linear-gradient(135deg, #f97316, #ea580c)',
             border: '1px solid transparent',
             borderRadius: '9999px',
@@ -186,22 +186,22 @@ const Catalog = () => {
         priceLabel: {
             fontSize: '0.8125rem',
             fontWeight: '500',
-            color: '#6b7280',
+            color: 'var(--text-secondary)',
             flexShrink: 0
         },
         priceInput: {
             width: '110px',
             padding: '0.5rem 0.75rem',
             fontSize: '0.875rem',
-            color: '#e5e5e5',
-            background: '#111111',
-            border: '1px solid #27272a',
+            color: 'var(--text-primary)',
+            background: 'var(--bg-tertiary)',
+            border: '1px solid var(--border-light)',
             borderRadius: '0.5rem',
             outline: 'none',
             transition: 'border-color 0.2s',
         },
         priceDash: {
-            color: '#3f3f46',
+            color: 'var(--border-light)',
             fontSize: '0.875rem'
         },
         grid: {
@@ -210,18 +210,18 @@ const Catalog = () => {
             gap: '1.5rem'
         },
         card: {
-            background: '#0a0a0a',
+            background: 'var(--bg-secondary)',
             borderRadius: '1rem',
             overflow: 'hidden',
             boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-            border: '1px solid #1a1a1a',
+            border: '1px solid var(--bg-tertiary)',
             display: 'flex',
             flexDirection: 'column',
             transition: 'all 0.3s ease'
         },
         cardImage: {
             height: '180px',
-            background: 'linear-gradient(135deg, #111111 0%, #0a0a0a 100%)',
+            background: 'linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -249,13 +249,13 @@ const Catalog = () => {
         cardTitle: {
             fontSize: '1.0625rem',
             fontWeight: '700',
-            color: '#ffffff',
+            color: 'var(--text-primary)',
             marginBottom: '0.5rem',
             lineHeight: '1.3'
         },
         cardDesc: {
             fontSize: '0.875rem',
-            color: '#9ca3af',
+            color: 'var(--text-secondary)',
             marginBottom: '1rem',
             flex: 1,
             display: '-webkit-box',
@@ -269,12 +269,12 @@ const Catalog = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             paddingTop: '1rem',
-            borderTop: '1px solid #1f1f1f'
+            borderTop: '1px solid var(--border-light)'
         },
         price: {
             fontSize: '1.375rem',
             fontWeight: '800',
-            color: '#ffffff'
+            color: 'var(--text-primary)'
         },
         addBtn: {
             display: 'flex',
@@ -298,9 +298,9 @@ const Catalog = () => {
             padding: '0.625rem 1rem',
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#52525b',
-            background: '#1a1a1a',
-            border: '1px solid #27272a',
+            color: 'var(--text-secondary)',
+            background: 'var(--bg-tertiary)',
+            border: '1px solid var(--border-light)',
             borderRadius: '0.625rem',
             cursor: 'not-allowed'
         },
@@ -319,14 +319,14 @@ const Catalog = () => {
         emptyState: {
             textAlign: 'center',
             padding: '4rem 2rem',
-            background: '#0a0a0a',
+            background: 'var(--bg-secondary)',
             borderRadius: '1rem',
-            border: '1px solid #1a1a1a'
+            border: '1px solid var(--bg-tertiary)'
         },
         emptyIcon: {
             width: '80px',
             height: '80px',
-            background: '#141414',
+            background: 'var(--bg-secondary)',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
@@ -348,9 +348,9 @@ const Catalog = () => {
             padding: '0.625rem 1.25rem',
             fontSize: '0.875rem',
             fontWeight: '500',
-            color: '#e5e5e5',
-            background: '#0a0a0a',
-            border: '1px solid #27272a',
+            color: 'var(--text-primary)',
+            background: 'var(--bg-secondary)',
+            border: '1px solid var(--border-light)',
             borderRadius: '0.625rem',
             cursor: 'pointer',
             transition: 'all 0.2s'
@@ -362,9 +362,9 @@ const Catalog = () => {
             padding: '0.625rem 1.25rem',
             fontSize: '0.875rem',
             fontWeight: '500',
-            color: '#52525b',
-            background: '#111111',
-            border: '1px solid #1f1f1f',
+            color: 'var(--text-secondary)',
+            background: 'var(--bg-tertiary)',
+            border: '1px solid var(--border-light)',
             borderRadius: '0.625rem',
             cursor: 'not-allowed'
         },
@@ -372,9 +372,9 @@ const Catalog = () => {
             padding: '0.625rem 1rem',
             fontSize: '0.875rem',
             fontWeight: '600',
-            color: '#e5e5e5',
-            background: '#0a0a0a',
-            border: '1px solid #27272a',
+            color: 'var(--text-primary)',
+            background: 'var(--bg-secondary)',
+            border: '1px solid var(--border-light)',
             borderRadius: '0.625rem'
         }
     };
@@ -405,7 +405,7 @@ const Catalog = () => {
                     {filters.search && (
                         <button
                             onClick={() => { setFilters(prev => ({ ...prev, search: '' })); setPagination(prev => ({ ...prev, page: 1 })); }}
-                            style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '1.25rem', padding: '0.25rem' }}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '1.25rem', padding: '0.25rem' }}
                         >×</button>
                     )}
                 </div>
@@ -455,7 +455,7 @@ const Catalog = () => {
                 {loading ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
                         <div className="spinner" style={{ width: 48, height: 48, marginBottom: '1rem' }} />
-                        <p style={{ color: '#9ca3af', fontWeight: 500 }}>Loading catalog...</p>
+                        <p style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Loading catalog...</p>
                     </div>
                 ) : medicines.length > 0 ? (
                     <>
@@ -476,7 +476,7 @@ const Catalog = () => {
                                             <span style={styles.lowStockBadge}>Low Stock</span>
                                         )}
                                         {medicine.stock === 0 && (
-                                            <span style={{ ...styles.lowStockBadge, background: '#6b7280' }}>Out of Stock</span>
+                                            <span style={{ ...styles.lowStockBadge, background: 'var(--text-secondary)' }}>Out of Stock</span>
                                         )}
                                     </div>
                                     
@@ -534,10 +534,10 @@ const Catalog = () => {
                 ) : (
                     <div style={styles.emptyState}>
                         <div style={styles.emptyIcon}>🔍</div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.5rem' }}>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                             No medicines found
                         </h3>
-                        <p style={{ color: '#9ca3af' }}>
+                        <p style={{ color: 'var(--text-secondary)' }}>
                             Try adjusting your search or filter criteria
                         </p>
                     </div>
@@ -547,9 +547,9 @@ const Catalog = () => {
             <style>{`
                 .catalog-chips-row::-webkit-scrollbar { display: none; }
                 .catalog-chips-row button:hover {
-                    background: #1f1f1f;
-                    border-color: #3f3f46;
-                    color: #e5e5e5;
+                    background: var(--border-light);
+                    border-color: var(--border-light);
+                    color: var(--text-primary);
                 }
                 @media (max-width: 1280px) {
                     .dashboard-main .catalog-grid { grid-template-columns: repeat(3, 1fr) !important; }

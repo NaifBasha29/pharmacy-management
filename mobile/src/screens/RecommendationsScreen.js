@@ -60,9 +60,9 @@ export default function RecommendationsScreen({ navigation }) {
             <Text style={styles.category}>{item.category.name}</Text>
           )}
           <View style={styles.priceRow}>
-            <Text style={styles.price}>${discountedPrice.toFixed(2)}</Text>
+            <Text style={styles.price}>₹{discountedPrice.toLocaleString('en-IN')}</Text>
             {item.discount > 0 && (
-              <Text style={styles.oldPrice}>${(item.price || 0).toFixed(2)}</Text>
+              <Text style={styles.oldPrice}>₹{(item.price || 0).toLocaleString('en-IN')}</Text>
             )}
             {item.discount > 0 && (
               <View style={styles.discountBadge}>

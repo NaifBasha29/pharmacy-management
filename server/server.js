@@ -62,12 +62,25 @@ if (!fs.existsSync(uploadsDir)) {
 
 // Security middleware
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: 'same-site' },
+  contentSecurityPolicy: false
 }));
 
-// CORS configuration
+// CORS configuration with sensible dev fallbacks
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  process.env.MOBILE_URL,
+  'http://localhost:5000',
+  'http://localhost:5173',
+  'http://localhost:4173'
+].filter(Boolean);
+
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Allow non-browser requests
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

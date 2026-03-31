@@ -79,7 +79,7 @@ const AdminPrescriptions = () => {
             rejected: '#ef4444',
             fulfilled: '#f97316'
         };
-        return colors[status] || '#6b7280';
+        return colors[status] || 'var(--text-secondary)';
     };
 
     const stats = {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiShoppingCart, FiPackage, FiFileText, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
+import { FiShoppingCart, FiPackage, FiFileText, FiAlertCircle, FiCheckCircle, FiActivity, FiUsers } from 'react-icons/fi';
 import { ordersAPI, medicinesAPI, prescriptionsAPI } from '../../services/api';
 import Sidebar from '../../components/common/Sidebar';
 import '../admin/Dashboard.css';
@@ -7,12 +7,14 @@ import '../admin/Dashboard.css';
 const PharmacistDashboard = () => {
   const [stats, setStats] = useState({
     pendingOrders: 0,
+    toDispense: 0,
     pendingPrescriptions: 0,
     lowStockCount: 0,
     todayDispensed: 0
   });
   const [pendingOrders, setPendingOrders] = useState([]);
   const [lowStockItems, setLowStockItems] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,19 +24,24 @@ const PharmacistDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const [ordersRes, prescriptionsRes, lowStockRes] = await Promise.all([
-        ordersAPI.getAll({ status: 'pending', limit: 10 }),
-        prescriptionsAPI.getAll({ status: 'pending', limit: 5 }),
+        ordersAPI.getAll({ limit: 100 }),
+        prescriptionsAPI.getAll({ limit: 100 }),
         medicinesAPI.getLowStock()
       ]);
 
-      setPendingOrders(ordersRes.data.data.orders);
+      const orders = ordersRes.data.data.orders || ordersRes.data.data || [];
+      const prescriptions = prescriptionsRes.data.data.prescriptions || prescriptionsRes.data.data || [];
+
+      setPendingOrders(orders.filter(o => o.status === 'pending'));
+      setRecentOrders([...orders].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).slice(0, 5));
       setLowStockItems(lowStockRes.data.data.medicines);
       
       setStats({
-        pendingOrders: ordersRes.data.data.pagination?.total || ordersRes.data.data.orders.length,
-        pendingPrescriptions: prescriptionsRes.data.data.pagination?.total || 0,
+        pendingOrders: orders.filter(o => o.status === 'pending').length,
+        toDispense: orders.filter(o => ['confirmed', 'processing'].includes(o.status)).length,
+        pendingPrescriptions: prescriptions.filter(p => p.status === 'pending').length,
         lowStockCount: lowStockRes.data.data.count || 0,
-        todayDispensed: 0
+        todayDispensed: orders.filter(o => ['dispatched', 'delivered'].includes(o.status) && new Date(o.updatedAt).toDateString() === new Date().toDateString()).length
       });
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
@@ -77,18 +84,18 @@ const PharmacistDashboard = () => {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon blue"><FiFileText /></div>
+            <div className="stat-icon blue"><FiPackage /></div>
             <div className="stat-details">
-              <div className="stat-value">{stats.pendingPrescriptions}</div>
-              <div className="stat-label">Pending Prescriptions</div>
+              <div className="stat-value">{stats.toDispense}</div>
+              <div className="stat-label">Orders to Dispense</div>
             </div>
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon red"><FiAlertCircle /></div>
+            <div className="stat-icon red"><FiFileText /></div>
             <div className="stat-details">
-              <div className="stat-value">{stats.lowStockCount}</div>
-              <div className="stat-label">Low Stock Items</div>
+              <div className="stat-value">{stats.pendingPrescriptions}</div>
+              <div className="stat-label">Pending Prescriptions</div>
             </div>
           </div>
 
@@ -98,6 +105,31 @@ const PharmacistDashboard = () => {
               <div className="stat-value">{stats.todayDispensed}</div>
               <div className="stat-label">Dispensed Today</div>
             </div>
+          </div>
+        </div>
+
+        <div className="card" style={{ marginBottom: '1.5rem' }}>
+          <div className="card-header">
+            <h3 className="card-title">Quick Actions</h3>
+          </div>
+          <div className="card-body" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+            {[{
+              href: '/pharmacist/orders',
+              icon: <FiPackage />, label: 'View Orders', bg: 'linear-gradient(135deg, #f97316, #fb923c)'
+            }, {
+              href: '/pharmacist/prescriptions',
+              icon: <FiFileText />, label: 'Review Prescriptions', bg: 'linear-gradient(135deg, #8b5cf6, #a78bfa)'
+            }, {
+              href: '/pharmacist/patients',
+              icon: <FiUsers />, label: 'View Patients', bg: 'linear-gradient(135deg, #22c55e, #16a34a)'
+            }].map((action) => (
+              <a key={action.href} href={action.href} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', border: '1px solid var(--border-light)', borderRadius: '0.75rem', textDecoration: 'none', color: 'var(--text-primary)', background: 'var(--bg-tertiary)' }}>
+                <div style={{ width: 44, height: 44, borderRadius: '0.75rem', background: action.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.1rem' }}>
+                  {action.icon}
+                </div>
+                <span style={{ fontWeight: 700 }}>{action.label}</span>
+              </a>
+            ))}
           </div>
         </div>
 
@@ -166,6 +198,41 @@ const PharmacistDashboard = () => {
                 </div>
               ) : (
                 <p className="text-secondary text-center">All stock levels are healthy!</p>
+              )}
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">Recent Activity</h3>
+            </div>
+            <div className="card-body">
+              {recentOrders.length ? (
+                <div className="table-container">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Order</th>
+                        <th>Patient</th>
+                        <th>Status</th>
+                        <th>Updated</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentOrders.map((order) => (
+                        <tr key={order._id}>
+                          <td>#{order.orderNumber || order._id.slice(-8)}</td>
+                          <td>{order.user?.name || 'Unknown'}</td>
+                          <td><span className="badge badge-info">{order.status}</span></td>
+                          <td>{new Date(order.updatedAt).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-secondary text-center">No recent activity</p>
               )}
             </div>
           </div>
