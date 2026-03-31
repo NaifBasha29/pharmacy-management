@@ -136,7 +136,9 @@ export default function CatalogScreen({ navigation }) {
           {item.category?.name || "General"}
         </Text>
         <View style={styles.priceRow}>
-          <Text style={styles.price}>₹{(item.price || 0).toLocaleString('en-IN')}</Text>
+          <Text style={styles.price}>
+            ₹{(item.price || 0).toLocaleString("en-IN")}
+          </Text>
           <TouchableOpacity
             style={[
               styles.addButton,

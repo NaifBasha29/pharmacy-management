@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import * as SecureStore from '../utils/storage';
-import api from '../config/api';
+import React, { createContext, useState, useEffect, useContext } from "react";
+import * as SecureStore from "../utils/storage";
+import api from "../config/api";
 
 const AuthContext = createContext({});
 
@@ -17,24 +17,24 @@ export const AuthProvider = ({ children }) => {
 
   const checkLoginStatus = async () => {
     try {
-      const token = await SecureStore.getItemAsync('userToken');
+      const token = await SecureStore.getItemAsync("userToken");
       if (token) {
         // Verify token and get user data
-        const response = await api.get('/auth/me');
+        const response = await api.get("/auth/me");
         if (response.data.success) {
           setUser(response.data.data.user);
         } else {
           // Token invalid, clear it
-          await SecureStore.deleteItemAsync('userToken');
-          await SecureStore.deleteItemAsync('refreshToken');
+          await SecureStore.deleteItemAsync("userToken");
+          await SecureStore.deleteItemAsync("refreshToken");
           setUser(null);
         }
       }
     } catch (e) {
-      console.log('Failed to restore token', e);
+      console.log("Failed to restore token", e);
       // Token expired or invalid - clear stored tokens
-      await SecureStore.deleteItemAsync('userToken');
-      await SecureStore.deleteItemAsync('refreshToken');
+      await SecureStore.deleteItemAsync("userToken");
+      await SecureStore.deleteItemAsync("refreshToken");
       setUser(null);
     } finally {
       setLoading(false);
@@ -47,27 +47,27 @@ export const AuthProvider = ({ children }) => {
     try {
       // Use /auth/login/patient for end-user mobile app.
       // Identifier accepts either patient email or patient ID.
-      const response = await api.post('/auth/login/patient', {
+      const response = await api.post("/auth/login/patient", {
         identifier,
-        password
+        password,
       });
-      
+
       if (response.data.success) {
         const { user, accessToken, refreshToken } = response.data.data;
-        
-        await SecureStore.setItemAsync('userToken', accessToken);
-        await SecureStore.setItemAsync('refreshToken', refreshToken);
-        await SecureStore.setItemAsync('userData', JSON.stringify(user));
-        
+
+        await SecureStore.setItemAsync("userToken", accessToken);
+        await SecureStore.setItemAsync("refreshToken", refreshToken);
+        await SecureStore.setItemAsync("userData", JSON.stringify(user));
+
         setUser(user);
         return true;
       } else {
-        setError(response.data.message || 'Login failed');
+        setError(response.data.message || "Login failed");
         return false;
       }
     } catch (e) {
       console.error(e);
-      setError(e.response?.data?.message || 'Network error');
+      setError(e.response?.data?.message || "Network error");
       return false;
     } finally {
       setLoading(false);
@@ -77,12 +77,12 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await api.post('/auth/logout');
+      await api.post("/auth/logout");
     } catch (e) {
-      console.log('Logout API call failed', e);
+      console.log("Logout API call failed", e);
     } finally {
-      await SecureStore.deleteItemAsync('userToken');
-      await SecureStore.deleteItemAsync('refreshToken');
+      await SecureStore.deleteItemAsync("userToken");
+      await SecureStore.deleteItemAsync("refreshToken");
       setUser(null);
       setLoading(false);
     }
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
         error,
         login,
         logout,
-        checkLoginStatus
+        checkLoginStatus,
       }}
     >
       {children}

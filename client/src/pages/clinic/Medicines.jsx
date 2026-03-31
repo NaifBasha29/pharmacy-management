@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import Sidebar from '../../components/common/Sidebar';
-import { medicinesAPI } from '../../services/api';
-import toast from 'react-hot-toast';
-import './ClinicDashboard.css';
+import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/common/Sidebar";
+import { medicinesAPI } from "../../services/api";
+import toast from "react-hot-toast";
+import "./ClinicDashboard.css";
 
 const Medicines = () => {
   const [medicines, setMedicines] = useState([]);
@@ -15,8 +15,8 @@ const Medicines = () => {
         const res = await medicinesAPI.getAll({ limit: 50 });
         setMedicines(res.data.data.medicines || []);
       } catch (err) {
-        console.error('Failed to load medicines', err);
-        toast.error('Failed to load medicines');
+        console.error("Failed to load medicines", err);
+        toast.error("Failed to load medicines");
       } finally {
         setLoading(false);
       }
@@ -36,15 +36,29 @@ const Medicines = () => {
         </header>
 
         <div className="card">
-          <div className="card-header"><h3 className="card-title">Medicines</h3></div>
+          <div className="card-header">
+            <h3 className="card-title">Medicines</h3>
+          </div>
           <div className="card-body">
-            {loading ? <p>Loading...</p> : (
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
               <div className="table-container">
                 <table className="table">
-                  <thead><tr><th>Name</th><th>Stock</th><th>Price</th></tr></thead>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Stock</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    {medicines.map(m => (
-                      <tr key={m._id}><td>{m.name}</td><td>{m.stock}</td><td>₹{m.price?.toFixed?.(2) ?? m.price}</td></tr>
+                    {medicines.map((m) => (
+                      <tr key={m._id}>
+                        <td>{m.name}</td>
+                        <td>{m.stock}</td>
+                        <td>₹{m.price?.toFixed?.(2) ?? m.price}</td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>

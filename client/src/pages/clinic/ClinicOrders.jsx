@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import Sidebar from '../../components/common/Sidebar';
-import { ordersAPI } from '../../services/api';
-import toast from 'react-hot-toast';
-import './ClinicDashboard.css';
+import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/common/Sidebar";
+import { ordersAPI } from "../../services/api";
+import toast from "react-hot-toast";
+import "./ClinicDashboard.css";
 
 const ClinicOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -15,8 +15,8 @@ const ClinicOrders = () => {
         const res = await ordersAPI.getAll({ limit: 50 });
         setOrders(res.data.data.orders || []);
       } catch (err) {
-        console.error('Failed to load orders', err);
-        toast.error('Failed to load orders');
+        console.error("Failed to load orders", err);
+        toast.error("Failed to load orders");
       } finally {
         setLoading(false);
       }
@@ -36,14 +36,30 @@ const ClinicOrders = () => {
         </header>
 
         <div className="card">
-          <div className="card-header"><h3 className="card-title">Orders</h3></div>
+          <div className="card-header">
+            <h3 className="card-title">Orders</h3>
+          </div>
           <div className="card-body">
-            {loading ? <p>Loading...</p> : (
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
               <table className="table">
-                <thead><tr><th>Order ID</th><th>Patient</th><th>Status</th><th>Total</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Patient</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
                 <tbody>
-                  {orders.map(o => (
-                    <tr key={o._id}><td>{o._id}</td><td>{o.patient?.name || o.user?.name}</td><td>{o.status}</td><td>₹{o.total}</td></tr>
+                  {orders.map((o) => (
+                    <tr key={o._id}>
+                      <td>{o._id}</td>
+                      <td>{o.patient?.name || o.user?.name}</td>
+                      <td>{o.status}</td>
+                      <td>₹{o.total}</td>
+                    </tr>
                   ))}
                 </tbody>
               </table>

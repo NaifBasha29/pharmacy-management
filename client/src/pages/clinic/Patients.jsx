@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import Sidebar from '../../components/common/Sidebar';
-import { patientsAPI } from '../../services/api';
-import toast from 'react-hot-toast';
-import './ClinicDashboard.css';
+import React, { useEffect, useState } from "react";
+import Sidebar from "../../components/common/Sidebar";
+import { patientsAPI } from "../../services/api";
+import toast from "react-hot-toast";
+import "./ClinicDashboard.css";
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
@@ -15,8 +15,8 @@ const Patients = () => {
         const res = await patientsAPI.getAll({ limit: 50 });
         setPatients(res.data.data.patients || []);
       } catch (err) {
-        console.error('Failed to load patients', err);
-        toast.error(err.response?.data?.message || 'Unable to load patients');
+        console.error("Failed to load patients", err);
+        toast.error(err.response?.data?.message || "Unable to load patients");
       } finally {
         setLoading(false);
       }
@@ -36,20 +36,34 @@ const Patients = () => {
         </header>
 
         <div className="card">
-          <div className="card-header"><h3 className="card-title">All Patients</h3></div>
+          <div className="card-header">
+            <h3 className="card-title">All Patients</h3>
+          </div>
           <div className="card-body">
             {loading ? (
               <p>Loading...</p>
             ) : patients.length === 0 ? (
-              <p className="text-secondary">No patients found or you do not have access.</p>
+              <p className="text-secondary">
+                No patients found or you do not have access.
+              </p>
             ) : (
               <table className="table">
                 <thead>
-                  <tr><th>Name</th><th>Phone</th><th>Patient ID</th><th>Created</th></tr>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Patient ID</th>
+                    <th>Created</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  {patients.map(p => (
-                    <tr key={p._id}><td>{p.name}</td><td>{p.phone}</td><td>{p.patientId}</td><td>{new Date(p.createdAt).toLocaleDateString()}</td></tr>
+                  {patients.map((p) => (
+                    <tr key={p._id}>
+                      <td>{p.name}</td>
+                      <td>{p.phone}</td>
+                      <td>{p.patientId}</td>
+                      <td>{new Date(p.createdAt).toLocaleDateString()}</td>
+                    </tr>
                   ))}
                 </tbody>
               </table>
