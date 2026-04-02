@@ -207,7 +207,7 @@ const Support = () => {
               <div
                 style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}
               >
-                support@RxHub.com
+                support@RxPlus.com
               </div>
               <div style={{ fontSize: "0.75rem", color: "#f59e0b" }}>
                 Response in 24hrs

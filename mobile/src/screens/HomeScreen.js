@@ -193,7 +193,7 @@ export default function HomeScreen({ navigation }) {
       >
         <View style={[s.banner, { backgroundColor: theme.primary }]}>
           <View style={s.bannerLeft}>
-            <Text style={s.bannerTitle}>💊 PharmaCare</Text>
+            <Text style={s.bannerTitle}>💊 RxPlus</Text>
             <Text style={s.bannerSub}>Your health, delivered fast</Text>
             <TouchableOpacity
               style={s.bannerBtn}

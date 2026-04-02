@@ -59,7 +59,7 @@ const LandingPage = () => {
             <nav className="landing-nav">
                 <div className="nav-container">
                     <Link to="/" className="nav-brand">
-                        <img src={logo} alt="RxHub" className="brand-logo-img" />
+                        <img src={logo} alt="RxPlus" className="brand-logo-img" />
 
                     </Link>
                     <div className="nav-links">
@@ -120,7 +120,7 @@ const LandingPage = () => {
                     </div>
                     <div className="hero-visual">
                         <div className="hero-image-container">
-                            <img src={landingImage} alt="RxHub Dashboard" className="hero-image" />
+                            <img src={landingImage} alt="RxPlus Dashboard" className="hero-image" />
                         </div>
                         <div className="floating-card card-orders">
                             <div className="card-icon green"><FaCheckCircle /></div>
@@ -205,7 +205,7 @@ const LandingPage = () => {
                             <span className="section-tag">About Us</span>
                             <h2 className="section-title left">Empowering Pharmacies Since 2024</h2>
                             <p className="about-text">
-                                At RxHub, we understand the daily challenges of running a pharmacy.
+                                At RxPlus, we understand the daily challenges of running a pharmacy.
                                 From managing complex inventories to ensuring patient safety, the demands
                                 are high. That's why we built a solution that puts you back in control.
                             </p>
@@ -267,7 +267,7 @@ const LandingPage = () => {
                             <div className="info-card">
                                 <div className="info-icon"><FaEnvelope /></div>
                                 <h4>Email Us</h4>
-                                <p>support@RxHub.com</p>
+                                <p>support@RxPlus.com</p>
                             </div>
                             <div className="info-card">
                                 <div className="info-icon"><FaClock /></div>
@@ -330,7 +330,7 @@ const LandingPage = () => {
                         <div className="footer-brand">
                             <Link to="/" className="nav-brand">
                                 <span className="brand-logo-img" style={{ fontSize: '24px', marginRight: '8px' }}>🏥</span>
-                                <span className="brand-name">RxHub</span>
+                                <span className="brand-name">RxPlus</span>
                             </Link>
                             <p>Modern pharmacy management for the digital age.</p>
                             <div className="footer-socials">
@@ -364,7 +364,7 @@ const LandingPage = () => {
                         </div>
                     </div>
                     <div className="footer-bottom">
-                        <p>&copy; {new Date().getFullYear()} RxHub Solutions. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} RxPlus Solutions. All rights reserved.</p>
                         <div className="staff-portal-link">
                             <Link to="/admin/login">Admin</Link>
                             <span className="divider">|</span>

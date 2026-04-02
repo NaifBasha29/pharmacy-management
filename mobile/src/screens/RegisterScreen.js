@@ -141,7 +141,7 @@ export default function RegisterScreen({ navigation }) {
           {/* ── Title ── */}
           <View style={styles.titleBlock}>
             <Text style={styles.titleMain}>Create Account</Text>
-            <Text style={styles.titleSub}>Join RxHub — your health, simplified</Text>
+            <Text style={styles.titleSub}>Join RxPlus — your health, simplified</Text>
           </View>
 
           {/* ── Progress ── */}

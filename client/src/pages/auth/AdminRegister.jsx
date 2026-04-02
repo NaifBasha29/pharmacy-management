@@ -72,8 +72,8 @@ function AdminRegister() {
         {/* Left Side - Branding (Red for Admin) */}
         <div className="auth-left" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)' }}>
           <div className="auth-brand">
-            <img src={logo} alt="RxHub" className="brand-logo-img" />
-            <h1>RxHub Admin</h1>
+            <img src={logo} alt="RxPlus" className="brand-logo-img" />
+            <h1>RxPlus Admin</h1>
             <p>System Administration Portal</p>
           </div>
           <div className="auth-features">

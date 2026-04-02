@@ -150,7 +150,7 @@ const ClinicEnrollment = () => {
         const uniqueId = `${timestamp}-${randomSuffix}`;
         const shortId = randomSuffix;
 
-        const clinicNames = ['MediCare', 'HealthFirst', 'CureWell', 'RxHub', 'LifeLine', 'MedPlus'];
+        const clinicNames = ['MediCare', 'HealthFirst', 'CureWell', 'RxPlus', 'LifeLine', 'MedPlus'];
         const clinicSuffixes = ['Pharmacy', 'Medical Center', 'Health Store'];
         const randomClinicName = `${clinicNames[Math.floor(Math.random() * clinicNames.length)]} ${clinicSuffixes[Math.floor(Math.random() * clinicSuffixes.length)]} ${shortId}`;
 
