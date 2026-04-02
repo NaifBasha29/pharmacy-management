@@ -153,7 +153,7 @@ export default function OrderDetailScreen({ route, navigation }) {
         )
         .join("\n") || "";
     const receipt = `
-📋 PharmaCare Order Receipt
+📋 RxPlus Order Receipt
 ━━━━━━━━━━━━━━━━━━━━━━
 Order: ${order.orderNumber || order._id}
 Date: ${new Date(order.createdAt).toLocaleDateString()}
@@ -169,7 +169,7 @@ ${items}
   Total: ${formatCurrency(order.total)}
 Payment: ${order.paymentMethod || "N/A"}
 ━━━━━━━━━━━━━━━━━━━━━━
-Thank you for shopping with PharmaCare!
+Thank you for shopping with RxPlus!
     `.trim();
 
     try {

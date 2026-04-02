@@ -10,8 +10,8 @@ const AdminSettings = () => {
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState({
         general: {
-            siteName: 'RxHub',
-            siteEmail: 'admin@RxHub.com',
+            siteName: 'RxPlus',
+            siteEmail: 'admin@RxPlus.com',
             timezone: 'Asia/Kolkata',
             currency: 'INR'
         },

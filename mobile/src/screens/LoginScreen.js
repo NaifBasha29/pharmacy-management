@@ -38,7 +38,7 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.logoWrap}>
               <Icon name="pill" size={36} color={theme.primary} />
             </View>
-            <Text style={styles.appName}>PharmaCare</Text>
+            <Text style={styles.appName}>RxPlus</Text>
             <Text style={styles.tagline}>Your health, delivered</Text>
           </View>
 

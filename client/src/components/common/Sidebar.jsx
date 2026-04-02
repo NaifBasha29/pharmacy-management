@@ -179,7 +179,7 @@ const Sidebar = () => {
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <img src={logo} alt="RxHub" className="brand-logo-img" />
+            <img src={logo} alt="RxPlus" className="brand-logo-img" />
           </div>
         </div>
 

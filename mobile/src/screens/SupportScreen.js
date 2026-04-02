@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: 'Insurance and copay questions',
-    a: 'We currently accept select insurance plans. Please email us at support@rxhub.com with your insurance details for verification.',
+    a: 'We currently accept select insurance plans. Please email us at support@RxPlus.com with your insurance details for verification.',
   },
   {
     q: 'What payment methods are accepted?',
@@ -51,7 +51,7 @@ export default function SupportScreen({ navigation }) {
 
   const handleContact = (action) => {
     if (action === 'call')  Linking.openURL('tel:18001234567');
-    if (action === 'email') Linking.openURL('mailto:support@rxhub.com');
+    if (action === 'email') Linking.openURL('mailto:support@RxPlus.com');
     if (action === 'chat')  Alert.alert('Live Chat', 'Live chat will be available soon!');
   };
 
