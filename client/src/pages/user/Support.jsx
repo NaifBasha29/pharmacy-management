@@ -102,7 +102,7 @@ const Support = () => {
     padding: "0.875rem 1.5rem",
     fontWeight: 600,
     color: "white",
-    background: "linear-gradient(135deg, #f97316, #ea580c)",
+    background: "var(--gradient-accent)",
     border: "none",
     borderRadius: "0.75rem",
     cursor: "pointer",
@@ -113,7 +113,7 @@ const Support = () => {
   };
 
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-layout no-top-nav">
       <Sidebar />
       <main className="dashboard-main" style={page}>
         {/* Header */}
@@ -127,14 +127,14 @@ const Support = () => {
           >
             Help &{" "}
             <span
-              style={{
-                background: "linear-gradient(135deg, #f97316, #ea580c)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Support
-            </span>
+                style={{
+                  background: 'var(--gradient-accent)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Support
+              </span>
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
             Get help with your orders, prescriptions, and account
@@ -152,28 +152,16 @@ const Support = () => {
         >
           <div
             style={{
-              ...card,
-              padding: "1.5rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            <div
-              style={{
-                width: 56,
-                height: 56,
-                background: "linear-gradient(135deg, #f97316, #ea580c)",
-                borderRadius: "1rem",
+                ...card,
+                padding: "1.5rem",
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                fontSize: "1.5rem",
+                gap: "1rem",
               }}
-            >
-              <FiPhone />
-            </div>
+          >
+                <div style={{ width: 56, height: 56, background: 'var(--gradient-accent)', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.5rem' }}>
+                  <FiPhone />
+                </div>
             <div>
               <div style={{ fontWeight: 700, color: "var(--text-primary)" }}>
                 Call Us
@@ -325,8 +313,7 @@ const Support = () => {
                   gap: "0.5rem",
                 }}
               >
-                <FiHelpCircle style={{ color: "#f97316" }} /> Frequently Asked
-                Questions
+                <FiHelpCircle style={{ color: "var(--primary-500)" }} /> Frequently Asked Questions
               </h3>
             </div>
             <div style={{ padding: "1rem" }}>
@@ -360,11 +347,9 @@ const Support = () => {
                       {faq.q}
                     </span>
                     {expandedFaq === i ? (
-                      <FiChevronUp style={{ color: "#f97316" }} />
+                      <FiChevronUp style={{ color: "var(--primary-500)" }} />
                     ) : (
-                      <FiChevronDown
-                        style={{ color: "var(--text-secondary)" }}
-                      />
+                      <FiChevronDown style={{ color: "var(--text-secondary)" }} />
                     )}
                   </button>
                   <div
@@ -415,7 +400,7 @@ const Support = () => {
                     gap: "0.5rem",
                   }}
                 >
-                  <FiSend style={{ color: "#f97316" }} /> Create Support Ticket
+                  <FiSend style={{ color: "var(--primary-500)" }} /> Create Support Ticket
                 </h3>
               </div>
               <form onSubmit={handleTicketSubmit} style={{ padding: "1.5rem" }}>
@@ -479,16 +464,8 @@ const Support = () => {
             </div>
             <div>
               <div style={{ ...card, padding: "1.5rem" }}>
-                <h4
-                  style={{
-                    fontWeight: 700,
-                    marginBottom: "1rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <FiClock style={{ color: "#f59e0b" }} /> Response Time
+                <h4 style={{ fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <FiClock style={{ color: 'var(--secondary-500)' }} /> Response Time
                 </h4>
                 <div
                   style={{
@@ -509,7 +486,7 @@ const Support = () => {
                     <span style={{ color: "var(--text-secondary)" }}>
                       Order Issues
                     </span>
-                    <span style={{ fontWeight: 600, color: "#f97316" }}>
+                    <span style={{ fontWeight: 600, color: "var(--primary-500)" }}>
                       2-4 hours
                     </span>
                   </div>
@@ -525,7 +502,7 @@ const Support = () => {
                     <span style={{ color: "var(--text-secondary)" }}>
                       Prescription
                     </span>
-                    <span style={{ fontWeight: 600, color: "#f97316" }}>
+                    <span style={{ fontWeight: 600, color: "var(--primary-500)" }}>
                       1-2 hours
                     </span>
                   </div>
@@ -541,7 +518,7 @@ const Support = () => {
                     <span style={{ color: "var(--text-secondary)" }}>
                       Other
                     </span>
-                    <span style={{ fontWeight: 600, color: "#f59e0b" }}>
+                    <span style={{ fontWeight: 600, color: "var(--secondary-500)" }}>
                       24 hours
                     </span>
                   </div>
@@ -563,23 +540,10 @@ const Support = () => {
                     marginBottom: "0.75rem",
                   }}
                 >
-                  <FiCheckCircle
-                    style={{ color: "#f97316", fontSize: "1.25rem" }}
-                  />
-                  <span style={{ fontWeight: 700, color: "#065f46" }}>
-                    Priority Support
-                  </span>
+                  <FiCheckCircle style={{ color: "var(--primary-500)", fontSize: "1.25rem" }} />
+                  <span style={{ fontWeight: 700, color: "var(--status-success)" }}>Priority Support</span>
                 </div>
-                <p
-                  style={{
-                    fontSize: "0.875rem",
-                    color: "#c2410c",
-                    lineHeight: 1.5,
-                  }}
-                >
-                  Medical emergencies get instant priority. Call our hotline for
-                  urgent assistance.
-                </p>
+                <p style={{ fontSize: '0.875rem', color: 'var(--primary-700)', lineHeight: 1.5 }}>Medical emergencies get instant priority. Call our hotline for urgent assistance.</p>
               </div>
             </div>
           </div>

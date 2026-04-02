@@ -92,7 +92,7 @@ const Catalog = () => {
         page: {
             background: 'var(--bg-primary)',
             minHeight: '100vh',
-            padding: '2rem'
+            padding: '1rem 2rem'
         },
         header: {
             marginBottom: '1.5rem'
@@ -380,7 +380,7 @@ const Catalog = () => {
     };
 
     return (
-        <div className="dashboard-layout">
+        <div className="dashboard-layout no-top-nav">
             <Sidebar />
             <main className="dashboard-main" style={styles.page}>
                 {/* Header */}

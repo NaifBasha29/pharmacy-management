@@ -21,6 +21,12 @@ const router = express.Router();
 
 // Gmail transporter for OTP emails
 const createMailTransporter = () => {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.warn(
+      '[Mailer] GMAIL_USER or GMAIL_APP_PASSWORD is not set. OTP emails may fail.',
+    );
+  }
+
   return nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -662,6 +668,13 @@ router.get(
             role: "patient",
             type: "patient",
             createdAt: patient.createdAt,
+            // Include health-related fields so frontend dashboards can display them
+            bloodGroup: patient.bloodGroup || "",
+            allergies: Array.isArray(patient.allergies) ? patient.allergies : [],
+            chronicConditions: Array.isArray(patient.chronicConditions) ? patient.chronicConditions : [],
+            address: patient.address || {},
+            dateOfBirth: patient.dateOfBirth || null,
+            age: patient.age || null,
           },
         },
       });
@@ -867,14 +880,31 @@ router.post(
 
     patient.resetPasswordOTP = { code: otp, expiresAt: otpExpiry };
     await patient.save({ validateBeforeSave: false });
+    // DEV fallback: log OTP to terminal when explicitly enabled
+    if (process.env.DEV_SEND_OTP_IN_TERMINAL === 'true') {
+      console.log(`\n[DEV OTP] Password reset OTP for ${patient.email} (patientId: ${patient.patientId || ''}): ${otp}\n`);
+      const [localPart, domain] = patient.email.split('@');
+      const maskedEmail = `${localPart.slice(0, 2)}${'*'.repeat(Math.max(localPart.length - 2, 0))}@${domain}`;
+      return res.json({
+        success: true,
+        message: 'OTP sent to your registered email (dev-mode: logged to server)',
+        data: { maskedEmail },
+      });
+    }
 
-    // Send OTP email
+    // Send OTP email (catch SMTP errors to provide a friendly response)
     const transporter = createMailTransporter();
-    await transporter.sendMail({
-      from: `"PharmaCare" <${process.env.GMAIL_USER}>`,
-      to: patient.email,
-      subject: "PharmaCare - Password Reset OTP",
-      html: `
+    try {
+      // Verify transporter connection quickly (helps surface auth errors)
+      if (transporter.verify) {
+        await transporter.verify();
+      }
+
+      await transporter.sendMail({
+        from: `"PharmaCare" <${process.env.GMAIL_USER}>`,
+        to: patient.email,
+        subject: "PharmaCare - Password Reset OTP",
+        html: `
       <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px;">
         <h2 style="color:#2563eb;margin-bottom:8px;">PharmaCare</h2>
         <p>Hi <strong>${patient.name}</strong>,</p>
@@ -887,7 +917,20 @@ router.post(
         <p style="color:#9ca3af;font-size:12px;text-align:center;">PharmaCare Pharmacy Management</p>
       </div>
     `,
-    });
+      });
+    } catch (mailErr) {
+      console.error('[Forgot Password] Failed to send OTP email:', mailErr && mailErr.message ? mailErr.message : mailErr);
+      // Clear stored OTP so client can retry cleanly
+      patient.resetPasswordOTP = undefined;
+      await patient.save({ validateBeforeSave: false });
+
+      // Give a helpful, non-sensitive error message
+      return res.status(502).json({
+        success: false,
+        message:
+          'Failed to send OTP email. Check mail server configuration (GMAIL_USER / GMAIL_APP_PASSWORD) and ensure SMTP access is allowed.',
+      });
+    }
 
     // Mask email for response
     const [localPart, domain] = patient.email.split("@");

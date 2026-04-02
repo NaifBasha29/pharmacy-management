@@ -7,6 +7,34 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = express.Router();
 
+// @route   PUT /api/patients/profile
+// @desc    Update own patient profile (medical info)
+// @access  Private (patient)
+router.put('/profile', protect, asyncHandler(async (req, res) => {
+  const { bloodGroup, allergies, chronicConditions, address, phone, name, email } = req.body;
+
+  const patient = await Patient.findById(req.user._id);
+  if (!patient) {
+    return res.status(404).json({ success: false, message: 'Patient not found' });
+  }
+
+  if (bloodGroup) patient.bloodGroup = bloodGroup;
+  if (Array.isArray(allergies)) patient.allergies = allergies;
+  if (Array.isArray(chronicConditions)) patient.chronicConditions = chronicConditions;
+  if (address) patient.address = address;
+  if (phone) patient.phone = phone;
+  if (name) patient.name = name;
+  if (email) patient.email = email;
+
+  await patient.save();
+
+  res.json({
+    success: true,
+    message: 'Patient profile updated successfully',
+    data: { patient }
+  });
+}));
+
 // @route   GET /api/patients
 // @desc    Get all patients
 // @access  Pharmacist/Admin
