@@ -164,6 +164,8 @@ export const patientsAPI = {
   getById: (id) => api.get(`/patients/${id}`),
   create: (data) => api.post("/patients", data),
   update: (id, data) => api.put(`/patients/${id}`, data),
+  // Update own patient profile (for patient users)
+  updateProfile: (data) => api.put(`/patients/profile`, data),
   addMedicalHistory: (id, data) =>
     api.put(`/patients/${id}/medical-history`, data),
   delete: (id) => api.delete(`/patients/${id}`),
@@ -234,3 +236,7 @@ export const aiAPI = {
 };
 
 export default api;
+
+// Export base URLs for other modules that need to build absolute file URLs
+export const API_HOST = API_BASE_URL.replace(/\/api$/i, "");
+export { API_BASE_URL };

@@ -4,6 +4,9 @@
 
 /* CSS Variables */
 :root {
+  /* Top navigation height used by layout components (can be overridden by media queries) */
+  --top-nav-height: 50px;
+
   /* Colors - Primary (Orange) */
   --primary-50: #fff7ed;
   --primary-100: #ffedd5;
@@ -44,6 +47,15 @@
   --success: #f97316;
   --warning: #f59e0b;
   --error: #ef4444;
+  /* Semantic status tokens (separate "success" green from primary orange) */
+  --status-primary: var(--primary-500);
+  --status-primary-bg: rgba(249, 115, 22, 0.08);
+  --status-warning: var(--secondary-600);
+  --status-warning-bg: rgba(245, 158, 11, 0.08);
+  --status-success: #16a34a; /* green used for delivered / positive states */
+  --status-success-bg: rgba(16, 163, 74, 0.08);
+  --status-error: #dc2626;
+  --status-error-bg: rgba(239, 68, 68, 0.08);
   --info: #3b82f6;
 
   /* Background & Surface - Light Mode Default */
@@ -98,6 +110,13 @@
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
   --gradient-accent: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  /* Additional gradients used across the app */
+  /* Purple accent used for prescriptions and accents */
+  --accent-purple-500: #8b5cf6;
+  --accent-purple-600: #a78bfa;
+  --accent-purple-50: #f3e8ff;
+  --gradient-purple: linear-gradient(135deg, var(--accent-purple-500) 0%, var(--accent-purple-600) 100%);
+  --gradient-warning: linear-gradient(135deg, var(--secondary-500), var(--secondary-400));
 }
 
 /* Dark Mode - Black & Orange Theme */
@@ -236,16 +255,23 @@ h6 {
 
 .dashboard-main {
   flex: 1;
-  margin-top: 50px;
+  margin-top: var(--top-nav-height, 50px);
   padding: 1.5rem;
   background: var(--bg-secondary);
   color: var(--text-primary);
   transition: all var(--transition-normal);
 }
 
+/* Pages that don't render a TopNav (eg. user-facing pages that use Sidebar only)
+   can opt-out of the reserved top spacing to avoid large empty gaps. Add
+   class 'no-top-nav' to the container: <div class="dashboard-layout no-top-nav"> */
+.dashboard-layout.no-top-nav .dashboard-main {
+  margin-top: 0;
+}
+
 @media (max-width: 768px) {
   .dashboard-main {
-    margin-top: 56px;
+    margin-top: var(--top-nav-height, 56px);
     padding: var(--space-4);
   }
 }

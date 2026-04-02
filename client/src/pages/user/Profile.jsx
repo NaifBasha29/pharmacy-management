@@ -13,7 +13,7 @@ import {
 import toast from "react-hot-toast";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("personal");
 
@@ -74,14 +74,60 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await usersAPI.updateProfile({
-        name: personalData.name,
-        phone: personalData.phone,
-        address: personalData.address,
-      });
-      toast.success("Profile updated!");
+      // If logged-in entity is a patient, update the Patient record instead
+      if (user?.type === "patient" || user?.role === "patient") {
+        const res = await patientsAPI.updateProfile({
+          name: personalData.name,
+          phone: personalData.phone,
+          address: personalData.address,
+          email: personalData.email,
+        });
+        const updatedPatient = res.data?.data?.patient;
+        // Refresh authenticated user from server to include health fields
+        try {
+          const meRes = await authAPI.getMe();
+          const fresh = meRes.data?.data?.user;
+          if (fresh) updateUser(fresh);
+        } catch (e) {
+          // fallback to updatedPatient minimal update
+          if (updatedPatient) {
+            const normalized = {
+              id: updatedPatient._id || updatedPatient.id,
+              name: updatedPatient.name,
+              email: updatedPatient.email,
+              phone: updatedPatient.phone,
+              role: "patient",
+              type: "patient",
+              patientId: updatedPatient.patientId,
+            };
+            updateUser(normalized);
+          }
+        }
+        toast.success("Profile updated!");
+      } else {
+        const res = await usersAPI.updateProfile({
+          name: personalData.name,
+          phone: personalData.phone,
+          address: personalData.address,
+        });
+        const updated = res.data?.data?.user;
+        if (updated) {
+          const normalized = {
+            id: updated.id || updated._id,
+            name: updated.name,
+            email: updated.email,
+            phone: updated.phone,
+            address: updated.address,
+            role: updated.role || user?.role,
+            type: user?.type || 'user',
+          };
+          updateUser(normalized);
+        }
+        toast.success("Profile updated!");
+      }
     } catch (error) {
-      toast.error("Update failed");
+      const msg = error.response?.data?.message || "Update failed";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -126,6 +172,22 @@ const Profile = () => {
     }
   };
 
+  // Add current input value on blur (helps users who don't press Enter)
+  const handleArrayInputOnBlur = (e, field) => {
+    try {
+      const value = e.target.value?.trim();
+      if (value) {
+        setMedicalData((prev) => ({
+          ...prev,
+          [field]: [...prev[field], value],
+        }));
+        e.target.value = "";
+      }
+    } catch (err) {
+      // ignore
+    }
+  };
+
   const removeArrayItem = (field, index) =>
     setMedicalData((prev) => ({
       ...prev,
@@ -135,14 +197,35 @@ const Profile = () => {
   const handleMedicalSave = async () => {
     setLoading(true);
     try {
-      await patientsAPI.update(user?.id || user?._id, {
+      const res = await patientsAPI.updateProfile({
         bloodGroup: medicalData.bloodGroup,
         allergies: medicalData.allergies,
         chronicConditions: medicalData.chronicConditions,
       });
+      const updatedPatient = res.data?.data?.patient;
+      if (updatedPatient) {
+        setMedicalData({
+          bloodGroup: updatedPatient.bloodGroup || "",
+          allergies: Array.isArray(updatedPatient.allergies)
+            ? updatedPatient.allergies
+            : [],
+          chronicConditions: Array.isArray(updatedPatient.chronicConditions)
+            ? updatedPatient.chronicConditions
+            : [],
+        });
+        // refresh authenticated user so dashboard can pick up new health info
+        try {
+          const meRes = await authAPI.getMe();
+          const fresh = meRes.data?.data?.user;
+          if (fresh) updateUser(fresh);
+        } catch (e) {
+          // ignore
+        }
+      }
       toast.success("Health profile updated");
     } catch (error) {
-      toast.error("Failed to save health profile");
+      const msg = error.response?.data?.message || "Failed to save health profile";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -201,7 +284,7 @@ const Profile = () => {
   ];
 
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-layout no-top-nav">
       <Sidebar />
       <main className="dashboard-main" style={page}>
         <div style={{ marginBottom: "2rem" }}>
@@ -585,6 +668,7 @@ const Profile = () => {
                     <input
                       type="text"
                       onKeyDown={(e) => handleArrayInput(e, "allergies")}
+                      onBlur={(e) => handleArrayInputOnBlur(e, "allergies")}
                       style={input}
                       placeholder="e.g. Penicillin"
                     />
@@ -637,6 +721,7 @@ const Profile = () => {
                       onKeyDown={(e) =>
                         handleArrayInput(e, "chronicConditions")
                       }
+                      onBlur={(e) => handleArrayInputOnBlur(e, "chronicConditions")}
                       style={input}
                       placeholder="e.g. Diabetes"
                     />

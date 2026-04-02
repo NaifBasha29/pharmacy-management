@@ -7,7 +7,7 @@ import "./Auth.css";
 import logo from "../../../assets/logo.png";
 
 const PatientLogin = () => {
-  const [formData, setFormData] = useState({ patientId: "", password: "" });
+  const [formData, setFormData] = useState({ identifier: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +27,9 @@ const PatientLogin = () => {
     setLoading(true);
     setError("");
 
-    const result = await loginPatient(formData);
+    // API expects { identifier, password } where identifier can be email or patientId
+    const payload = { identifier: formData.identifier, password: formData.password };
+    const result = await loginPatient(payload);
 
     if (result.success) {
       if (["patient", "user"].includes(result.user.role)) {
@@ -64,15 +66,15 @@ const PatientLogin = () => {
 
             <form onSubmit={handleSubmit} className="auth-form">
               <div className="form-group">
-                <label className="form-label">Patient ID</label>
+                <label className="form-label">Email or Patient ID</label>
                 <div className="input-wrapper">
                   <FiUser className="input-icon" />
                   <input
                     type="text"
-                    name="patientId"
+                    name="identifier"
                     className="form-input"
-                    placeholder="Enter Patient ID (e.g. PAT000123)"
-                    value={formData.patientId}
+                    placeholder="Enter email or Patient ID (e.g. PAT000123 or you@example.com)"
+                    value={formData.identifier}
                     onChange={handleChange}
                     required
                   />

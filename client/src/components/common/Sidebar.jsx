@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useNotifications } from "../../context/NotificationContext";
@@ -24,19 +24,72 @@ import {
 } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import "./Sidebar.css";
+import logo from "../../../assets/logo.png";
 
 const Sidebar = () => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
   const { unreadCount } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(true);
+  // Sidebar open state: controls visual open (hover or pinned)
+  const [isOpen, setIsOpen] = useState(false);
+  // When true the sidebar stays open (pin). Clicking the toggle pins/unpins.
+  const [isPinned, setIsPinned] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const asideRef = useRef(null);
+  const leaveTimeoutRef = useRef(null);
 
   const handleLogout = async () => {
     await logout();
     // AuthContext now handles redirect to landing page
   };
+
+  // Hover handlers: expand on enter, collapse on leave (unless pinned)
+  const handleMouseEnter = () => {
+    // Don't trigger hover on small screens
+    if (typeof window !== "undefined" && window.innerWidth < 769) return;
+    if (isMobileOpen) return;
+    clearTimeout(leaveTimeoutRef.current);
+    setIsOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 769) return;
+    if (isMobileOpen) return;
+    if (isPinned) return;
+    leaveTimeoutRef.current = setTimeout(() => setIsOpen(false), 220);
+  };
+
+  useEffect(() => {
+    return () => clearTimeout(leaveTimeoutRef.current);
+  }, []);
+
+  // Keep sidebar open on keyboard focus within the sidebar, and collapse when focus leaves
+  useEffect(() => {
+    const node = asideRef.current;
+    if (!node) return;
+
+    const onFocusIn = () => {
+      if (typeof window !== "undefined" && window.innerWidth < 769) return;
+      if (isMobileOpen) return;
+      clearTimeout(leaveTimeoutRef.current);
+      setIsOpen(true);
+    };
+
+    const onFocusOut = () => {
+      if (typeof window !== "undefined" && window.innerWidth < 769) return;
+      if (isMobileOpen) return;
+      if (isPinned) return;
+      leaveTimeoutRef.current = setTimeout(() => setIsOpen(false), 220);
+    };
+
+    node.addEventListener("focusin", onFocusIn);
+    node.addEventListener("focusout", onFocusOut);
+    return () => {
+      node.removeEventListener("focusin", onFocusIn);
+      node.removeEventListener("focusout", onFocusOut);
+    };
+  }, [isPinned, isMobileOpen]);
 
   const adminLinks = [
     { path: "/admin", icon: <FiHome />, label: "Dashboard" },
@@ -112,16 +165,22 @@ const Sidebar = () => {
       )}
 
       <aside
-        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isMobileOpen ? "mobile-open" : ""}`}
+        ref={asideRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={() => {
+          if (!isPinned) setIsOpen(true);
+        }}
+        onBlur={() => {
+          if (!isPinned) setIsOpen(false);
+        }}
+        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isPinned ? "pinned" : ""} ${isMobileOpen ? "mobile-open" : ""}`}
+        tabIndex={-1}
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <FiCrosshair className="logo-icon" size={28} color="#f97316" />
-            {isOpen && <span className="logo-text">RxHub</span>}
+            <img src={logo} alt="RxHub" className="brand-logo-img" />
           </div>
-          <button className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <FiX /> : <FiMenu />}
-          </button>
         </div>
 
         <div className="sidebar-user">
@@ -155,6 +214,7 @@ const Sidebar = () => {
             className={`video-call-controls ${!isOpen ? "collapsed" : ""}`}
             style={{ padding: "0 0.5rem 0.5rem" }}
           >
+            {/* When collapsed, ThemeToggle gets full width utility to center and size correctly */}
             <ThemeToggle className={!isOpen ? "w-full" : ""} />
           </div>
 

@@ -30,7 +30,7 @@ const Cart = () => {
 
   if (!cart.length) {
     return (
-      <div className="dashboard-layout">
+      <div className="dashboard-layout no-top-nav">
         <Sidebar />
         <main className="dashboard-main" style={page}>
           <div style={{ maxWidth: 520, margin: '5rem auto', textAlign: 'center', ...card, padding: '2rem' }}>
@@ -47,7 +47,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-layout no-top-nav">
       <Sidebar />
       <main className="dashboard-main" style={page}>
         <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -110,7 +110,7 @@ const Cart = () => {
               <span style={{ ...textPrimary, fontWeight: 700 }}>Total</span>
               <span style={{ ...textPrimary, fontWeight: 800, fontSize: '1.25rem' }}>₹{total.toFixed(2)}</span>
             </div>
-            <button onClick={handleCheckout} className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: `linear-gradient(135deg, ${accent}, #ea580c)` }}>
+            <button onClick={handleCheckout} className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: `linear-gradient(135deg, ${accent}, var(--primary-600))` }}>
               Proceed to Checkout <FiArrowRight />
             </button>
           </div>

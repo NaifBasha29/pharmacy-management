@@ -1,25 +1,53 @@
 /* Sidebar - Theme Adaptable */
+:root{
+    /* local layout tokens to keep sidebar & topnav in sync */
+    --top-nav-height: 50px;
+    --sidebar-width: 200px;
+    --sidebar-collapsed-width: 60px;
+}
+
 .sidebar {
     position: fixed;
     left: 0;
-    top: 0;
-    height: 100vh;
-    width: 200px;
+    top: var(--top-nav-height); /* sits below TopNav */
+    height: calc(100vh - var(--top-nav-height));
+    width: var(--sidebar-width);
     background: var(--bg-primary);
     border-right: 1px solid var(--border-light);
     display: flex;
     flex-direction: column;
-    transition: width 0.2s ease, background-color 0.3s ease;
-    z-index: 100;
+    transition: width 0.18s var(--transition-fast), transform 0.18s var(--transition-fast), background-color 0.3s ease, box-shadow 0.18s var(--transition-fast);
+    z-index: 95; /* below top-nav (top-nav uses 100) */
     box-shadow: var(--shadow-xl);
+    overflow: hidden;
+}
+
+/* When a page opts out of the TopNav reserved space, allow the sidebar to sit
+   flush with the top of the viewport so there isn't a blank band above it. */
+.dashboard-layout.no-top-nav .sidebar {
+    top: 0;
+    height: 100vh;
 }
 
 .sidebar.collapsed {
-    width: 60px;
+    width: var(--sidebar-collapsed-width);
+}
+
+/* Hover-triggered popup behaviour: when collapsed but hovered, show temporary 'open' appearance */
+.sidebar.collapsed:hover,
+.sidebar.hovered,
+.sidebar.open {
+    width: var(--sidebar-width);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+
+/* pinned state: keep full open width */
+.sidebar.pinned {
+    width: var(--sidebar-width) !important;
 }
 
 .sidebar-header {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 0.85rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -36,10 +64,10 @@
 }
 
 .logo-icon {
-    width: 54px;
-    height: 54px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(249, 115, 22, 0.3));
+    filter: drop-shadow(0 2px 4px rgba(249, 115, 22, 0.18));
     border-radius: 6px;
 }
 
@@ -54,17 +82,18 @@
 }
 
 .sidebar-toggle {
-    background: #0a0a0a;
-    border: 1px solid rgba(249, 115, 22, 0.2);
-    color: #f97316;
+    background: var(--surface);
+    border: 1px solid rgba(249, 115, 22, 0.12);
+    color: var(--primary-500);
     cursor: pointer;
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 6px;
-    transition: all 0.2s;
+    transition: transform 0.18s var(--transition-fast), box-shadow 0.18s var(--transition-fast);
+    box-shadow: var(--shadow-sm);
 }
 
 .sidebar-toggle:hover {
@@ -75,21 +104,21 @@
 
 /* User Section */
 .sidebar-user {
-    padding: 0.75rem;
+    padding: 0.65rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin: 0.5rem 0.5rem 0.75rem;
-    background: rgba(249, 115, 22, 0.05);
+    background: rgba(249, 115, 22, 0.04);
     border-radius: 8px;
-    border: 1px solid rgba(249, 115, 22, 0.15);
+    border: 1px solid rgba(249, 115, 22, 0.10);
 }
 
 .user-avatar {
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
     color: white;
     display: flex;
     align-items: center;
@@ -108,7 +137,7 @@
 .user-name {
     font-weight: 600;
     font-size: 0.8rem;
-    color: #e5e5e5;
+    color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -116,7 +145,7 @@
 
 .user-role {
     font-size: 0.65rem;
-    color: #f97316;
+    color: var(--primary-500);
     text-transform: uppercase;
     letter-spacing: 0.03em;
     font-weight: 600;
@@ -125,11 +154,11 @@
 /* Navigation */
 .sidebar-nav {
     flex: 1;
-    padding: 0 0.5rem;
+    padding: 0 0.5rem 0.5rem 0.5rem;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -142,30 +171,30 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.6rem 0.75rem;
-    color: #9ca3af;
+    padding: 0.6rem 0.8rem;
+    color: var(--text-secondary);
     text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.15s ease;
+    border-radius: 8px;
+    transition: background 0.12s var(--transition-fast), color 0.12s var(--transition-fast), transform 0.12s var(--transition-fast);
     cursor: pointer;
     background: transparent;
     border: none;
     width: 100%;
     text-align: left;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 500;
     position: relative;
 }
 
 .nav-link:hover {
-    background: rgba(249, 115, 22, 0.1);
-    color: #f97316;
+    background: rgba(249, 115, 22, 0.07);
+    color: var(--primary-500);
 }
 
 .nav-link.active {
-    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-    color: white;
-    box-shadow: 0 2px 12px rgba(249, 115, 22, 0.3);
+    background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+    color: var(--text-inverse);
+    box-shadow: 0 2px 12px rgba(249, 115, 22, 0.18);
     font-weight: 600;
 }
 
@@ -174,23 +203,23 @@
 }
 
 .nav-icon {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #6b7280;
-    transition: color 0.15s;
+    color: var(--text-tertiary);
+    transition: color 0.12s var(--transition-fast);
 }
 
 .nav-link:hover .nav-icon {
-    color: #f97316;
+    color: var(--primary-500);
 }
 
 .nav-label {
     white-space: nowrap;
     opacity: 1;
-    transition: opacity 0.15s;
+    transition: opacity 0.12s var(--transition-fast);
 }
 
 /* Collapsed State */
@@ -203,7 +232,7 @@
 
 .sidebar.collapsed .sidebar-header {
     justify-content: center;
-    padding: 0.75rem 0.5rem;
+    padding: 0.6rem 0.5rem;
 }
 
 .sidebar.collapsed .sidebar-logo {
@@ -237,11 +266,49 @@
 
 /* Footer */
 .sidebar-footer {
-    padding: 0.75rem 0.5rem;
-    border-top: 1px solid rgba(249, 115, 22, 0.1);
+    padding: 0.65rem 0.5rem;
+    border-top: 1px solid rgba(249, 115, 22, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 6px;
+}
+
+/* Container around the ThemeToggle (and similar controls) inside footer */
+.video-call-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+/* When sidebar is collapsed we want the control centered */
+.video-call-controls.collapsed {
+    justify-content: center;
+    padding: 0.25rem 0;
+}
+
+/* Ensure the controls area spans full footer width so centering works predictably */
+.video-call-controls {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Support a simple utility class 'w-full' passed from JSX for full width buttons */
+.theme-toggle-btn.w-full {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Limit how wide the toggle becomes when sidebar is collapsed */
+.sidebar.collapsed .theme-toggle-btn.w-full {
+    width: calc(var(--sidebar-collapsed-width) - 12px);
+}
+
+/* When sidebar open and w-full is used, make toggle fill footer width */
+.sidebar .theme-toggle-btn.w-full {
+    width: calc(var(--sidebar-width) - 12px);
 }
 
 .notification-btn {
@@ -251,22 +318,22 @@
 
 .notification-badge {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 6px;
+    right: 8px;
     min-width: 16px;
     height: 16px;
-    background: #ef4444;
-    color: white;
-    font-size: 0.6rem;
+    background: var(--error);
+    color: var(--text-inverse);
+    font-size: 0.65rem;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #000;
+    border: 2px solid var(--bg-primary);
 }
 
 .logout-btn {
-    color: #9ca3af !important;
+    color: var(--text-secondary) !important;
 }
 
 .logout-btn .nav-label {
@@ -288,32 +355,34 @@
 .sidebar-mobile-toggle {
     display: none;
     position: fixed;
-    top: 0.75rem;
-    left: 0.75rem;
-    z-index: 101;
-    background: #0a0a0a;
-    color: #f97316;
-    border: 1px solid rgba(249, 115, 22, 0.2);
-    padding: 0.5rem;
-    border-radius: 6px;
+    top: 0.9rem;
+    left: 0.9rem;
+    z-index: 105;
+    background: var(--surface);
+    color: var(--primary-500);
+    border: 1px solid rgba(249, 115, 22, 0.12);
+    padding: 0.45rem;
+    border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-sm);
 }
 
 .sidebar-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    z-index: 99;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 100;
 }
 
 @media (max-width: 768px) {
+
     .sidebar {
+        top: var(--top-nav-height);
+        height: calc(100vh - var(--top-nav-height));
         transform: translateX(-100%);
-        width: 220px;
-        background: #000000;
+        width: var(--sidebar-width);
     }
 
     .sidebar.mobile-open {
@@ -326,5 +395,29 @@
 
     .sidebar-overlay {
         display: block;
+    }
+
+    /* On small screens, main content should not reserve space for sidebar */
+    .dashboard-layout .sidebar + .dashboard-main {
+        margin-left: 0 !important;
+    }
+}
+
+/* Desktop/main layout: by default content reserves collapsed width; only pinned sidebar pushes content */
+@media (min-width: 769px) {
+    .dashboard-layout .sidebar + .dashboard-main {
+        margin-left: var(--sidebar-collapsed-width);
+        transition: margin-left 0.18s var(--transition-fast);
+    }
+
+    /* pinned sidebar permanently occupies full width (pushes content) */
+    .dashboard-layout .sidebar.pinned + .dashboard-main {
+        margin-left: var(--sidebar-width);
+    }
+
+    /* if the sidebar is explicitly collapsed class, ensure collapsed margin (redundant but explicit)
+       this keeps the layout consistent if javascript toggles classes */
+    .dashboard-layout .sidebar.collapsed + .dashboard-main {
+        margin-left: var(--sidebar-collapsed-width);
     }
 }

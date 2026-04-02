@@ -107,7 +107,7 @@ const Checkout = () => {
   const accent = "var(--primary-500)";
 
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-layout no-top-nav">
       <Sidebar />
       <main className="dashboard-main" style={page}>
         <div

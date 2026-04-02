@@ -144,12 +144,12 @@ const Orders = () => {
         },
         badge: (status) => {
             const colors = {
-                pending: { bg: '#fef3c7', color: '#d97706' },
-                confirmed: { bg: '#dbeafe', color: '#ea580c' },
-                processing: { bg: '#e0e7ff', color: '#4f46e5' },
-                dispatched: { bg: '#fae8ff', color: '#a855f7' },
-                delivered: { bg: '#dcfce7', color: '#16a34a' },
-                cancelled: { bg: '#fee2e2', color: '#dc2626' }
+                pending: { bg: 'var(--status-warning-bg)', color: 'var(--status-warning)' },
+                confirmed: { bg: 'var(--status-primary-bg)', color: 'var(--status-primary)' },
+                processing: { bg: 'var(--primary-50)', color: 'var(--primary-600)' },
+                dispatched: { bg: 'var(--accent-purple-50)', color: 'var(--accent-purple-500)' },
+                delivered: { bg: 'var(--status-success-bg)', color: 'var(--status-success)' },
+                cancelled: { bg: 'var(--status-error-bg)', color: 'var(--status-error)' }
             };
             const c = colors[status] || { bg: 'var(--bg-tertiary)', color: 'var(--text-secondary)' };
             return {
@@ -291,7 +291,7 @@ const Orders = () => {
     };
 
     return (
-        <div className="dashboard-layout">
+        <div className="dashboard-layout no-top-nav">
             <Sidebar />
             <main className="dashboard-main" style={styles.page}>
                 {/* Header */}

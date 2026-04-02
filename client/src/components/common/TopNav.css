@@ -4,7 +4,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 50px;
+    height: var(--top-nav-height, 50px);
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-light);
     z-index: 100;
@@ -121,10 +121,7 @@
 }
 
 @media (max-width: 768px) {
-    .top-nav {
-        height: 56px;
-    }
-
+    /* top-nav height for small screens is controlled via --top-nav-height in index.css */
     .top-nav-links {
         display: none;
     }

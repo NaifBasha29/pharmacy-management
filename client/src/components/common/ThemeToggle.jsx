@@ -8,9 +8,11 @@ const ThemeToggle = ({ className = '' }) => {
 
     return (
         <button
+            type="button"
             className={`theme-toggle-btn ${className}`}
             onClick={toggleTheme}
             aria-label="Toggle theme"
+            aria-pressed={theme === 'dark'}
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
             {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
