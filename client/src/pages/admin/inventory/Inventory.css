@@ -8,8 +8,8 @@
 }
 
 .inventory-stats .stat-box {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%);
-    border: 1px solid rgba(249, 115, 22, 0.2);
+    background: var(--surface);
+    border: 1px solid var(--border-default);
     border-radius: 10px;
     padding: 20px;
     display: flex;
@@ -21,18 +21,19 @@
 }
 
 .inventory-stats .stat-box:hover {
-    border-color: rgba(249, 115, 22, 0.4);
+    border-color: var(--primary-500);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .inventory-stats .stat-box.selected {
-    border-color: #f97316;
-    background: rgba(249, 115, 22, 0.1);
+    border-color: var(--primary-500);
+    background: rgba(5, 150, 105, 0.1);
 }
 
 .inventory-stats .stat-icon {
     font-size: 24px;
-    color: #f97316;
+    color: var(--primary-500);
 }
 
 .inventory-stats .stat-box.warning .stat-icon {
@@ -50,7 +51,7 @@
 .inventory-stats .stat-number {
     font-size: 28px;
     font-weight: 700;
-    color: #f97316;
+    color: var(--primary-500);
 }
 
 .inventory-stats .stat-box.warning .stat-number {
@@ -90,7 +91,7 @@
 
 .medicine-strength {
     font-size: 11px;
-    color: #f97316;
+    color: var(--secondary-500);
 }
 
 /* Stock Badge */
@@ -105,8 +106,8 @@
 }
 
 .stock-badge.ok {
-    background: rgba(249, 115, 22, 0.15);
-    color: #f97316;
+    background: var(--status-primary-bg);
+    color: var(--status-primary);
 }
 
 .stock-badge.low {
@@ -121,8 +122,8 @@
 
 /* Status Badge for Stock */
 .status-badge.ok {
-    background: rgba(249, 115, 22, 0.15);
-    color: #f97316;
+    background: var(--status-primary-bg);
+    color: var(--status-primary);
 }
 
 .status-badge.low {
