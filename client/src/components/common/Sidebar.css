@@ -63,12 +63,10 @@
     overflow: hidden;
 }
 
-.logo-icon {
-    width: 36px;
-    height: 36px;
+.brand-logo-img {
+    width: 2rem; /* Reduced for title bar consistency */
+    height: 2rem;
     object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(249, 115, 22, 0.18));
-    border-radius: 6px;
 }
 
 .logo-text {
@@ -420,4 +418,72 @@
     .dashboard-layout .sidebar.collapsed + .dashboard-main {
         margin-left: var(--sidebar-collapsed-width);
     }
+}
+
+/* Emerald & Gold Luxury Theme for Admin */
+.sidebar.theme-admin {
+    background: #021a1b;
+    border-right: 1px solid rgba(212, 175, 55, 0.2);
+    background-image: linear-gradient(180deg, #021a1b 0%, #042a2b 100%);
+}
+
+.sidebar.theme-admin .sidebar-header {
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.sidebar.theme-admin .sidebar-user {
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.sidebar.theme-admin .user-avatar {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    color: #021a1b;
+}
+
+.sidebar.theme-admin .user-role {
+    color: #d4af37;
+}
+
+.sidebar.theme-admin .nav-link {
+    color: rgba(212, 175, 55, 0.7);
+}
+
+.sidebar.theme-admin .nav-link:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: #ffd700;
+}
+
+.sidebar.theme-admin .nav-link.active {
+    background: linear-gradient(135deg, #059669 0%, #042a2b 100%);
+    color: #ffd700;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar.theme-admin .nav-link.active .nav-icon {
+    color: #ffd700;
+}
+
+.sidebar.theme-admin .nav-icon {
+    color: rgba(212, 175, 55, 0.5);
+}
+
+.sidebar.theme-admin .nav-link:hover .nav-icon {
+    color: #ffd700;
+}
+
+.sidebar.theme-admin .sidebar-footer {
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.sidebar.theme-admin .notification-badge {
+    background: #ef4444;
+    border: 2px solid #021a1b;
+}
+
+.sidebar.theme-admin .sidebar-mobile-toggle {
+    background: #021a1b;
+    color: #d4af37;
+    border: 1px solid rgba(212, 175, 55, 0.2);
 }

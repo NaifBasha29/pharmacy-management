@@ -130,3 +130,40 @@
         font-size: 0.9rem;
     }
 }
+
+/* Emerald & Gold Luxury Theme for Admin */
+.top-nav.theme-admin {
+    background: #021a1b;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.top-nav.theme-admin .nav-item {
+    color: rgba(212, 175, 55, 0.7);
+}
+
+.top-nav.theme-admin .nav-item:hover {
+    color: #ffd700;
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.top-nav.theme-admin .nav-item.active {
+    background: linear-gradient(135deg, #059669 0%, #042a2b 100%);
+    color: #ffd700;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.top-nav.theme-admin .user-name {
+    color: rgba(212, 175, 55, 0.6);
+}
+
+.top-nav.theme-admin .user-avatar {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    color: #021a1b;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.top-nav.theme-admin .user-avatar:hover {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    transform: scale(1.05);
+}

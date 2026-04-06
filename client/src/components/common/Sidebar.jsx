@@ -174,7 +174,7 @@ const Sidebar = () => {
         onBlur={() => {
           if (!isPinned) setIsOpen(false);
         }}
-        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isPinned ? "pinned" : ""} ${isMobileOpen ? "mobile-open" : ""}`}
+        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isPinned ? "pinned" : ""} ${isMobileOpen ? "mobile-open" : ""} ${isAdmin ? "theme-admin" : ""}`}
         tabIndex={-1}
       >
         <div className="sidebar-header">

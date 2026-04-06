@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin System Documentation - Chapters 4 & 5</title>
+    <!-- Mermaid JS for Diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+    <style>
+        :root {
+            /* Branding Colors */
+            --navy-dark: #0f172a;
+            --navy-deep: #020617;
+            --emerald: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.2);
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-glow: rgba(255, 255, 255, 0.1);
+        }
+
+        @media print {
+            .no-print { display: none; }
+            .page-break { page-break-before: always; }
+            body { background: white !important; color: black !important; }
+            section { border: none !important; box-shadow: none !important; }
+            .mermaid { background: white !important; }
+        }
+
+        body {
+            background-color: var(--navy-deep);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Hero Section */
+        header {
+            text-align: center;
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy-dark) 100%);
+            border-bottom: 2px solid var(--gold);
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            background: linear-gradient(to right, var(--gold), #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--navy-deep);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glow);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--emerald);
+            border-left: 4px solid var(--gold);
+            padding-left: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-top: 2rem;
+        }
+
+        /* Diagram Containers */
+        .diagram-box {
+            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px dashed var(--text-secondary);
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th {
+            background: var(--navy-dark);
+            color: var(--gold);
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .brief-note {
+            background: rgba(148, 163, 184, 0.1);
+            border-left: 3px solid var(--text-secondary);
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .highlight-glow {
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>PharmaCare Admin</h1>
+            <p>System Design & Implementation Documentation</p>
+            <div style="margin-top: 2rem; font-weight: 300;">
+                <span style="color: var(--gold);">Author:</span> Preethika P <br>
+                <span style="color: var(--gold);">Version:</span> 2.0 (Admin Centric)
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Executive Summary -->
+        <section>
+            <div class="section-number">01</div>
+            <h2>Executive Summary</h2>
+            <p>
+                The **Super Admin Dashboard** serves as the primary governing entity of the PharmaCare Pharmacy Management System. 
+                It provides the necessary oversight for clinic enrollment, user role auditing, and system-wide inventory tracking. 
+                This document details the architectural decisions and verification steps taken to ensure a secure, scalable platform 
+                for managing high-volume pharmacy ecosystems.
+            </p>
+        </section>
+
+        <!-- Chapter 4 -->
+        <div class="page-break"></div>
+        <section>
+            <div class="section-number">04</div>
+            <h2>Chapter 4: Design and Implementation</h2>
+
+            <h3>4.1 Architecture Diagram</h3>
+            <p>
+                The system utilizes a **MERN Stack** (MongoDB, Express, React, Node.js) with a focus on a centralized 
+                Admin governing loop. All administrative requests are channeled through a dedicated set of 
+                Express routes protected by role-based JWT middleware.
+            </p>
+            <div class="diagram-box highlight-glow">
+                <div class="mermaid">
+                    graph TD
+                        subgraph Admin_Portal["Super Admin Portal (React)"]
+                            A_UI["Analytics Dashboard"]
+                            C_M["Clinic Management"]
+                            U_M["User Governance"]
+                        end
+
+                        subgraph Core_Service["Node.js Service Layer"]
+                            Auth["JWT Auth Middleware"]
+                            AdminCtrl["Admin Controller"]
+                            AuditCtrl["Audit Service"]
+                        end
+
+                        subgraph Persistence["Storage (MongoDB)"]
+                            DB[(Real-time Data Store)]
+                        end
+
+                        A_UI --> Auth
+                        C_M --> Auth
+                        Auth --> AdminCtrl
+                        AdminCtrl --> DB
+                        AdminCtrl -- Trigger Log --> AuditCtrl
+                        AuditCtrl --> DB
+                </div>
+                <p><i>Figure 1: Admin-Centric System Architecture</i></p>
+            </div>
+
+            <h3>4.2 Data Flow Diagram (DFD)</h3>
+            <p>
+                As the governing body, the Admin process is responsible for the transition of clinical data from 
+                unverified drafts to active operational units.
+            </p>
+            <div class="diagram-box">
+                <div class="mermaid">
+                    graph LR
+                        A[Super Admin] -- 1. Review Clinic Docs --> P1((Verification Process))
+                        P1 -- 2. Generate Credentials --> D1[(User Database)]
+                        P1 -- 3. Update Status --> D2[(Clinic Database)]
+                        D2 -- 4. Fetch Reports --> A
+                </div>
+                <p><i>Figure 2: Level-1 Data Flow (Clinic Enrollment)</i></p>
+            </div>
+
+            <div class="brief-note">
+                <strong>Note on Clinic & User Dashboards:</strong> While these roles handle operational tasks 
+                (Order processing/Medicine tracking), they operate within boundaries predefined by the Admin's 
+                system-wide configurations.
+            </div>
+
+            <h3>4.3 Use Case Diagram (Admin Focused)</h3>
+            <p>
+                This diagram highlights the critical functional interactions between the Super Admin and the 
+                core system features.
+            </p>
+            <div class="diagram-box highlight-glow">
+                <div class="mermaid">
+                    useCaseDiagram
+                        actor "Super Admin" as Admin
+                        actor "Database" as DB
+
+                        package "Admin Governing Module" {
+                            usecase "Clinic Activation" as UC1
+                            usecase "Auditing Logs" as UC2
+                            usecase "System-wide Analytics" as UC3
+                            usecase "Global Password Reset" as UC4
+                        }
+
+                        Admin --> UC1
+                        Admin --> UC2
+                        Admin --> UC3
+                        Admin --> UC4
+                        UC1 --> DB
+                        UC2 --> DB
+                </div>
+                <p><i>Figure 3: Use Case Diagram for Admin Governance</i></p>
+            </div>
+
+            <h3>4.5 Sequence Diagram: Clinic Activation Logic</h3>
+            <p>
+                A core Admin workflow: Successfull verification of a clinic draft triggers the automated 
+                generation of the Clinic Administrator account.
+            </p>
+            <div class="diagram-box">
+                <div class="mermaid">
+                    sequenceDiagram
+                        participant Admin as Super Admin
+                        participant API as Server API
+                        participant DB as MongoDB
+
+                        Admin->>API: PUT /api/clinics/:id/activate
+                        API->>DB: updateClinic(status: 'active')
+                        DB-->>API: Success
+                        API->>API: generateTemporaryPassword()
+                        API->>DB: createNewUser(role: 'clinic_admin')
+                        DB-->>API: User Saved
+                        API-->>Admin: 200 OK (Activation Success)
+                </div>
+                <p><i>Figure 4: Sequence Diagram for Clinic Account Generation</i></p>
+            </div>
+
+            <h3>4.7 Database Diagram (Admin Oversight)</h3>
+            <div class="diagram-box">
+                <div class="mermaid">
+                    erDiagram
+                        USER ||--o{ CLINIC : "belongs to"
+                        USER ||--o{ AUDIT_LOG : "monitored by admin"
+                        CLINIC ||--|{ MEDICINE : "manages"
+                        USER ||--o{ ORDER : "oversighted by admin"
+
+                        USER {
+                            string name
+                            string role
+                            boolean isActive
+                        }
+                        CLINIC {
+                            string code
+                            string status
+                            date validUntil
+                        }
+                        AUDIT_LOG {
+                            string action
+                            string resource
+                            string ipAddress
+                        }
+                </div>
+                <p><i>Figure 5: Entity Relationship Diagram with Admin Scope</i></p>
+            </div>
+        </section>
+
+        <!-- Chapter 5 -->
+        <div class="page-break"></div>
+        <section>
+            <div class="section-number">05</div>
+            <h2>Chapter 5: Testing and System Implementation</h2>
+
+            <h3>5.1 Testing Strategy</h3>
+            <p>
+                The Admin Dashboard was tested using a multi-layered approach to ensure data integrity during 
+                bulk operations and sensitive status changes.
+            </p>
+            <ul>
+                <li><strong>Role Security Testing:</strong> Verifying that only users with the 'admin' role can access the `/admin/*` routes.</li>
+                <li><strong>Integration Testing:</strong> Using `supertest` to ensure that activating a clinic correctly writes to both the `Clinic` and `User` collections.</li>
+                <li><strong>Cross-State Validation:</strong> Ensuring UI cards (Revenue, Pending Approvals) update in real-time as background data changes.</li>
+            </ul>
+
+            <h3>5.2 Admin-Centric Test Cases</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test Module</th>
+                        <th>Action</th>
+                        <th>Expected Outcome</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Clinic Management</td>
+                        <td>Update Status to 'Suspended'</td>
+                        <td>Clinic admin is immediately logged out and disabled.</td>
+                        <td>Pass</td>
+                    </tr>
+                    <tr>
+                        <td>Audit Logging</td>
+                        <td>Change Medicine Price</td>
+                        <td>The change is logged with IP, Timestamp, and User ID.</td>
+                        <td>Pass</td>
+                    </tr>
+                    <tr>
+                        <td>Access Control</td>
+                        <td>Attempt /admin route as Patient</td>
+                        <td>System redirects to Landing Page with 403 Forbidden.</td>
+                        <td>Pass</td>
+                    </tr>
+                    <tr>
+                        <td>Reporting</td>
+                        <td>Export CSV Report</td>
+                        <td>A valid CSV with all analytic metrics is generated.</td>
+                        <td>Pass</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>5.3 System Implementation & Safety</h3>
+            <p>
+                The system implementation followed the **Twelve-Factor App** methodology for environment 
+                independence and high availability.
+            </p>
+            <ul>
+                <li><strong>Audit Persistence:</strong> The background `AuditLog` service ensures no administrative action is untraced.</li>
+                <li><strong>Security Best Practices:</strong> Password hashing via bcrypt with salt factor 12.</li>
+                <li><strong>Scalability:</strong> Indexed MongoDB queries on `email` and `orderNumber` for sub-second dashboard loads.</li>
+            </ul>
+        </section>
+
+        <footer class="footer">
+            Pharmacy Management System - 2026 <br>
+            <i>Design & Implementation Documentation Portfolio</i>
+        </footer>
+
+    </div>
+
+</body>
+</html>
