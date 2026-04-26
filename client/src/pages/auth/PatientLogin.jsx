@@ -27,7 +27,6 @@ const PatientLogin = () => {
     setLoading(true);
     setError("");
 
-<<<<<<< HEAD
     // API expects { identifier, password } where identifier can be email or patientId
     const payload = { identifier: formData.identifier, password: formData.password };
     const result = await loginPatient(payload);
@@ -41,18 +40,6 @@ const PatientLogin = () => {
     } else {
       setError(result.error);
     }
-=======
-        const result = await loginPatient({ identifier: formData.patientId, password: formData.password });
-
-        if (result.success) {
-            if (result.user.role === 'user' || result.user.role === 'patient') navigate('/user');
-            else {
-                setError('Access denied: User is not a patient');
-            }
-        } else {
-            setError(result.error);
-        }
->>>>>>> 8a0117a (Rebase and fixes functionality)
 
     setLoading(false);
   };

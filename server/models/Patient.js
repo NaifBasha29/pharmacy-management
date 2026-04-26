@@ -99,11 +99,7 @@ const patientSchema = new mongoose.Schema(
 // Generate patient ID before saving
 patientSchema.pre("save", async function (next) {
   if (!this.patientId) {
-<<<<<<< HEAD
     this.patientId = "PAT" + Date.now().toString(36).toUpperCase();
-=======
-    this.patientId = 'PAT' + Date.now().toString(36).toUpperCase();
->>>>>>> 8a0117a (Rebase and fixes functionality)
   }
 
   // Calculate age from date of birth

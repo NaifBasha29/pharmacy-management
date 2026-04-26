@@ -183,7 +183,6 @@ export default function MedicineDetailScreen({ route, navigation }) {
 
           {/* Price */}
           <View style={styles.priceSection}>
-<<<<<<< HEAD
             <Text style={styles.price}>
               ₹{discountedPrice.toLocaleString("en-IN")}
             </Text>
@@ -192,12 +191,6 @@ export default function MedicineDetailScreen({ route, navigation }) {
                 <Text style={styles.oldPrice}>
                   ₹{(medicine.price || 0).toLocaleString("en-IN")}
                 </Text>
-=======
-            <Text style={styles.price}>₹{discountedPrice.toLocaleString('en-IN')}</Text>
-            {medicine.discount > 0 && (
-              <>
-                <Text style={styles.oldPrice}>₹{(medicine.price || 0).toLocaleString('en-IN')}</Text>
->>>>>>> 8a0117a (Rebase and fixes functionality)
                 <View style={styles.discountBadge}>
                   <Text style={styles.discountText}>
                     {medicine.discount}% OFF
@@ -359,13 +352,9 @@ export default function MedicineDetailScreen({ route, navigation }) {
         >
           <Icon name="cart-plus" size={20} color="#fff" />
           <Text style={styles.addToCartText}>
-<<<<<<< HEAD
             {outOfStock
               ? "Out of Stock"
               : `Add - ₹${(discountedPrice * quantity).toLocaleString("en-IN")}`}
-=======
-            {outOfStock ? 'Out of Stock' : `Add - ₹${(discountedPrice * quantity).toLocaleString('en-IN')}`}
->>>>>>> 8a0117a (Rebase and fixes functionality)
           </Text>
         </TouchableOpacity>
       </View>

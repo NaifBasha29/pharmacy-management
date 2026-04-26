@@ -28,40 +28,9 @@ router.get(
 
     let query = {};
 
-<<<<<<< HEAD
     // Users can only see their own orders
     if (["user", "patient"].includes(req.user.role)) {
       query.user = req.user._id;
-=======
-  // Users/patients can only see their own orders
-  if (['user', 'patient'].includes(req.user.role)) {
-    query.user = req.user._id;
-  }
-
-  if (status) {
-    query.status = status;
-  }
-
-  const total = await Order.countDocuments(query);
-  const orders = await Order.find(query)
-    .populate('user', 'name email phone')
-    .populate('items.medicine', 'name price')
-    .populate('dispensedBy', 'name')
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
-
-  res.json({
-    success: true,
-    data: {
-      orders,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
->>>>>>> 8a0117a (Rebase and fixes functionality)
     }
 
     if (status) {
@@ -113,41 +82,20 @@ router.get(
       });
     }
 
-    // Users can only view their own orders
-    if (
-      ["user", "patient"].includes(req.user.role) &&
-      order.user._id.toString() !== req.user._id.toString()
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized to view this order",
-      });
-    }
-
-    res.json({
-      success: true,
-      data: { order },
-    });
-<<<<<<< HEAD
-  }),
-);
-=======
-  }
-
-  // Users/patients can only view their own orders
-  if (['user', 'patient'].includes(req.user.role) && order.user._id.toString() !== req.user._id.toString()) {
+  // Users can only view their own orders
+  if (req.user.role === 'user' && order.user._id.toString() !== req.user._id.toString()) {
     return res.status(403).json({
       success: false,
       message: 'Not authorized to view this order'
     });
   }
 
-  res.json({
-    success: true,
-    data: { order }
-  });
-}));
->>>>>>> 8a0117a (Rebase and fixes functionality)
+    res.json({
+      success: true,
+      data: { order },
+    });
+  }),
+);
 
 // @route   POST /api/orders
 // @desc    Create a new order
@@ -268,37 +216,12 @@ router.put(
 
     const order = await Order.findById(req.params.id);
 
-<<<<<<< HEAD
     if (!order) {
       return res.status(404).json({
         success: false,
         message: "Order not found",
       });
     }
-=======
-  if (!order) {
-    return res.status(404).json({
-      success: false,
-      message: 'Order not found'
-    });
-  }
-
-  const previousStatus = order.status;
-  order.status = status;
-
-  // Add to tracking history
-  order.trackingHistory.push({
-    status,
-    note,
-    updatedBy: req.user._id
-  });
-
-  // Record who dispatched (stock is only reduced via /dispense endpoint)
-  if (status === 'dispatched' && previousStatus !== 'dispatched') {
-    order.dispensedBy = req.user._id;
-    order.dispensedAt = new Date();
-  }
->>>>>>> 8a0117a (Rebase and fixes functionality)
 
     const previousStatus = order.status;
     order.status = status;
@@ -310,15 +233,22 @@ router.put(
       updatedBy: req.user._id,
     });
 
-    // If dispensed, record who dispatched and time
-    if (status === "dispatched" && previousStatus !== "dispatched") {
-      order.dispensedBy = req.user._id;
-      order.dispensedAt = new Date();
-    }
+  // If dispensed, update stock and record
+  if (status === 'dispatched' && previousStatus !== 'dispatched') {
+    order.dispensedBy = req.user._id;
+    order.dispensedAt = new Date();
 
-    if (status === "delivered") {
-      order.actualDelivery = new Date();
+    // Reduce stock
+    for (const item of order.items) {
+      await Medicine.findByIdAndUpdate(item.medicine, {
+        $inc: { stock: -item.quantity }
+      });
     }
+  }
+
+  if (status === 'delivered') {
+    order.actualDelivery = new Date();
+  }
 
     await order.save();
 
@@ -372,16 +302,13 @@ router.put(
       });
     }
 
-    // Users can only cancel their own orders
-    if (
-      ["user", "patient"].includes(req.user.role) &&
-      order.user.toString() !== req.user._id.toString()
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized to cancel this order",
-      });
-    }
+  // Users can only cancel their own orders
+  if (req.user.role === 'user' && order.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({
+      success: false,
+      message: 'Not authorized to cancel this order'
+    });
+  }
 
     // Can only cancel pending or confirmed orders
     if (!["pending", "confirmed"].includes(order.status)) {
@@ -398,20 +325,12 @@ router.put(
       updatedBy: req.user._id,
     });
 
-<<<<<<< HEAD
     await order.save();
 
     res.json({
       success: true,
       message: "Order cancelled successfully",
       data: { order },
-=======
-  // Users/patients can only cancel their own orders
-  if (['user', 'patient'].includes(req.user.role) && order.user.toString() !== req.user._id.toString()) {
-    return res.status(403).json({
-      success: false,
-      message: 'Not authorized to cancel this order'
->>>>>>> 8a0117a (Rebase and fixes functionality)
     });
   }),
 );
@@ -428,38 +347,23 @@ router.get(
       "orderNumber status trackingHistory estimatedDelivery actualDelivery",
     );
 
-<<<<<<< HEAD
     if (!order) {
       return res.status(404).json({
-=======
-  if (!order) {
-    return res.status(404).json({
-      success: false,
-      message: 'Order not found'
-    });
-  }
-
-  // Users/patients can only track their own orders
-  if (['user', 'patient'].includes(req.user.role)) {
-    const fullOrder = await Order.findById(req.params.id);
-    if (fullOrder.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
->>>>>>> 8a0117a (Rebase and fixes functionality)
         success: false,
         message: "Order not found",
       });
     }
 
-    // Users can only track their own orders
-    if (["user", "patient"].includes(req.user.role)) {
-      const fullOrder = await Order.findById(req.params.id);
-      if (fullOrder.user.toString() !== req.user._id.toString()) {
-        return res.status(403).json({
-          success: false,
-          message: "Not authorized to track this order",
-        });
-      }
+  // Users can only track their own orders
+  if (req.user.role === 'user') {
+    const fullOrder = await Order.findById(req.params.id);
+    if (fullOrder.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to track this order'
+      });
     }
+  }
 
     res.json({
       success: true,
@@ -487,42 +391,12 @@ router.post(
       "items.medicine",
     );
 
-<<<<<<< HEAD
-    if (!order) {
-      return res.status(404).json({
-=======
   if (!order) {
     return res.status(404).json({
       success: false,
       message: 'Order not found'
     });
   }
-
-  // Guard against double-dispensing
-  if (order.dispensedAt) {
-    return res.status(400).json({
-      success: false,
-      message: 'Order already dispensed'
-    });
-  }
-
-  if (order.status !== 'confirmed' && order.status !== 'processing') {
-    return res.status(400).json({
-      success: false,
-      message: 'Order must be confirmed or processing to dispense'
-    });
-  }
-
-  // Check stock availability
-  for (const item of order.items) {
-    const medicine = await Medicine.findById(item.medicine);
-    if (medicine.stock < item.quantity) {
-      return res.status(400).json({
->>>>>>> 8a0117a (Rebase and fixes functionality)
-        success: false,
-        message: "Order not found",
-      });
-    }
 
     if (order.status !== "confirmed" && order.status !== "processing") {
       return res.status(400).json({

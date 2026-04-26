@@ -176,7 +176,6 @@ export default function SymptomCheckerScreen({ navigation }) {
                           {med.dosageForm} {med.strength || ""}
                         </Text>
                       )}
-<<<<<<< HEAD
                       <Text style={styles.medPrice}>
                         ₹{(med.price || 0).toLocaleString("en-IN")}
                       </Text>
@@ -189,11 +188,6 @@ export default function SymptomCheckerScreen({ navigation }) {
                         {med.stock > 0
                           ? `${med.stock} available`
                           : "Out of stock"}
-=======
-                      <Text style={styles.medPrice}>₹{(med.price || 0).toLocaleString('en-IN')}</Text>
-                      <Text style={[styles.medStock, med.stock <= 0 && { color: theme.error }]}>
-                        {med.stock > 0 ? `${med.stock} available` : 'Out of stock'}
->>>>>>> 8a0117a (Rebase and fixes functionality)
                       </Text>
                     </View>
                     <TouchableOpacity

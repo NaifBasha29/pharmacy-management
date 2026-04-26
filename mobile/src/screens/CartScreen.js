@@ -57,11 +57,7 @@ export default function CartScreen({ navigation }) {
           {item.name}
         </Text>
         <Text style={[s.unitPrice, { color: theme.textSecondary }]}>
-<<<<<<< HEAD
           ₹{(item.price || 0).toLocaleString("en-IN")} each
-=======
-          ₹{(item.price || 0).toLocaleString('en-IN')} each
->>>>>>> 8a0117a (Rebase and fixes functionality)
         </Text>
 
         <View style={s.qtyRow}>
@@ -90,11 +86,7 @@ export default function CartScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <Text style={[s.itemTotal, { color: theme.primary }]}>
-<<<<<<< HEAD
             ₹{((item.price || 0) * item.quantity).toLocaleString("en-IN")}
-=======
-            ₹{((item.price || 0) * item.quantity).toLocaleString('en-IN')}
->>>>>>> 8a0117a (Rebase and fixes functionality)
           </Text>
         </View>
       </View>
@@ -186,11 +178,7 @@ export default function CartScreen({ navigation }) {
                   {cart.length} item{cart.length !== 1 ? "s" : ""} in cart
                 </Text>
                 <Text style={[s.totalAmount, { color: theme.primary }]}>
-<<<<<<< HEAD
                   ₹{(cartTotal || 0).toLocaleString("en-IN")}
-=======
-                  ₹{(cartTotal || 0).toLocaleString('en-IN')}
->>>>>>> 8a0117a (Rebase and fixes functionality)
                 </Text>
               </View>
               <TouchableOpacity

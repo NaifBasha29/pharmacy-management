@@ -22,7 +22,6 @@ const orderItemSchema = new mongoose.Schema({
   },
 });
 
-<<<<<<< HEAD
 const orderSchema = new mongoose.Schema(
   {
     orderNumber: {
@@ -30,89 +29,6 @@ const orderSchema = new mongoose.Schema(
       unique: true,
     },
     user: {
-=======
-const orderSchema = new mongoose.Schema({
-  orderNumber: {
-    type: String,
-    unique: true
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    refPath: 'userModel',
-    required: true
-  },
-  userModel: {
-    type: String,
-    enum: ['User', 'Patient'],
-    default: 'Patient'
-  },
-  items: [orderItemSchema],
-  prescription: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Prescription'
-  },
-  subtotal: {
-    type: Number,
-    required: true
-  },
-  tax: {
-    type: Number,
-    default: 0
-  },
-  shippingCost: {
-    type: Number,
-    default: 0
-  },
-  discount: {
-    type: Number,
-    default: 0
-  },
-  total: {
-    type: Number,
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'confirmed', 'processing', 'dispatched', 'delivered', 'cancelled', 'refunded'],
-    default: 'pending'
-  },
-  paymentStatus: {
-    type: String,
-    enum: ['pending', 'paid', 'failed', 'refunded'],
-    default: 'pending'
-  },
-  paymentMethod: {
-    type: String,
-    enum: ['cod', 'card', 'upi', 'netbanking', 'wallet'],
-    default: 'cod'
-  },
-  paymentDetails: {
-    transactionId: String,
-    paidAt: Date
-  },
-  shippingAddress: {
-    name: String,
-    phone: String,
-    street: String,
-    city: String,
-    state: String,
-    zipCode: String,
-    country: { type: String, default: 'India' }
-  },
-  deliveryNotes: String,
-  estimatedDelivery: Date,
-  actualDelivery: Date,
-  dispensedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  dispensedAt: Date,
-  trackingHistory: [{
-    status: String,
-    timestamp: { type: Date, default: Date.now },
-    note: String,
-    updatedBy: {
->>>>>>> 8a0117a (Rebase and fixes functionality)
       type: mongoose.Schema.Types.ObjectId,
       refPath: "userModel",
       required: true,
@@ -212,14 +128,11 @@ const orderSchema = new mongoose.Schema({
 // Generate order number before saving
 orderSchema.pre("save", async function (next) {
   if (!this.orderNumber) {
-<<<<<<< HEAD
-    this.orderNumber =
-      "ORD" +
-      Date.now().toString(36).toUpperCase() +
-      Math.random().toString(36).slice(2, 5).toUpperCase();
-=======
-    this.orderNumber = 'ORD' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 5).toUpperCase();
->>>>>>> 8a0117a (Rebase and fixes functionality)
+    const date = new Date();
+    const year = date.getFullYear().toString().slice(-2);
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const count = await mongoose.model('Order').countDocuments();
+    this.orderNumber = `ORD${year}${month}${(count + 1).toString().padStart(6, '0')}`;
   }
   next();
 });

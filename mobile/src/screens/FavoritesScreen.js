@@ -103,7 +103,6 @@ export default function FavoritesScreen({ navigation }) {
             </Text>
           )}
           <View style={styles.priceRow}>
-<<<<<<< HEAD
             <Text style={styles.price}>
               ₹{discountedPrice.toLocaleString("en-IN")}
             </Text>
@@ -111,11 +110,6 @@ export default function FavoritesScreen({ navigation }) {
               <Text style={styles.originalPrice}>
                 ₹{(med.price || 0).toLocaleString("en-IN")}
               </Text>
-=======
-            <Text style={styles.price}>₹{(discountedPrice || 0).toLocaleString('en-IN')}</Text>
-            {med.discount > 0 && (
-              <Text style={styles.originalPrice}>₹{(med.price || 0).toLocaleString('en-IN')}</Text>
->>>>>>> 8a0117a (Rebase and fixes functionality)
             )}
           </View>
           <Text style={[styles.stock, outOfStock && styles.outOfStock]}>

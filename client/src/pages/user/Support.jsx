@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useState } from "react";
 import Sidebar from "../../components/common/Sidebar";
 import {
@@ -14,13 +13,6 @@ import {
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { supportAPI } from "../../services/api";
-=======
-import { useState } from 'react';
-import Sidebar from '../../components/common/Sidebar';
-import { supportAPI } from '../../services/api';
-import { FiMessageCircle, FiPhone, FiMail, FiHelpCircle, FiChevronDown, FiChevronUp, FiSend, FiClock, FiCheckCircle } from 'react-icons/fi';
-import toast from 'react-hot-toast';
->>>>>>> 8a0117a (Rebase and fixes functionality)
 
 const Support = () => {
   const [activeSection, setActiveSection] = useState("faq");
@@ -59,7 +51,6 @@ const Support = () => {
     },
   ];
 
-<<<<<<< HEAD
   const handleTicketSubmit = async (e) => {
     e.preventDefault();
     if (!ticketForm.subject || !ticketForm.category || !ticketForm.message) {
@@ -79,25 +70,6 @@ const Support = () => {
       setSubmitting(false);
     }
   };
-=======
-    const handleTicketSubmit = async (e) => {
-        e.preventDefault();
-        if (!ticketForm.subject || !ticketForm.category || !ticketForm.message) {
-            toast.error('Please fill all fields');
-            return;
-        }
-        setSubmitting(true);
-        try {
-            await supportAPI.create(ticketForm);
-            toast.success('Support ticket created! We\'ll respond within 24 hours.');
-            setTicketForm({ subject: '', category: '', message: '' });
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to create support ticket. Please try again.');
-        } finally {
-            setSubmitting(false);
-        }
-    };
->>>>>>> 8a0117a (Rebase and fixes functionality)
 
   const page = {
     background: "var(--bg-primary)",

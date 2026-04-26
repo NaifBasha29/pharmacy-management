@@ -74,7 +74,6 @@ export default function RecommendationsScreen({ navigation }) {
             <Text style={styles.category}>{item.category.name}</Text>
           )}
           <View style={styles.priceRow}>
-<<<<<<< HEAD
             <Text style={styles.price}>
               ₹{discountedPrice.toLocaleString("en-IN")}
             </Text>
@@ -82,11 +81,6 @@ export default function RecommendationsScreen({ navigation }) {
               <Text style={styles.oldPrice}>
                 ₹{(item.price || 0).toLocaleString("en-IN")}
               </Text>
-=======
-            <Text style={styles.price}>₹{(discountedPrice || 0).toLocaleString('en-IN')}</Text>
-            {item.discount > 0 && (
-              <Text style={styles.oldPrice}>₹{(item.price || 0).toLocaleString('en-IN')}</Text>
->>>>>>> 8a0117a (Rebase and fixes functionality)
             )}
             {item.discount > 0 && (
               <View style={styles.discountBadge}>

@@ -86,7 +86,6 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-<<<<<<< HEAD
     if (__DEV__)
       console.log(
         `📡 API Request: ${config.method?.toUpperCase()} ${config.url}`,
@@ -95,13 +94,6 @@ api.interceptors.request.use(
   },
   (error) => {
     console.error("❌ Request Error:", error.message);
-=======
-    if (__DEV__) console.log(`📡 API Request: ${config.method?.toUpperCase()} ${config.url}`);
-    return config;
-  },
-  (error) => {
-    if (__DEV__) console.error('❌ Request Error:', error.message);
->>>>>>> 8a0117a (Rebase and fixes functionality)
     return Promise.reject(error);
   },
 );
@@ -109,7 +101,6 @@ api.interceptors.request.use(
 // Add a response interceptor to log errors in detail
 api.interceptors.response.use(
   (response) => {
-<<<<<<< HEAD
     if (__DEV__)
       console.log(
         `✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`,
@@ -175,44 +166,6 @@ api.interceptors.response.use(
 
     console.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-=======
-    if (__DEV__) console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - Status: ${response.status}`);
-    return response;
-  },
-  (error) => {
-    if (__DEV__) {
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.error('❌ API ERROR DETAILS:');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      
-      if (error.response) {
-        // Server responded with error status
-        console.error('Status:', error.response.status);
-        console.error('Status Text:', error.response.statusText);
-        console.error('URL:', error.config?.url);
-        console.error('Method:', error.config?.method?.toUpperCase());
-        console.error('Response Data:', JSON.stringify(error.response.data, null, 2));
-        console.error('Headers:', JSON.stringify(error.response.headers, null, 2));
-      } else if (error.request) {
-        // Request was made but no response received
-        console.error('No Response Received');
-        console.error('URL:', error.config?.url);
-        console.error('Method:', error.config?.method?.toUpperCase());
-        console.error('Request:', error.request._response || 'Network Error');
-        console.error('Possible causes:');
-        console.error('  - Server is not running');
-        console.error('  - Wrong IP address or port');
-        console.error('  - Network connectivity issues');
-        console.error('  - CORS issues');
-      } else {
-        // Error setting up the request
-        console.error('Request Setup Error:', error.message);
-      }
-      
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    }
-    
->>>>>>> 8a0117a (Rebase and fixes functionality)
     return Promise.reject(error);
   },
 );

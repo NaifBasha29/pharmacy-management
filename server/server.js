@@ -61,10 +61,9 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // Security middleware
-<<<<<<< HEAD
 app.use(
   helmet({
-    crossOriginResourcePolicy: { policy: "same-site" },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
     contentSecurityPolicy: false,
   }),
 );
@@ -90,20 +89,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-=======
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-  contentSecurityPolicy: false
-}));
-
-// CORS configuration
-app.use(cors({
-  origin: [process.env.CLIENT_URL, process.env.MOBILE_URL].filter(Boolean),
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
->>>>>>> 8a0117a (Rebase and fixes functionality)
 
 // Rate limiting
 const limiter = rateLimit({

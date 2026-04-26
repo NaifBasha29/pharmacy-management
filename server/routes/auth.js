@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import express from "express";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -16,22 +15,7 @@ import {
 } from "../middleware/auth.js";
 import { userValidation } from "../middleware/validation.js";
 import { asyncHandler } from "../middleware/errorHandler.js";
-import { loginRateLimiter } from "../middleware/rateLimiter.js";
-=======
-import express from 'express';
-import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
-import nodemailer from 'nodemailer';
-import User from '../models/User.js';
-import Clinic from '../models/Clinic.js';
-import Patient from '../models/Patient.js';
-import AuditLog from '../models/AuditLog.js';
-import Session from '../models/Session.js';
-import { protect, generateToken, generateRefreshToken, getDeviceInfo } from '../middleware/auth.js';
-import { userValidation } from '../middleware/validation.js';
-import { asyncHandler } from '../middleware/errorHandler.js';
-import { loginRateLimiter, strictOtpLimiter } from '../middleware/rateLimiter.js';
->>>>>>> 8a0117a (Rebase and fixes functionality)
+import { loginRateLimiter, strictOtpLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
@@ -77,469 +61,13 @@ router.post(
       });
     }
 
-<<<<<<< HEAD
     if (password.length < 6) {
       return res.status(400).json({
-=======
-  const patientData = {
-    name: name.trim(),
-    phone: phone.trim(),
-    password,
-    gender: 'other',
-    isActive: true,
-    bloodGroup: bloodGroup || 'unknown',
-    allergies: Array.isArray(allergies) ? allergies : [],
-    chronicConditions: Array.isArray(chronicConditions) ? chronicConditions : []
-  };
-
-  if (email) {
-    patientData.email = email.toLowerCase().trim();
-  }
-
-  if (dateOfBirth && String(dateOfBirth).trim()) {
-    const parsedDate = new Date(String(dateOfBirth).trim());
-    if (!Number.isNaN(parsedDate.getTime())) {
-      patientData.dateOfBirth = parsedDate;
-    }
-  }
-
-  if (address && String(address).trim()) {
-    patientData.address = { street: String(address).trim() };
-  }
-
-  const patient = await Patient.create(patientData);
-
-  const accessToken = generateToken(patient._id, 'patient');
-  const refreshToken = generateRefreshToken(patient._id, 'patient');
-
-  await Session.createSession({
-    userId: patient._id,
-    userType: 'Patient',
-    accessToken,
-    refreshToken,
-    deviceInfo: getDeviceInfo(req),
-    expiresIn: 7 * 24 * 60 * 60 * 1000
-  });
-
-  await AuditLog.log({
-    action: 'CREATE',
-    resource: 'Patient',
-    resourceId: patient._id,
-    description: `New patient self-registered: ${patient.patientId}`,
-    ipAddress: req.ip
-  });
-
-  res.status(201).json({
-    success: true,
-    message: 'Account created successfully',
-    data: {
-      user: {
-        id: patient._id,
-        name: patient.name,
-        email: patient.email,
-        patientId: patient.patientId,
-        phone: patient.phone,
-        role: 'patient',
-        type: 'patient'
-      },
-      patientId: patient.patientId,
-      accessToken,
-      refreshToken
-    }
-  });
-}));
-
-// @route   POST /api/auth/register
-// @desc    Register a new user
-// @access  Public
-router.post('/register', userValidation.register, asyncHandler(async (req, res) => {
-  const { name, email, password, phone, address, role } = req.body;
-
-  // Check if user exists
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return res.status(400).json({
-      success: false,
-      message: 'User already exists with this email'
-    });
-  }
-
-  // Allow only specific roles
-  const allowedRoles = ['pharmacist', 'user'];
-  const userRole = (role && allowedRoles.includes(role)) ? role : 'user';
-
-  // Create user
-  const user = await User.create({
-    name,
-    email,
-    password,
-    phone,
-    address,
-    role: userRole
-  });
-
-  // Generate tokens
-  const accessToken = generateToken(user._id);
-  const refreshToken = generateRefreshToken(user._id);
-
-  // Save refresh token to user
-  user.refreshToken = refreshToken;
-  await user.save({ validateBeforeSave: false });
-
-  // Log action
-  await AuditLog.log({
-    user: user._id,
-    action: 'CREATE',
-    resource: 'User',
-    resourceId: user._id,
-    description: `New user registered: ${user.email}`,
-    ipAddress: req.ip
-  });
-
-  res.status(201).json({
-    success: true,
-    message: 'Registration successful',
-    data: {
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      },
-      accessToken,
-      refreshToken
-    }
-  });
-}));
-
-// @route   POST /api/auth/login/admin
-// @desc    Login admin user (Users collection)
-// @access  Public
-router.post('/login/admin', loginRateLimiter, asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  // STRICT: Check only Users collection
-  const user = await User.findOne({ email }).select('+password');
-
-  if (!user || user.role !== 'admin') {
-    // If not found OR not an admin role (strict separation)
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid admin credentials'
-    });
-  }
-
-  if (!user.isActive) {
-    return res.status(401).json({
-      success: false,
-      message: 'Account deactivated'
-    });
-  }
-
-  const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid admin credentials'
-    });
-  }
-
-  const accessToken = generateToken(user._id, 'admin');
-  const refreshToken = generateRefreshToken(user._id, 'admin');
-
-  // Create session (kills existing sessions - single device enforcement)
-  await Session.createSession({
-    userId: user._id,
-    userType: 'User',
-    accessToken,
-    refreshToken,
-    deviceInfo: getDeviceInfo(req),
-    expiresIn: 7 * 24 * 60 * 60 * 1000 // 7 days
-  });
-
-  user.refreshToken = refreshToken;
-  user.lastLogin = new Date();
-  await user.save({ validateBeforeSave: false });
-
-  await AuditLog.log({
-    user: user._id,
-    action: 'LOGIN',
-    resource: 'User',
-    resourceId: user._id,
-    description: `Admin logged in: ${user.email}`,
-    ipAddress: req.ip
-  });
-
-  res.json({
-    success: true,
-    data: {
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        type: 'admin'
-      },
-      accessToken,
-      refreshToken
-    }
-  });
-}));
-
-// @route   POST /api/auth/login/clinic
-// @desc    Login clinic admin (Clinics collection)
-// @access  Public
-router.post('/login/clinic', loginRateLimiter, asyncHandler(async (req, res) => {
-  const { email, password, username } = req.body; // Can login with email or username
-
-  console.log('[Clinic Login] Attempting login with:', { email, username, passwordLength: password?.length });
-
-  let clinic;
-
-  // Check if input looks like an email or username
-  const isEmail = email && email.includes('@');
-
-  if (isEmail) {
-    // Try to find by admin account email first, then contact email
-    clinic = await Clinic.findOne({
-      $or: [
-        { 'adminAccount.email': email },
-        { 'contact.email': email }
-      ]
-    }).select('+adminAccount.password +adminAccount.tempPassword');
-    console.log('[Clinic Login] Searched by email, found:', clinic ? clinic.name : 'NOT FOUND');
-  } else if (email) {
-    // Treat as username if no @ symbol
-    clinic = await Clinic.findOne({ 'adminAccount.username': email }).select('+adminAccount.password +adminAccount.tempPassword');
-    console.log('[Clinic Login] Searched by username (from email field), found:', clinic ? clinic.name : 'NOT FOUND');
-  } else if (username) {
-    clinic = await Clinic.findOne({ 'adminAccount.username': username }).select('+adminAccount.password +adminAccount.tempPassword');
-    console.log('[Clinic Login] Searched by username, found:', clinic ? clinic.name : 'NOT FOUND');
-  }
-
-  if (!clinic) {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid clinic credentials'
-    });
-  }
-
-  // Check verification status
-  if (clinic.verification?.clinicStatus !== 'active' || clinic.verification?.adminAccountStatus !== 'enabled') {
-    return res.status(401).json({
-      success: false,
-      message: 'Clinic account is not active. Please contact the administrator.'
-    });
-  }
-
-  // Check password - first try hashed password, then tempPassword for first login
-  let isMatch = false;
-  let isFirstLogin = false;
-
-  console.log('[Clinic Login] Checking password...');
-  console.log('[Clinic Login] Has hashed password:', !!clinic.adminAccount.password);
-  console.log('[Clinic Login] Has tempPassword:', !!clinic.adminAccount.tempPassword);
-
-  // First, try the hashed password if it exists
-  if (clinic.adminAccount.password) {
-    isMatch = await clinic.comparePassword(password);
-    console.log('[Clinic Login] Hashed password match:', isMatch);
-  }
-
-  // If no match and tempPassword exists, check against tempPassword
-  if (!isMatch && clinic.adminAccount.tempPassword) {
-    isMatch = (password === clinic.adminAccount.tempPassword);
-    isFirstLogin = isMatch; // If matched tempPassword, it's first login
-    console.log('[Clinic Login] TempPassword match:', isMatch);
-  }
-
-  if (!isMatch) {
-    console.log('[Clinic Login] Login FAILED - password mismatch');
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid clinic credentials'
-    });
-  }
-
-  console.log('[Clinic Login] Login SUCCESS for:', clinic.name);
-
-  // Reuse User Token generation (using clinic ID) - effectively acting as a 'user' in the system
-  // NOTE: protect middleware typically looks up User. We might need to adjust protect middleware or 
-  // ensure we handle 'clinic' type tokens. For now, sending ID.
-  const accessToken = generateToken(clinic._id, 'clinic');
-  const refreshToken = generateRefreshToken(clinic._id, 'clinic');
-
-  // Create session (kills existing sessions - single device enforcement)
-  await Session.createSession({
-    userId: clinic._id,
-    userType: 'Clinic',
-    accessToken,
-    refreshToken,
-    deviceInfo: getDeviceInfo(req),
-    expiresIn: 7 * 24 * 60 * 60 * 1000 // 7 days
-  });
-
-  await AuditLog.log({
-    user: clinic._id,  // Use clinic ID as user for audit logging
-    action: 'LOGIN',
-    resource: 'Clinic',
-    resourceId: clinic._id,
-    description: `Clinic admin logged in: ${clinic.name}`,
-    ipAddress: req.ip
-  });
-
-  res.json({
-    success: true,
-    data: {
-      user: { // Normalized to 'user' for frontend compatibility
-        id: clinic._id,
-        clinicId: clinic._id,  // Explicitly include clinic ID for routing
-        clinicCode: clinic.code,
-        name: clinic.name,
-        email: clinic.adminAccount?.email || clinic.contact?.email,
-        role: 'clinic_admin',
-        type: 'clinic',
-        logo: clinic.logo,
-        isFirstLogin: isFirstLogin
-      },
-      accessToken,
-      refreshToken
-    }
-  });
-}));
-
-// @route   POST /api/auth/login/patient
-// @desc    Login patient (Patient collection)
-// @access  Public
-router.post('/login/patient', loginRateLimiter, asyncHandler(async (req, res) => {
-  const { identifier, password } = req.body;
-
-  if (!identifier || !password) {
-    return res.status(400).json({
-      success: false,
-      message: 'Email or patient ID and password are required'
-    });
-  }
-
-  const normalizedIdentifier = String(identifier).trim();
-  const isEmailLogin = normalizedIdentifier.includes('@');
-
-  const patient = await Patient.findOne(
-    isEmailLogin
-      ? { email: normalizedIdentifier.toLowerCase() }
-      : { patientId: normalizedIdentifier.toUpperCase() }
-  ).select('+password');
-
-  if (!patient) {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid patient credentials'
-    });
-  }
-
-  if (!patient.isActive) {
-    return res.status(401).json({
-      success: false,
-      message: 'Patient account is inactive'
-    });
-  }
-
-  const isMatch = await patient.comparePassword(password);
-  if (!isMatch) {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid patient credentials'
-    });
-  }
-
-  const accessToken = generateToken(patient._id, 'patient');
-  const refreshToken = generateRefreshToken(patient._id, 'patient');
-
-  // Create session (kills existing sessions - single device enforcement)
-  await Session.createSession({
-    userId: patient._id,
-    userType: 'Patient',
-    accessToken,
-    refreshToken,
-    deviceInfo: getDeviceInfo(req),
-    expiresIn: 7 * 24 * 60 * 60 * 1000 // 7 days
-  });
-
-  await AuditLog.log({
-    action: 'LOGIN',
-    resource: 'Patient',
-    resourceId: patient._id,
-    description: `Patient logged in: ${patient.patientId}`,
-    ipAddress: req.ip
-  });
-
-  res.json({
-    success: true,
-    data: {
-      user: {
-        id: patient._id,
-        name: patient.name,
-        email: patient.email,
-        role: 'patient',
-        type: 'patient',
-        patientId: patient.patientId
-      },
-      accessToken,
-      refreshToken
-    }
-  });
-}));
-
-// @route   POST /api/auth/refresh-token
-// @desc    Refresh access token
-// @access  Public
-router.post('/refresh-token', asyncHandler(async (req, res) => {
-  const { refreshToken } = req.body;
-
-  if (!refreshToken) {
-    return res.status(401).json({
-      success: false,
-      message: 'Refresh token is required'
-    });
-  }
-
-  try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const userType = decoded.type || 'user';
-
-    let account = null;
-    let accountType = 'user';
-
-    // Check all three collections in order: User → Patient → Clinic
-    account = await User.findById(decoded.id).select('+refreshToken');
-    if (account) {
-      accountType = account.role || 'user';
-    }
-
-    if (!account) {
-      account = await Patient.findById(decoded.id);
-      if (account) {
-        accountType = 'patient';
-      }
-    }
-
-    if (!account) {
-      account = await Clinic.findById(decoded.id);
-      if (account) {
-        accountType = 'clinic';
-      }
-    }
-
-    if (!account) {
-      return res.status(401).json({
->>>>>>> 8a0117a (Rebase and fixes functionality)
         success: false,
         message: "Password must be at least 6 characters",
       });
     }
 
-<<<<<<< HEAD
     const existingPhone = await Patient.findOne({ phone });
     if (existingPhone) {
       return res.status(400).json({
@@ -557,44 +85,6 @@ router.post('/refresh-token', asyncHandler(async (req, res) => {
           success: false,
           message: "An account with this email already exists",
         });
-=======
-    // For User collection, verify the stored refresh token matches
-    if (accountType !== 'patient' && accountType !== 'clinic' && account.refreshToken !== refreshToken) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid refresh token'
-      });
-    }
-
-    // Verify session exists
-    const session = await Session.findOne({ refreshToken, isValid: true });
-    if (!session) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid refresh token - session not found'
-      });
-    }
-
-    const newAccessToken = generateToken(account._id, accountType);
-    const newRefreshToken = generateRefreshToken(account._id, accountType);
-
-    // Update refresh token in User collection if applicable
-    if (accountType !== 'patient' && accountType !== 'clinic' && account.refreshToken) {
-      account.refreshToken = newRefreshToken;
-      await account.save({ validateBeforeSave: false });
-    }
-
-    // Update session with new tokens
-    session.accessToken = newAccessToken;
-    session.refreshToken = newRefreshToken;
-    await session.save();
-
-    res.json({
-      success: true,
-      data: {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken
->>>>>>> 8a0117a (Rebase and fixes functionality)
       }
     }
 
@@ -687,9 +177,9 @@ router.post(
       });
     }
 
-    // Allow only specific roles
-    const allowedRoles = ["pharmacist", "user"];
-    const userRole = role && allowedRoles.includes(role) ? role : "user";
+  // Allow only specific roles
+  const allowedRoles = ['admin', 'pharmacist', 'user'];
+  const userRole = (role && allowedRoles.includes(role)) ? role : 'user';
 
     // Create user
     const user = await User.create({
@@ -1067,68 +557,22 @@ router.post(
       });
     }
 
-    try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      const userId = decoded.id;
-      let user = await User.findById(userId).select("+refreshToken");
-      let userType = "user";
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.id).select('+refreshToken');
 
-      if (!user) {
-        const patient = await Patient.findById(userId);
-        if (patient) {
-          user = patient;
-          userType = "patient";
-        }
-      }
-
-      if (!user) {
-        const clinic = await Clinic.findById(userId);
-        if (clinic) {
-          user = clinic;
-          userType = "clinic";
-        }
-      }
-
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid refresh token",
-        });
-      }
-
-      const activeSession = await Session.findOne({
-        userId: user._id,
-        refreshTokenHash: Session.hashToken(refreshToken),
-        isActive: true,
-        expiresAt: { $gt: new Date() },
+    if (!user || user.refreshToken !== refreshToken) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid refresh token'
       });
+    }
 
-      if (!activeSession) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid refresh token",
-        });
-      }
+    const newAccessToken = generateToken(user._id);
+    const newRefreshToken = generateRefreshToken(user._id);
 
-      if (userType === "user" && user.refreshToken !== refreshToken) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid refresh token",
-        });
-      }
-
-      const newAccessToken = generateToken(user._id, userType);
-      const newRefreshToken = generateRefreshToken(user._id, userType);
-
-      activeSession.accessTokenHash = Session.hashToken(newAccessToken);
-      activeSession.refreshTokenHash = Session.hashToken(newRefreshToken);
-      activeSession.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      await activeSession.save();
-
-      if (userType === "user") {
-        user.refreshToken = newRefreshToken;
-        await user.save({ validateBeforeSave: false });
-      }
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
 
       res.json({
         success: true,
@@ -1297,76 +741,10 @@ router.put(
       });
     }
 
-    let userDoc;
-
-    if (req.user?.type === "patient") {
-      userDoc = await Patient.findById(req.user._id).select("+password");
-    } else {
-      userDoc = await User.findById(req.user._id).select("+password");
-    }
-
-    if (!userDoc) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    const isMatch = await userDoc.comparePassword(currentPassword);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Current password is incorrect",
-      });
-    }
-
-    // Update password
-    userDoc.password = newPassword;
-    userDoc.passwordChangedAt = new Date();
-    await userDoc.save();
-
-    // Log action
-    await AuditLog.log({
-      user: req.user._id,
-      action: "PASSWORD_CHANGE",
-      resource: req.user?.type === "patient" ? "Patient" : "User",
-      resourceId: req.user._id,
-      description: `Password changed for user: ${req.user.email || req.user.patientId}`,
-      ipAddress: req.ip,
-    });
-
-<<<<<<< HEAD
-    res.json({
-      success: true,
-      message: "Password changed successfully",
-    });
-  }),
-);
-=======
-  // Query the correct collection based on user type
-  let account;
-  let resourceType = 'User';
-  const userType = req.user.type;
-
-  if (userType === 'patient') {
-    account = await Patient.findById(req.user._id).select('+password');
-    resourceType = 'Patient';
-  } else if (userType === 'clinic') {
-    account = await Clinic.findById(req.user._id).select('+adminAccount.password');
-    resourceType = 'Clinic';
-  } else {
-    account = await User.findById(req.user._id).select('+password');
-  }
-
-  if (!account) {
-    return res.status(404).json({
-      success: false,
-      message: 'Account not found'
-    });
-  }
+  const user = await User.findById(req.user._id).select('+password');
 
   // Verify current password
-  const isMatch = await account.comparePassword(currentPassword);
+  const isMatch = await user.comparePassword(currentPassword);
   if (!isMatch) {
     return res.status(401).json({
       success: false,
@@ -1375,48 +753,34 @@ router.put(
   }
 
   // Update password
-  if (userType === 'clinic') {
-    account.adminAccount.password = newPassword;
-  } else {
-    account.password = newPassword;
-    if (account.passwordChangedAt !== undefined) {
-      account.passwordChangedAt = new Date();
-    }
-  }
-  await account.save();
+  user.password = newPassword;
+  user.passwordChangedAt = new Date();
+  await user.save();
 
   // Log action
   await AuditLog.log({
     user: req.user._id,
     action: 'PASSWORD_CHANGE',
-    resource: resourceType,
+    resource: 'User',
     resourceId: req.user._id,
-    description: `Password changed for ${resourceType.toLowerCase()}: ${req.user.email || req.user.name}`,
+    description: `Password changed for user: ${req.user.email}`,
     ipAddress: req.ip
   });
 
-  res.json({
-    success: true,
-    message: 'Password changed successfully'
-  });
-}));
->>>>>>> 8a0117a (Rebase and fixes functionality)
+    res.json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  }),
+);
 
 // ─── Forgot Password with Gmail OTP ───
 
 // @route   POST /api/auth/forgot-password
 // @desc    Send OTP to patient's email for password reset
 // @access  Public
-<<<<<<< HEAD
-router.post(
-  "/forgot-password",
-  loginRateLimiter,
-  asyncHandler(async (req, res) => {
-    const { identifier } = req.body;
-=======
-router.post('/forgot-password', strictOtpLimiter, asyncHandler(async (req, res) => {
+router.post('/forgot-password', loginRateLimiter, asyncHandler(async (req, res) => {
   const { identifier } = req.body;
->>>>>>> 8a0117a (Rebase and fixes functionality)
 
     if (!identifier) {
       return res.status(400).json({
@@ -1522,16 +886,8 @@ router.post('/forgot-password', strictOtpLimiter, asyncHandler(async (req, res) 
 // @route   POST /api/auth/verify-otp
 // @desc    Verify the OTP code
 // @access  Public
-<<<<<<< HEAD
-router.post(
-  "/verify-otp",
-  loginRateLimiter,
-  asyncHandler(async (req, res) => {
-    const { identifier, otp } = req.body;
-=======
-router.post('/verify-otp', strictOtpLimiter, asyncHandler(async (req, res) => {
+router.post('/verify-otp', loginRateLimiter, asyncHandler(async (req, res) => {
   const { identifier, otp } = req.body;
->>>>>>> 8a0117a (Rebase and fixes functionality)
 
     if (!identifier || !otp) {
       return res.status(400).json({
