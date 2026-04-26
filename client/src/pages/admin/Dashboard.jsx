@@ -5,6 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useAuth } from '../../context/AuthContext';
 import { adminAPI } from '../../services/api';
 import TopNav from '../../components/common/TopNav';
+import Sidebar from '../../components/common/Sidebar';
 import { useBackButtonProtection, useNoCacheHeaders, useSessionTimeout } from '../../hooks/useSecurityHooks';
 import './Dashboard.css';
 
@@ -73,10 +74,11 @@ const AdminDashboard = () => {
 
   if (error) {
     return (
-      <div className="dash">
-        <TopNav />
-        <main className="dash-main">
-          <div className="error-state">
+      <div className="dashboard-layout">
+        <Sidebar />
+        <main className="dashboard-main">
+          <TopNav />
+          <div className="error-state" style={{ padding: '2rem', textAlign: 'center' }}>
             <FiAlertTriangle size={48} />
             <h2>Failed to Load Dashboard</h2>
             <p>{error}</p>
@@ -136,10 +138,10 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="dash">
-      <TopNav />
-
-      <main className="dash-main">
+    <div className="dashboard-layout">
+      <Sidebar />
+      <main className="dashboard-main">
+        <TopNav />
         <div className="dash-header">
           <h1 className="welcome">Welcome, {user?.name || 'Super Admin'}!</h1>
           <button onClick={handleRefresh} className={`refresh-btn ${refreshing ? 'spinning' : ''}`}>

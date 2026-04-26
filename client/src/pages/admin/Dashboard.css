@@ -1,21 +1,6 @@
-/* Admin Dashboard - Black & Orange Theme */
-
-/* Scoped Reset */
-.dash,
-.dash * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-.dash {
-    min-height: 100vh;
-    background: var(--bg-primary) !important;
-    background-image:
-        radial-gradient(ellipse at top right, var(--bg-tertiary) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, transparent 0%, transparent 50%) !important;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    color: var(--text-primary) !important;
+/* Admin Dashboard Styles */
+.dashboard-main {
+    transition: all 0.3s ease;
 }
 
 /* Reset child elements */
@@ -25,7 +10,7 @@
 .dash select {
     background-color: transparent;
     color: inherit;
-    border-color: var(--border-light);
+    border-color: rgba(249, 115, 22, 0.15);
 }
 
 /* Loader */
@@ -164,18 +149,22 @@
 }
 
 .dash .stat-box {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%) !important;
-    border: 1px solid var(--border-light) !important;
+    background: linear-gradient(135deg, #0a0a0a 0%, #0f0f0f 100%) !important;
+    border: 1px solid rgba(249, 115, 22, 0.2) !important;
     border-radius: 8px !important;
     padding: 14px 16px !important;
-    color: var(--text-primary) !important;
-    box-shadow: 0 0 20px transparent !important;
+    color: #fff !important;
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.05) !important;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
 }
 
 .dash .stat-box:hover {
-    border-color: var(--primary-500) !important;
-    box-shadow: 0 0 30px var(--border-light) !important;
+    border-color: rgba(249, 115, 22, 0.4) !important;
+    box-shadow: 0 0 30px rgba(249, 115, 22, 0.1) !important;
 }
 
 .stat-top {
@@ -219,10 +208,11 @@
 
 /* Box */
 .box {
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-secondary) 100%);
-    border: 1px solid var(--border-light);
+    background: linear-gradient(135deg, #050505 0%, #0a0a0a 100%);
+    border: 1px solid rgba(249, 115, 22, 0.12);
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
 .box-head {
@@ -230,7 +220,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 14px;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.1);
 }
 
 .box-title {
@@ -322,7 +312,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 10px;
-    background: var(--bg-tertiary);
+    background: rgba(249, 115, 22, 0.03);
     border-radius: 6px;
     font-size: 11px;
     border: 1px solid transparent;
@@ -459,7 +449,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 10px;
-    background: var(--bg-tertiary);
+    background: rgba(249, 115, 22, 0.03);
     border-radius: 6px;
     font-size: 11px;
     border: 1px solid transparent;
@@ -718,13 +708,13 @@ a.stat-box:hover .stat-arrow {
     align-items: center;
     gap: 10px;
     padding: 10px 12px;
-    background: var(--bg-tertiary);
+    background: rgba(249, 115, 22, 0.03);
     border-radius: 8px;
     transition: all 0.15s;
 }
 
 .alert-item:hover {
-    background: var(--bg-tertiary);
+    background: rgba(249, 115, 22, 0.08);
 }
 
 .alert-dot {
@@ -802,7 +792,7 @@ a.stat-box:hover .stat-arrow {
     flex-direction: column;
     gap: 4px;
     padding: 12px;
-    background: var(--bg-tertiary);
+    background: rgba(249, 115, 22, 0.03);
     border-radius: 8px;
     border: 1px solid var(--border-light);
 }

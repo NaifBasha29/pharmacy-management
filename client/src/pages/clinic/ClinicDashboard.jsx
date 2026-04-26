@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { medicinesAPI, ordersAPI } from "../../services/api";
 import {
+<<<<<<< HEAD
   FaUsers,
   FaPills,
   FaClipboardList,
@@ -15,6 +16,13 @@ import {
 } from "react-icons/fa";
 import ThemeToggle from "../../components/common/ThemeToggle";
 import "./ClinicDashboard.css";
+=======
+    FaUsers, FaPills, FaClipboardList, FaChartLine,
+    FaCog, FaSignOutAlt, FaStore, FaUserMd
+} from 'react-icons/fa';
+
+import './ClinicDashboard.css';
+>>>>>>> 8a0117a (Rebase and fixes functionality)
 
 const ClinicDashboard = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -44,6 +52,7 @@ const ClinicDashboard = () => {
   const [loadingStats, setLoadingStats] = useState(false);
   const location = useLocation();
 
+<<<<<<< HEAD
   const formatCurrency = (value) => {
     if (value === null || value === undefined) return "--";
     if (typeof value !== "number") return value;
@@ -56,6 +65,16 @@ const ClinicDashboard = () => {
       return `₹${value.toFixed(2)}`;
     }
   };
+=======
+                <div className="sidebar-footer">
+
+                    <button onClick={handleLogout} className="logout-btn">
+                        <FaSignOutAlt />
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </aside>
+>>>>>>> 8a0117a (Rebase and fixes functionality)
 
   useEffect(() => {
     // Fetch summary stats for the clinic dashboard

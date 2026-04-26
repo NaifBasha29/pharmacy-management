@@ -101,8 +101,13 @@ const Orders = () => {
             background: 'var(--bg-secondary)',
             borderRadius: '1rem',
             marginBottom: '1rem',
+<<<<<<< HEAD
             boxShadow: 'var(--shadow-sm)',
             border: '1px solid var(--border-light)',
+=======
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            border: '1px solid #e5e7eb',
+>>>>>>> 8a0117a (Rebase and fixes functionality)
             overflow: 'hidden'
         },
         orderHeader: {
@@ -144,12 +149,21 @@ const Orders = () => {
         },
         badge: (status) => {
             const colors = {
+<<<<<<< HEAD
                 pending: { bg: 'var(--status-warning-bg)', color: 'var(--status-warning)' },
                 confirmed: { bg: 'var(--status-primary-bg)', color: 'var(--status-primary)' },
                 processing: { bg: 'var(--primary-50)', color: 'var(--primary-600)' },
                 dispatched: { bg: 'var(--accent-purple-50)', color: 'var(--accent-purple-500)' },
                 delivered: { bg: 'var(--status-success-bg)', color: 'var(--status-success)' },
                 cancelled: { bg: 'var(--status-error-bg)', color: 'var(--status-error)' }
+=======
+                pending: { bg: '#f59e0b20', color: '#d97706' },
+                confirmed: { bg: '#dbeafe', color: '#1d4ed8' },
+                processing: { bg: '#e0e7ff', color: '#4f46e5' },
+                dispatched: { bg: '#fae8ff', color: '#a855f7' },
+                delivered: { bg: '#dcfce7', color: '#16a34a' },
+                cancelled: { bg: '#fee2e2', color: '#dc2626' }
+>>>>>>> 8a0117a (Rebase and fixes functionality)
             };
             const c = colors[status] || { bg: 'var(--bg-tertiary)', color: 'var(--text-secondary)' };
             return {

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, TouchableOpacity,
-  TextInput, StatusBar, Linking, Alert, ActivityIndicator,
+  TextInput, Linking, Alert, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons } from '@expo/vector-icons';
-import Toast from 'react-native-toast-message';
+import { MaterialCommunityIcons as Icon } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
+import { supportAPI } from '../services/mobileApi';
 
 const CONTACT_BUTTONS = [
-  { label: 'Call Us',    icon: 'call',   action: 'call',  bg: '#7c3aed' },
-  { label: 'Email',      icon: 'mail',   action: 'email', bg: '#7c3aed' },
-  { label: 'Live Chat',  icon: 'chat',   action: 'chat',  bg: '#7c3aed' },
+  { label: 'Call Us',    icon: 'phone',         action: 'call',  color: '#f97316' },
+  { label: 'Email',     icon: 'email-outline',  action: 'email', color: '#3b82f6' },
+  { label: 'Live Chat', icon: 'chat-outline',   action: 'chat',  color: '#8b5cf6' },
 ];
 
 const FAQS = [
@@ -43,6 +44,7 @@ const FAQS = [
 const TICKET_CATEGORIES = ['Order Issue', 'Prescription Refill', 'Billing Question', 'Technical Support', 'General Inquiry'];
 
 export default function SupportScreen({ navigation }) {
+  const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState('FAQs');
   const [openFaqIdx, setOpenFaqIdx] = useState(null);
   const [ticketForm, setTicketForm] = useState({ subject: '', category: TICKET_CATEGORIES[0], message: '' });
@@ -57,94 +59,106 @@ export default function SupportScreen({ navigation }) {
 
   const submitTicket = async () => {
     if (!ticketForm.subject || !ticketForm.message) {
-      Toast.show({ type: 'error', text1: 'Please fill in subject and message' }); return;
+      Alert.alert('Error', 'Please fill in subject and message'); return;
     }
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setSubmitting(false);
-    Toast.show({ type: 'success', text1: 'Ticket submitted!', text2: "We'll get back to you within 24 hours." });
-    setTicketForm({ subject: '', category: TICKET_CATEGORIES[0], message: '' });
+    try {
+      await supportAPI.create({
+        subject: ticketForm.subject,
+        category: ticketForm.category,
+        message: ticketForm.message,
+      });
+      Alert.alert('✅ Success', "Ticket submitted! We'll get back to you within 24 hours.");
+      setTicketForm({ subject: '', category: TICKET_CATEGORIES[0], message: '' });
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Failed to submit ticket');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar barStyle="light-content" backgroundColor="#23170f" />
-
-      {/* ── Header ── */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.goBack()}>
-          <MaterialIcons name="arrow-back" size={22} color="#fff" />
+    <SafeAreaView style={[s.root, { backgroundColor: theme.background }]} edges={['top']}>
+      {/* Header */}
+      <View style={[s.header, { borderBottomColor: theme.border }]}>
+        <TouchableOpacity
+          style={[s.backBtn, { backgroundColor: theme.card, borderColor: theme.border }]}
+          onPress={() => navigation.goBack()}
+        >
+          <Icon name="arrow-left" size={20} color={theme.textPrimary} />
         </TouchableOpacity>
-        <Text style={styles.pageTitle}>Help & Support</Text>
-        <TouchableOpacity style={styles.headerBtn}>
-          <MaterialIcons name="notifications" size={22} color="#fff" />
-          <View style={styles.notifDot} />
-        </TouchableOpacity>
+        <Text style={[s.headerTitle, { color: theme.textPrimary }]}>Help & Support</Text>
+        <View style={{ width: 40 }} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
 
-        {/* ── Contact Cards ── */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Contact Us</Text>
-          <View style={styles.contactRow}>
+        {/* Contact Cards */}
+        <View style={s.section}>
+          <Text style={[s.sectionTitle, { color: theme.textPrimary }]}>Contact Us</Text>
+          <View style={s.contactRow}>
             {CONTACT_BUTTONS.map(c => (
-              <TouchableOpacity key={c.label} style={styles.contactCard} onPress={() => handleContact(c.action)}>
-                <View style={[styles.contactIcon, { backgroundColor: c.bg }]}>
-                  <MaterialIcons name={c.icon} size={24} color="#fff" />
+              <TouchableOpacity
+                key={c.label}
+                style={[s.contactCard, { backgroundColor: theme.card, borderColor: theme.border }]}
+                onPress={() => handleContact(c.action)}
+              >
+                <View style={[s.contactIcon, { backgroundColor: c.color + '20' }]}>
+                  <Icon name={c.icon} size={24} color={c.color} />
                 </View>
-                <Text style={styles.contactLabel}>{c.label}</Text>
+                <Text style={[s.contactLabel, { color: theme.textPrimary }]}>{c.label}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          {/* Response time banner */}
-          <View style={styles.responseBanner}>
-            <MaterialIcons name="schedule" size={20} color="#93c5fd" />
+          {/* Response time */}
+          <View style={[s.responseBanner, { backgroundColor: theme.infoMuted, borderColor: theme.info + '30' }]}>
+            <Icon name="clock-outline" size={20} color={theme.info} />
             <View>
-              <Text style={styles.responseBannerLabel}>Current Response Time</Text>
-              <Text style={styles.responseBannerValue}>Less than 5 minutes</Text>
+              <Text style={[s.responseLabel, { color: theme.textSecondary }]}>Current Response Time</Text>
+              <Text style={[s.responseValue, { color: theme.textPrimary }]}>Less than 5 minutes</Text>
             </View>
           </View>
         </View>
 
-        {/* ── Tabs ── */}
-        <View style={styles.tabsBar}>
-          {['FAQs', 'Submit Ticket'].map(t => (
-            <TouchableOpacity key={t} style={[styles.tabBtn, activeTab === t && styles.tabBtnActive]} onPress={() => setActiveTab(t)}>
-              <Text style={[styles.tabBtnText, activeTab === t && styles.tabBtnTextActive]}>{t}</Text>
-            </TouchableOpacity>
-          ))}
+        {/* Tabs */}
+        <View style={[s.tabsBar, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          {['FAQs', 'Submit Ticket'].map(t => {
+            const active = activeTab === t;
+            return (
+              <TouchableOpacity
+                key={t}
+                style={[s.tabBtn, active && { borderBottomColor: theme.primary }]}
+                onPress={() => setActiveTab(t)}
+              >
+                <Text style={[s.tabBtnText, { color: active ? theme.primary : theme.textSecondary }, active && { fontWeight: '800' }]}>{t}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        {/* ── FAQs ── */}
+        {/* FAQs */}
         {activeTab === 'FAQs' && (
-          <View style={styles.section}>
-            {/* Search bar */}
-            <View style={styles.faqSearchWrap}>
-              <MaterialIcons name="search" size={18} color="#cca88e" />
-              <TextInput style={styles.faqSearchInput} placeholder="Search for help..." placeholderTextColor="#6b7280" />
-            </View>
-
-            <Text style={styles.subsectionLabel}>Common Questions</Text>
-
+          <View style={s.section}>
+            <Text style={[s.subsectionLabel, { color: theme.textSecondary }]}>Common Questions</Text>
             {FAQS.map((faq, idx) => (
               <TouchableOpacity
                 key={idx}
-                style={[styles.faqCard, openFaqIdx === idx && styles.faqCardOpen]}
+                style={[s.faqCard, { backgroundColor: theme.card, borderColor: openFaqIdx === idx ? theme.primary + '40' : theme.border }]}
                 onPress={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}
+                activeOpacity={0.8}
               >
-                <View style={styles.faqHeader}>
-                  <Text style={styles.faqQuestion}>{faq.q}</Text>
-                  <MaterialIcons
-                    name={openFaqIdx === idx ? 'expand-less' : 'chevron-right'}
+                <View style={s.faqHeader}>
+                  <Text style={[s.faqQuestion, { color: theme.textPrimary }]}>{faq.q}</Text>
+                  <Icon
+                    name={openFaqIdx === idx ? 'chevron-up' : 'chevron-right'}
                     size={20}
-                    color={openFaqIdx === idx ? '#f97415' : '#cca88e'}
+                    color={openFaqIdx === idx ? theme.primary : theme.textSecondary}
                   />
                 </View>
                 {openFaqIdx === idx && (
-                  <View style={styles.faqAnswer}>
-                    <Text style={styles.faqAnswerText}>{faq.a}</Text>
+                  <View style={[s.faqAnswer, { borderTopColor: theme.border }]}>
+                    <Text style={[s.faqAnswerText, { color: theme.textSecondary }]}>{faq.a}</Text>
                   </View>
                 )}
               </TouchableOpacity>
@@ -152,45 +166,52 @@ export default function SupportScreen({ navigation }) {
           </View>
         )}
 
-        {/* ── Ticket Form ── */}
+        {/* Ticket Form */}
         {activeTab === 'Submit Ticket' && (
-          <View style={styles.section}>
-            <View style={styles.fieldWrap}>
-              <Text style={styles.fieldLabel}>Subject</Text>
+          <View style={s.section}>
+            <View style={s.fieldWrap}>
+              <Text style={[s.fieldLabel, { color: theme.textSecondary }]}>Subject</Text>
               <TextInput
-                style={styles.input}
+                style={[s.input, { backgroundColor: theme.inputBackground, borderColor: theme.border, color: theme.textPrimary }]}
                 placeholder="Brief summary of your issue"
-                placeholderTextColor="#6b7280"
+                placeholderTextColor={theme.placeholder}
                 value={ticketForm.subject}
                 onChangeText={v => setTicketForm(f => ({ ...f, subject: v }))}
               />
             </View>
 
-            <View style={styles.fieldWrap}>
-              <Text style={styles.fieldLabel}>Category</Text>
-              <TouchableOpacity style={styles.input} onPress={() => setCategoryPickerOpen(o => !o)}>
+            <View style={s.fieldWrap}>
+              <Text style={[s.fieldLabel, { color: theme.textSecondary }]}>Category</Text>
+              <TouchableOpacity
+                style={[s.input, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}
+                onPress={() => setCategoryPickerOpen(o => !o)}
+              >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={{ color: '#fff', fontSize: 15 }}>{ticketForm.category}</Text>
-                  <MaterialIcons name="expand-more" size={20} color="#9ca3af" />
+                  <Text style={{ color: theme.textPrimary, fontSize: 15 }}>{ticketForm.category}</Text>
+                  <Icon name="chevron-down" size={20} color={theme.textSecondary} />
                 </View>
               </TouchableOpacity>
               {categoryPickerOpen && (
-                <View style={styles.picker}>
+                <View style={[s.picker, { backgroundColor: theme.surface, borderColor: theme.border }]}>
                   {TICKET_CATEGORIES.map(c => (
-                    <TouchableOpacity key={c} style={styles.pickerItem} onPress={() => { setTicketForm(f => ({ ...f, category: c })); setCategoryPickerOpen(false); }}>
-                      <Text style={[styles.pickerItemText, ticketForm.category === c && { color: '#f97415' }]}>{c}</Text>
+                    <TouchableOpacity
+                      key={c}
+                      style={[s.pickerItem, { borderBottomColor: theme.border }]}
+                      onPress={() => { setTicketForm(f => ({ ...f, category: c })); setCategoryPickerOpen(false); }}
+                    >
+                      <Text style={[s.pickerItemText, { color: ticketForm.category === c ? theme.primary : theme.textPrimary }]}>{c}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
               )}
             </View>
 
-            <View style={styles.fieldWrap}>
-              <Text style={styles.fieldLabel}>Message</Text>
+            <View style={s.fieldWrap}>
+              <Text style={[s.fieldLabel, { color: theme.textSecondary }]}>Message</Text>
               <TextInput
-                style={[styles.input, styles.textarea]}
+                style={[s.input, s.textarea, { backgroundColor: theme.inputBackground, borderColor: theme.border, color: theme.textPrimary }]}
                 placeholder="Please describe your issue in detail..."
-                placeholderTextColor="#6b7280"
+                placeholderTextColor={theme.placeholder}
                 value={ticketForm.message}
                 onChangeText={v => setTicketForm(f => ({ ...f, message: v }))}
                 multiline
@@ -199,15 +220,20 @@ export default function SupportScreen({ navigation }) {
               />
             </View>
 
-            <TouchableOpacity style={[styles.submitBtn, submitting && { opacity: 0.7 }]} onPress={submitTicket} disabled={submitting}>
-              {submitting
-                ? <ActivityIndicator color="#fff" />
-                : <>
-                    <Text style={styles.submitBtnText}>Submit Ticket</Text>
-                    <MaterialIcons name="send" size={16} color="#fff" />
-                  </>}
+            <TouchableOpacity
+              style={[s.submitBtn, { backgroundColor: theme.primary }, submitting && { opacity: 0.7 }]}
+              onPress={submitTicket}
+              disabled={submitting}
+              activeOpacity={0.85}
+            >
+              {submitting ? <ActivityIndicator color="#fff" /> : (
+                <>
+                  <Text style={s.submitBtnText}>Submit Ticket</Text>
+                  <Icon name="send" size={16} color="#fff" />
+                </>
+              )}
             </TouchableOpacity>
-            <Text style={styles.responseNote}>We typically respond within 24 hours.</Text>
+            <Text style={[s.responseNote, { color: theme.textSecondary }]}>We typically respond within 24 hours.</Text>
           </View>
         )}
       </ScrollView>
@@ -215,55 +241,51 @@ export default function SupportScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#23170f' },
-
-  // Header
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#4a3221' },
-  headerBtn: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', position: 'relative' },
-  pageTitle: { flex: 1, color: '#fff', fontWeight: '800', fontSize: 17, textAlign: 'center' },
-  notifDot: { position: 'absolute', top: 6, right: 6, width: 8, height: 8, borderRadius: 4, backgroundColor: '#f97415', borderWidth: 1, borderColor: '#23170f' },
-
-  // Sections
+const s = StyleSheet.create({
+  root: { flex: 1 },
+  header: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1,
+  },
+  backBtn: { width: 40, height: 40, borderRadius: 12, justifyContent: 'center', alignItems: 'center', borderWidth: 1 },
+  headerTitle: { fontSize: 18, fontWeight: '700', lineHeight: 24 },
   section: { padding: 20, paddingBottom: 0 },
-  sectionTitle: { color: '#fff', fontWeight: '800', fontSize: 20, marginBottom: 14 },
-
-  // Contact
+  sectionTitle: { fontWeight: '800', fontSize: 20, marginBottom: 14 },
   contactRow: { flexDirection: 'row', gap: 12, marginBottom: 14 },
-  contactCard: { flex: 1, backgroundColor: '#352418', borderWidth: 1, borderColor: '#4a3221', borderRadius: 16, padding: 16, alignItems: 'center', gap: 10 },
+  contactCard: {
+    flex: 1, borderWidth: 1, borderRadius: 16, padding: 16,
+    alignItems: 'center', gap: 10,
+  },
   contactIcon: { width: 52, height: 52, borderRadius: 26, justifyContent: 'center', alignItems: 'center' },
-  contactLabel: { color: '#fff', fontWeight: '700', fontSize: 13 },
-  responseBanner: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#1e3a5f40', borderWidth: 1, borderColor: '#3b82f620', borderRadius: 12, padding: 14, marginBottom: 20 },
-  responseBannerLabel: { color: '#bfdbfe', fontSize: 11, marginBottom: 2 },
-  responseBannerValue: { color: '#fff', fontWeight: '800', fontSize: 14 },
-
-  // Tabs
-  tabsBar: { flexDirection: 'row', backgroundColor: '#23170f', borderBottomWidth: 1, borderBottomColor: '#4a3221', paddingHorizontal: 20 },
-  tabBtn: { flex: 1, paddingVertical: 14, alignItems: 'center', borderBottomWidth: 2, borderBottomColor: 'transparent' },
-  tabBtnActive: { borderBottomColor: '#f97415' },
-  tabBtnText: { color: '#cca88e', fontWeight: '600', fontSize: 14 },
-  tabBtnTextActive: { color: '#fff', fontWeight: '800' },
-
-  // FAQ
-  faqSearchWrap: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#352418', borderWidth: 1, borderColor: '#4a3221', borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, marginBottom: 16 },
-  faqSearchInput: { flex: 1, color: '#fff', fontSize: 13 },
-  subsectionLabel: { color: '#cca88e', fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10 },
-  faqCard: { backgroundColor: '#352418', borderWidth: 1, borderColor: '#4a3221', borderRadius: 12, marginBottom: 10, overflow: 'hidden' },
-  faqCardOpen: { borderColor: '#f9741540' },
+  contactLabel: { fontWeight: '700', fontSize: 13 },
+  responseBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    borderWidth: 1, borderRadius: 12, padding: 14, marginBottom: 20,
+  },
+  responseLabel: { fontSize: 11, marginBottom: 2 },
+  responseValue: { fontWeight: '800', fontSize: 14 },
+  tabsBar: {
+    flexDirection: 'row', borderBottomWidth: 1, paddingHorizontal: 20,
+  },
+  tabBtn: { flex: 1, paddingVertical: 14, alignItems: 'center', borderBottomWidth: 2.5, borderBottomColor: 'transparent' },
+  tabBtnText: { fontWeight: '600', fontSize: 14 },
+  subsectionLabel: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10 },
+  faqCard: { borderWidth: 1, borderRadius: 12, marginBottom: 10, overflow: 'hidden' },
   faqHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 },
-  faqQuestion: { flex: 1, color: '#fff', fontWeight: '600', fontSize: 14, marginRight: 8 },
-  faqAnswer: { borderTopWidth: 1, borderTopColor: '#4a322150', padding: 16, paddingTop: 12 },
-  faqAnswerText: { color: '#cca88e', fontSize: 13, lineHeight: 20 },
-
-  // Ticket form
+  faqQuestion: { flex: 1, fontWeight: '600', fontSize: 14, marginRight: 8 },
+  faqAnswer: { borderTopWidth: 1, padding: 16, paddingTop: 12 },
+  faqAnswerText: { fontSize: 13, lineHeight: 20 },
   fieldWrap: { marginBottom: 16 },
-  fieldLabel: { color: '#cca88e', fontSize: 12, fontWeight: '600', marginBottom: 6 },
-  input: { backgroundColor: '#352418', borderWidth: 1, borderColor: '#4a3221', borderRadius: 12, color: '#fff', paddingHorizontal: 14, paddingVertical: 12, fontSize: 15 },
+  fieldLabel: { fontSize: 12, fontWeight: '600', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.3 },
+  input: { borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 12, fontSize: 15 },
   textarea: { height: 120, textAlignVertical: 'top' },
-  picker: { backgroundColor: '#2c1d14', borderWidth: 1, borderColor: '#4a3221', borderRadius: 10, marginTop: 4, overflow: 'hidden' },
-  pickerItem: { paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#4a322150' },
-  pickerItemText: { color: '#e5e5e5', fontSize: 14 },
-  submitBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#f97415', paddingVertical: 15, borderRadius: 14, marginTop: 4, elevation: 5, shadowColor: '#f97415', shadowOpacity: 0.3, shadowRadius: 8 },
+  picker: { borderWidth: 1, borderRadius: 10, marginTop: 4, overflow: 'hidden' },
+  pickerItem: { paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1 },
+  pickerItemText: { fontSize: 14 },
+  submitBtn: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    paddingVertical: 15, borderRadius: 14, marginTop: 4,
+  },
   submitBtnText: { color: '#fff', fontWeight: '800', fontSize: 15 },
-  responseNote: { color: '#cca88e', fontSize: 12, textAlign: 'center', marginTop: 10, marginBottom: 20 },
+  responseNote: { fontSize: 12, textAlign: 'center', marginTop: 10, marginBottom: 20 },
 });

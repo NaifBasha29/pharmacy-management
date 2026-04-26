@@ -113,8 +113,13 @@ export default function CheckoutScreen({ navigation }) {
     }
 
     Alert.alert(
+<<<<<<< HEAD
       "Confirm Order",
       `Total: ₹${total.toLocaleString("en-IN")}\nPayment: ${PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label}`,
+=======
+      'Confirm Order',
+      `Total: ₹${total.toLocaleString('en-IN')}\nPayment: ${PAYMENT_METHODS.find(p => p.id === paymentMethod)?.label}`,
+>>>>>>> 8a0117a (Rebase and fixes functionality)
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -200,17 +205,22 @@ export default function CheckoutScreen({ navigation }) {
                 {item.name}
               </Text>
               <Text style={styles.itemQty}>x{item.quantity}</Text>
+<<<<<<< HEAD
               <Text style={styles.itemPrice}>
                 ₹
                 {((item.price || 0) * (item.quantity || 0)).toLocaleString(
                   "en-IN",
                 )}
               </Text>
+=======
+              <Text style={styles.itemPrice}>₹{((item.price || 0) * (item.quantity || 0)).toLocaleString('en-IN')}</Text>
+>>>>>>> 8a0117a (Rebase and fixes functionality)
             </View>
           ))}
           <View style={styles.divider} />
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Subtotal</Text>
+<<<<<<< HEAD
             <Text style={styles.totalValue}>
               ₹{cartTotal.toLocaleString("en-IN")}
             </Text>
@@ -230,14 +240,30 @@ export default function CheckoutScreen({ navigation }) {
               ]}
             >
               {shipping === 0 ? "FREE" : `₹${shipping.toLocaleString("en-IN")}`}
+=======
+            <Text style={styles.totalValue}>₹{(cartTotal || 0).toLocaleString('en-IN')}</Text>
+          </View>
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>Tax (18% GST)</Text>
+            <Text style={styles.totalValue}>₹{tax.toLocaleString('en-IN')}</Text>
+          </View>
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>Shipping</Text>
+            <Text style={[styles.totalValue, shipping === 0 && { color: theme.success }]}>
+              {shipping === 0 ? 'FREE' : `₹${shipping.toLocaleString('en-IN')}`}
+>>>>>>> 8a0117a (Rebase and fixes functionality)
             </Text>
           </View>
           <View style={[styles.divider, { marginTop: 8 }]} />
           <View style={styles.totalRow}>
             <Text style={styles.grandTotal}>Total</Text>
+<<<<<<< HEAD
             <Text style={styles.grandTotalValue}>
               ₹{total.toLocaleString("en-IN")}
             </Text>
+=======
+            <Text style={styles.grandTotalValue}>₹{total.toLocaleString('en-IN')}</Text>
+>>>>>>> 8a0117a (Rebase and fixes functionality)
           </View>
         </View>
 
@@ -439,9 +465,13 @@ export default function CheckoutScreen({ navigation }) {
           ) : (
             <>
               <Icon name="check-circle" size={20} color="#fff" />
+<<<<<<< HEAD
               <Text style={styles.placeBtnText}>
                 Place Order - ₹{total.toLocaleString("en-IN")}
               </Text>
+=======
+              <Text style={styles.placeBtnText}>Place Order - ₹{total.toLocaleString('en-IN')}</Text>
+>>>>>>> 8a0117a (Rebase and fixes functionality)
             </>
           )}
         </TouchableOpacity>

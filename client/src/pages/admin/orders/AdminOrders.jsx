@@ -61,12 +61,65 @@ const AdminOrders = () => {
             ...response.data.data.pagination,
           }));
         }
+<<<<<<< HEAD
       }
     } catch (error) {
       console.error("Failed to fetch orders:", error);
       toast.error("Failed to load orders");
     } finally {
       setLoading(false);
+=======
+    };
+
+    const handleStatusUpdate = async (orderId, newStatus) => {
+        setUpdating(true);
+        try {
+            await ordersAPI.updateStatus(orderId, { status: newStatus });
+            toast.success('Order status updated');
+            fetchOrders();
+            if (selectedOrder?._id === orderId) {
+                setSelectedOrder(prev => ({ ...prev, status: newStatus }));
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update order');
+        } finally {
+            setUpdating(false);
+        }
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= pagination.pages) {
+            setPagination(prev => ({ ...prev, page: newPage }));
+        }
+    };
+
+    const getStatusColor = (status) => {
+        const colors = {
+            pending: '#d97706',
+            confirmed: '#1d4ed8',
+            processing: '#4f46e5',
+            dispatched: '#a855f7',
+            delivered: '#16a34a',
+            cancelled: '#dc2626'
+        };
+        return colors[status] || '#6b7280';
+    };
+
+    const stats = {
+        total: orders.length,
+        pending: orders.filter(o => o.status === 'pending').length,
+        processing: orders.filter(o => o.status === 'processing').length,
+        delivered: orders.filter(o => o.status === 'delivered').length
+    };
+
+    if (loading && orders.length === 0) {
+        return (
+            <div className="full-page-loading">
+                <div className="spinner" />
+                <p>Loading orders...</p>
+            </div>
+        );
+>>>>>>> 8a0117a (Rebase and fixes functionality)
     }
   };
 

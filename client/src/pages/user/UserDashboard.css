@@ -212,6 +212,7 @@
 }
 
 .ud-badge.pending {
+<<<<<<< HEAD
     background: var(--status-warning-bg);
     color: var(--status-warning);
 }
@@ -223,10 +224,29 @@
 
 .ud-badge.dispatched {
     background: rgba(99, 102, 241, 0.08);
+=======
+    background: #f59e0b20;
+    color: #d97706;
+}
+
+.ud-badge.confirmed {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.ud-badge.processing {
+    background: #e0e7ff;
+>>>>>>> 8a0117a (Rebase and fixes functionality)
     color: #4f46e5;
 }
 
+.ud-badge.dispatched {
+    background: #fae8ff;
+    color: #a855f7;
+}
+
 .ud-badge.delivered {
+<<<<<<< HEAD
     background: var(--status-success-bg);
     color: var(--status-success);
 }
@@ -234,6 +254,15 @@
 .ud-badge.cancelled {
     background: var(--status-error-bg);
     color: var(--status-error);
+=======
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.ud-badge.cancelled {
+    background: #fee2e2;
+    color: #dc2626;
+>>>>>>> 8a0117a (Rebase and fixes functionality)
 }
 
 .ud-empty-state {

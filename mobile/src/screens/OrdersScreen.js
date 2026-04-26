@@ -15,6 +15,7 @@ import { useTheme } from "../context/ThemeContext";
 import api from "../config/api";
 
 const STATUS_CONFIG = {
+<<<<<<< HEAD
   pending: { color: "#f59e0b", icon: "clock-outline", label: "Pending" },
   confirmed: {
     color: "#3b82f6",
@@ -37,6 +38,14 @@ const STATUS_CONFIG = {
     icon: "close-circle-outline",
     label: "Cancelled",
   },
+=======
+  pending:    { color: '#d97706', bg: '#f59e0b20', icon: 'clock-outline',                label: 'Pending'    },
+  confirmed:  { color: '#1d4ed8', bg: '#dbeafe',   icon: 'check-circle-outline',         label: 'Confirmed'  },
+  processing: { color: '#4f46e5', bg: '#e0e7ff',   icon: 'cog-outline',                  label: 'Processing' },
+  dispatched: { color: '#a855f7', bg: '#fae8ff',   icon: 'truck-delivery-outline',       label: 'Dispatched' },
+  delivered:  { color: '#16a34a', bg: '#dcfce7',   icon: 'package-variant-closed-check', label: 'Delivered'  },
+  cancelled:  { color: '#dc2626', bg: '#fee2e2',   icon: 'close-circle-outline',         label: 'Cancelled'  },
+>>>>>>> 8a0117a (Rebase and fixes functionality)
 };
 
 const TABS = [
@@ -154,7 +163,11 @@ export default function OrdersScreen({ navigation }) {
             </Text>
           </View>
           <Text style={[s.total, { color: theme.primary }]}>
+<<<<<<< HEAD
             ₹{(item.totalAmount ?? item.total ?? 0).toLocaleString("en-IN")}
+=======
+            ₹{(item.totalAmount || item.total || 0).toLocaleString('en-IN')}
+>>>>>>> 8a0117a (Rebase and fixes functionality)
           </Text>
         </View>
 

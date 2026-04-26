@@ -145,6 +145,7 @@ export default function OrderDetailScreen({ route, navigation }) {
 
   const handleShareReceipt = async () => {
     if (!order) return;
+<<<<<<< HEAD
     const items =
       order.items
         ?.map(
@@ -152,6 +153,9 @@ export default function OrderDetailScreen({ route, navigation }) {
             `  ${i.name} x${i.quantity} - ${formatCurrency((i.price || 0) * (i.quantity || 0))}`,
         )
         .join("\n") || "";
+=======
+    const items = order.items?.map(i => `  ${i.name} x${i.quantity} - ₹${((i.price * i.quantity) || 0).toLocaleString('en-IN')}`).join('\n') || '';
+>>>>>>> 8a0117a (Rebase and fixes functionality)
     const receipt = `
 📋 RxPlus Order Receipt
 ━━━━━━━━━━━━━━━━━━━━━━
@@ -162,12 +166,21 @@ Status: ${order.status?.toUpperCase()}
 Items:
 ${items}
 
+<<<<<<< HEAD
   Subtotal: ${formatCurrency(order.subtotal)}
   Tax: ${formatCurrency(order.tax)}
   Shipping: ${formatCurrency(order.shippingCost)}
 ━━━━━━━━━━━━━━━━━━━━━━
   Total: ${formatCurrency(order.total)}
 Payment: ${order.paymentMethod || "N/A"}
+=======
+Subtotal: ₹${(order.subtotal || 0).toLocaleString('en-IN')}
+Tax: ₹${(order.tax || 0).toLocaleString('en-IN')}
+Shipping: ₹${(order.shippingCost || 0).toLocaleString('en-IN')}
+━━━━━━━━━━━━━━━━━━━━━━
+Total: ₹${(order.total || 0).toLocaleString('en-IN')}
+Payment: ${order.paymentMethod || 'N/A'}
+>>>>>>> 8a0117a (Rebase and fixes functionality)
 ━━━━━━━━━━━━━━━━━━━━━━
 Thank you for shopping with RxPlus!
     `.trim();
@@ -308,9 +321,13 @@ Thank you for shopping with RxPlus!
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemQty}>Qty: {item.quantity}</Text>
               </View>
+<<<<<<< HEAD
               <Text style={styles.itemTotal}>
                 {formatCurrency((item.price || 0) * (item.quantity || 0))}
               </Text>
+=======
+              <Text style={styles.itemTotal}>₹{((item.price || 0) * (item.quantity || 0)).toLocaleString('en-IN')}</Text>
+>>>>>>> 8a0117a (Rebase and fixes functionality)
             </View>
           ))}
         </View>
@@ -320,6 +337,7 @@ Thank you for shopping with RxPlus!
           <Text style={styles.sectionTitle}>Payment Summary</Text>
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Subtotal</Text>
+<<<<<<< HEAD
             <Text style={styles.priceValue}>
               {formatCurrency(order.subtotal)}
             </Text>
@@ -327,19 +345,34 @@ Thank you for shopping with RxPlus!
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Tax</Text>
             <Text style={styles.priceValue}>{formatCurrency(order.tax)}</Text>
+=======
+            <Text style={styles.priceValue}>₹{(order.subtotal || 0).toLocaleString('en-IN')}</Text>
+          </View>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>Tax</Text>
+            <Text style={styles.priceValue}>₹{(order.tax || 0).toLocaleString('en-IN')}</Text>
+>>>>>>> 8a0117a (Rebase and fixes functionality)
           </View>
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Shipping</Text>
             <Text style={styles.priceValue}>
+<<<<<<< HEAD
               {(order.shippingCost || 0) === 0
                 ? "FREE"
                 : formatCurrency(order.shippingCost)}
+=======
+              {(order.shippingCost || 0) === 0 ? 'FREE' : `₹${(order.shippingCost || 0).toLocaleString('en-IN')}`}
+>>>>>>> 8a0117a (Rebase and fixes functionality)
             </Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.priceRow}>
             <Text style={styles.totalLabel}>Total</Text>
+<<<<<<< HEAD
             <Text style={styles.totalValue}>{formatCurrency(order.total)}</Text>
+=======
+            <Text style={styles.totalValue}>₹{(order.total || 0).toLocaleString('en-IN')}</Text>
+>>>>>>> 8a0117a (Rebase and fixes functionality)
           </View>
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Payment Method</Text>
@@ -492,12 +525,12 @@ Thank you for shopping with RxPlus!
 
 const getStatusColor = (status, theme) => {
   const map = {
-    pending: theme.warning,
-    confirmed: theme.info,
-    processing: theme.info,
-    dispatched: theme.primary,
-    delivered: theme.success,
-    cancelled: theme.error,
+    pending: '#d97706',
+    confirmed: '#1d4ed8',
+    processing: '#4f46e5',
+    dispatched: '#a855f7',
+    delivered: '#16a34a',
+    cancelled: '#dc2626',
   };
   return map[status] || theme.textSecondary;
 };
