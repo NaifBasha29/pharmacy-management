@@ -115,7 +115,8 @@ const Sidebar = () => {
   const userLinks = [
     { path: '/user', icon: <FiHome />, label: 'Dashboard' },
     { path: '/user/catalog', icon: <FiPackage />, label: 'Medicine Catalog' },
-    { path: '/user/orders', icon: <FiShoppingCart />, label: 'My Orders' },
+    { path: '/user/cart', icon: <FiShoppingCart />, label: 'My Cart' },
+    { path: '/user/orders', icon: <FiClipboard />, label: 'My Orders' },
     { path: '/user/prescriptions', icon: <FiFileText />, label: 'Prescriptions' },
     { path: '/user/profile', icon: <FiUsers />, label: 'Profile' },
     { path: '/user/support', icon: <FiHelpCircle />, label: 'Support' }

@@ -34,11 +34,6 @@ const PharmacistDashboard = () => {
         prescriptionsAPI.getAll({ limit: 100 }),
         medicinesAPI.getLowStock(),
       ]);
-      const orders = allOrdersRes.data.data.orders || [];
-      const rxList = rxRes.data.data.prescriptions || [];
-      const today = new Date().toDateString();
-      const dispensedToday = orders.filter(o => o.status === 'dispatched' && new Date(o.updatedAt).toDateString() === today).length;
-
       const orders = ordersRes.data.data.orders || ordersRes.data.data || [];
       const prescriptions =
         prescriptionsRes.data.data.prescriptions ||

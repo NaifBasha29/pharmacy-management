@@ -35,7 +35,8 @@ const TopNav = () => {
     const userLinks = [
         { path: '/user', icon: <FiHome />, label: 'Dashboard' },
         { path: '/user/catalog', icon: <FiPackage />, label: 'Catalog' },
-        { path: '/user/orders', icon: <FiShoppingCart />, label: 'Orders' },
+        { path: '/user/cart', icon: <FiShoppingCart />, label: 'Cart' },
+        { path: '/user/orders', icon: <FiClipboard />, label: 'Orders' },
         { path: '/user/profile', icon: <FiUsers />, label: 'Profile' }
     ];
 
