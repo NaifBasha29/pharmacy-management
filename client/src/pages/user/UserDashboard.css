@@ -226,6 +226,11 @@
     color: #4f46e5;
 }
 
+.ud-badge.dispatched {
+    background: #fae8ff;
+    color: #a855f7;
+}
+
 .ud-badge.delivered {
     background: var(--status-success-bg);
     color: var(--status-success);

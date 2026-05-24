@@ -5,6 +5,7 @@ import { useClearAuthOnMount } from '../../hooks/useSecurityHooks';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import './AdminLogin.css'; // Switch to specialized premium CSS
 import logo from '../../../assets/logo.png';
+import ThemeToggle from '../../components/common/ThemeToggle';
 
 const AdminLogin = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -42,20 +43,16 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="admin-auth-page">
-            <div className="admin-auth-container">
-                <div className="admin-auth-left">
-                    <div className="crest-bg" />
-                    <div className="wave-decoration">
-                        <svg viewBox="0 0 500 500" preserveAspectRatio="none">
-                            <path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" fill="rgba(212, 175, 55, 0.05)" />
-                        </svg>
-                    </div>
-                    
-                    <div className="admin-brand">
-                        <div className="brand-logo-container">
-                            <img src={logo} alt="RxPlus" className="brand-logo-img" />
-                        </div>
+        <div className="auth-page">
+            <div className="auth-theme-toggle">
+                <ThemeToggle />
+            </div>
+            <div className="auth-container">
+                <div className="auth-left">
+                    <div className="auth-brand">
+                        <img src={logo} alt="RxPlus" className="brand-logo-img" />
+                        <h1>RxPlus</h1>
+                        <p>Admin Portal</p>
                     </div>
                 </div>
 

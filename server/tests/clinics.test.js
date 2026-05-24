@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 import app from '../server.js';
 import Clinic from '../models/Clinic.js';
 import User from '../models/User.js';
-import { generateToken } from '../middleware/auth.js';
+import Session from '../models/Session.js';
+import { generateToken, generateRefreshToken } from '../middleware/auth.js';
 
 dotenv.config();
 
@@ -28,9 +29,26 @@ describe('Clinic API', () => {
         });
 
         token = generateToken(adminUser._id);
+        const refreshToken = generateRefreshToken(adminUser._id);
+        await Session.createSession({
+            userId: adminUser._id,
+            userType: 'User',
+            accessToken: token,
+            refreshToken,
+            deviceInfo: {
+                browser: 'Jest',
+                os: 'Node',
+                ip: '127.0.0.1',
+                userAgent: 'Jest Test'
+            },
+            expiresIn: 15 * 60 * 1000
+        });
     });
 
     afterAll(async () => {
+        if (adminUser) {
+            await Session.deleteMany({ userId: adminUser._id });
+        }
         await User.deleteMany({ email: /@test.com/ });
         await Clinic.deleteMany({ name: 'Test Clinic Integration' });
         await mongoose.connection.close();

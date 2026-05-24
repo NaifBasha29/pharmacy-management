@@ -30,7 +30,7 @@ const fallbackHost = Platform.OS === "android" ? "10.0.2.2" : "localhost";
 const apiHost = devHost || fallbackHost;
 const BASE_URL = `http://${apiHost}:${API_PORT}/api`;
 
-console.log(`🌐 API Base URL: ${BASE_URL}`);
+if (__DEV__) console.log(`🌐 API Base URL: ${BASE_URL}`);
 
 const api = axios.create({
   baseURL: BASE_URL,

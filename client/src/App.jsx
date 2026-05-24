@@ -50,14 +50,14 @@ import ClinicStaff from "./pages/clinic/ClinicStaff";
 import ClinicSettings from "./pages/clinic/ClinicSettings";
 
 // User Pages
-import UserDashboard from "./pages/user/Dashboard";
-import Catalog from "./pages/user/Catalog";
-import Orders from "./pages/user/Orders";
-import Prescriptions from "./pages/user/Prescriptions";
-import Profile from "./pages/user/Profile";
-import Support from "./pages/user/Support";
-import Cart from "./pages/user/Cart";
-import Checkout from "./pages/user/Checkout";
+import UserDashboard from './pages/user/Dashboard';
+import Catalog from './pages/user/Catalog';
+import Orders from './pages/user/Orders';
+import Prescriptions from './pages/user/Prescriptions';
+import Profile from './pages/user/Profile';
+import Support from './pages/user/Support';
+import Cart from './pages/user/Cart';
+import Checkout from './pages/user/Checkout';
 
 // Protected Route Component - Only allows authenticated users
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -264,78 +264,56 @@ function AppRoutes() {
       />
 
       {/* Pharmacist Routes */}
-      <Route
-        path="/pharmacist"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/orders"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistOrders />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/prescriptions"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistPrescriptions />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/inventory"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistInventory />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/ai-drug-check"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistAIDrugCheck />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/billing"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistBilling />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/reports"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistReports />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/patients"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <Patients />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/pharmacist/*"
-        element={
-          <ProtectedRoute allowedRoles={["pharmacist", "admin"]}>
-            <PharmacistDashboard />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/pharmacist" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/patients" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <Patients />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/orders" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistOrders />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/dispensing" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistOrders />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/prescriptions" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistPrescriptions />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/inventory" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistInventory />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/ai-check" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistAIDrugCheck />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/billing" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistBilling />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/reports" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistReports />
+        </ProtectedRoute>
+      } />
+      <Route path="/pharmacist/*" element={
+        <ProtectedRoute allowedRoles={['pharmacist', 'admin']}>
+          <PharmacistDashboard />
+        </ProtectedRoute>
+      } />
 
       {/* Clinic Routes */}
       <Route
@@ -396,96 +374,51 @@ function AppRoutes() {
       />
 
       {/* User Routes */}
-      <Route
-        path="/user"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <UserDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/catalog"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <Catalog />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/cart"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <Cart />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/checkout"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <Checkout />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/orders"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <Orders />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/prescriptions"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <Prescriptions />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/profile"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/support"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <Support />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/*"
-        element={
-          <ProtectedRoute
-            allowedRoles={["user", "patient", "pharmacist", "admin"]}
-          >
-            <UserDashboard />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/user" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <UserDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/catalog" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Catalog />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/cart" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Cart />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/checkout" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Checkout />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/orders" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Orders />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/prescriptions" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Prescriptions />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/profile" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Profile />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/support" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <Support />
+        </ProtectedRoute>
+      } />
+      <Route path="/user/*" element={
+        <ProtectedRoute allowedRoles={['user', 'pharmacist', 'admin']}>
+          <UserDashboard />
+        </ProtectedRoute>
+      } />
 
       {/* Catch all - 404 */}
       <Route path="*" element={<Navigate to="/" replace />} />

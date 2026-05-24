@@ -15,7 +15,7 @@ import {
 } from "../middleware/auth.js";
 import { userValidation } from "../middleware/validation.js";
 import { asyncHandler } from "../middleware/errorHandler.js";
-import { loginRateLimiter } from "../middleware/rateLimiter.js";
+import { loginRateLimiter, strictOtpLimiter } from "../middleware/rateLimiter.js";
 
 const router = express.Router();
 
@@ -177,9 +177,9 @@ router.post(
       });
     }
 
-    // Allow only specific roles
-    const allowedRoles = ["pharmacist", "user"];
-    const userRole = role && allowedRoles.includes(role) ? role : "user";
+  // Allow only specific roles
+  const allowedRoles = ['admin', 'pharmacist', 'user'];
+  const userRole = (role && allowedRoles.includes(role)) ? role : 'user';
 
     // Create user
     const user = await User.create({
@@ -557,68 +557,22 @@ router.post(
       });
     }
 
-    try {
-      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-      const userId = decoded.id;
-      let user = await User.findById(userId).select("+refreshToken");
-      let userType = "user";
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.id).select('+refreshToken');
 
-      if (!user) {
-        const patient = await Patient.findById(userId);
-        if (patient) {
-          user = patient;
-          userType = "patient";
-        }
-      }
-
-      if (!user) {
-        const clinic = await Clinic.findById(userId);
-        if (clinic) {
-          user = clinic;
-          userType = "clinic";
-        }
-      }
-
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid refresh token",
-        });
-      }
-
-      const activeSession = await Session.findOne({
-        userId: user._id,
-        refreshTokenHash: Session.hashToken(refreshToken),
-        isActive: true,
-        expiresAt: { $gt: new Date() },
+    if (!user || user.refreshToken !== refreshToken) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid refresh token'
       });
+    }
 
-      if (!activeSession) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid refresh token",
-        });
-      }
+    const newAccessToken = generateToken(user._id);
+    const newRefreshToken = generateRefreshToken(user._id);
 
-      if (userType === "user" && user.refreshToken !== refreshToken) {
-        return res.status(401).json({
-          success: false,
-          message: "Invalid refresh token",
-        });
-      }
-
-      const newAccessToken = generateToken(user._id, userType);
-      const newRefreshToken = generateRefreshToken(user._id, userType);
-
-      activeSession.accessTokenHash = Session.hashToken(newAccessToken);
-      activeSession.refreshTokenHash = Session.hashToken(newRefreshToken);
-      activeSession.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      await activeSession.save();
-
-      if (userType === "user") {
-        user.refreshToken = newRefreshToken;
-        await user.save({ validateBeforeSave: false });
-      }
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
 
       res.json({
         success: true,
@@ -787,43 +741,31 @@ router.put(
       });
     }
 
-    let userDoc;
+  const user = await User.findById(req.user._id).select('+password');
 
-    if (req.user?.type === "patient") {
-      userDoc = await Patient.findById(req.user._id).select("+password");
-    } else {
-      userDoc = await User.findById(req.user._id).select("+password");
-    }
-
-    if (!userDoc) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    const isMatch = await userDoc.comparePassword(currentPassword);
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Current password is incorrect",
-      });
-    }
-
-    // Update password
-    userDoc.password = newPassword;
-    userDoc.passwordChangedAt = new Date();
-    await userDoc.save();
-
-    // Log action
-    await AuditLog.log({
-      user: req.user._id,
-      action: "PASSWORD_CHANGE",
-      resource: req.user?.type === "patient" ? "Patient" : "User",
-      resourceId: req.user._id,
-      description: `Password changed for user: ${req.user.email || req.user.patientId}`,
-      ipAddress: req.ip,
+  // Verify current password
+  const isMatch = await user.comparePassword(currentPassword);
+  if (!isMatch) {
+    return res.status(401).json({
+      success: false,
+      message: 'Current password is incorrect'
     });
+  }
+
+  // Update password
+  user.password = newPassword;
+  user.passwordChangedAt = new Date();
+  await user.save();
+
+  // Log action
+  await AuditLog.log({
+    user: req.user._id,
+    action: 'PASSWORD_CHANGE',
+    resource: 'User',
+    resourceId: req.user._id,
+    description: `Password changed for user: ${req.user.email}`,
+    ipAddress: req.ip
+  });
 
     res.json({
       success: true,
@@ -837,11 +779,8 @@ router.put(
 // @route   POST /api/auth/forgot-password
 // @desc    Send OTP to patient's email for password reset
 // @access  Public
-router.post(
-  "/forgot-password",
-  loginRateLimiter,
-  asyncHandler(async (req, res) => {
-    const { identifier } = req.body;
+router.post('/forgot-password', loginRateLimiter, asyncHandler(async (req, res) => {
+  const { identifier } = req.body;
 
     if (!identifier) {
       return res.status(400).json({
@@ -947,11 +886,8 @@ router.post(
 // @route   POST /api/auth/verify-otp
 // @desc    Verify the OTP code
 // @access  Public
-router.post(
-  "/verify-otp",
-  loginRateLimiter,
-  asyncHandler(async (req, res) => {
-    const { identifier, otp } = req.body;
+router.post('/verify-otp', loginRateLimiter, asyncHandler(async (req, res) => {
+  const { identifier, otp } = req.body;
 
     if (!identifier || !otp) {
       return res.status(400).json({

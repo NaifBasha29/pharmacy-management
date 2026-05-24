@@ -43,4 +43,17 @@ export const strictRateLimiter = rateLimit({
     legacyHeaders: false
 });
 
-export default { loginRateLimiter, apiRateLimiter, strictRateLimiter };
+// Strict OTP rate limiter — prevents brute-force OTP guessing
+export const strictOtpLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // 5 attempts per window
+    message: {
+        success: false,
+        message: 'Too many OTP attempts. Please request a new OTP.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => req.body.identifier || req.ip
+});
+
+export default { loginRateLimiter, apiRateLimiter, strictRateLimiter, strictOtpLimiter };

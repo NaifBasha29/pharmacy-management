@@ -108,36 +108,18 @@ const Sidebar = () => {
   ];
 
   const pharmacistLinks = [
-    { path: "/pharmacist", icon: <FiHome />, label: "Dashboard" },
-    { path: "/pharmacist/inventory", icon: <FiPackage />, label: "Inventory" },
-    { path: "/pharmacist/orders", icon: <FiShoppingCart />, label: "Orders" },
-    {
-      path: "/pharmacist/prescriptions",
-      icon: <FiClipboard />,
-      label: "Prescriptions",
-    },
-    {
-      path: "/pharmacist/ai-drug-check",
-      icon: <FiActivity />,
-      label: "AI Drug Check",
-    },
-    { path: "/pharmacist/billing", icon: <FiFileText />, label: "Billing" },
-    { path: "/pharmacist/reports", icon: <FiTrendingUp />, label: "Reports" },
-    { path: "/pharmacist/patients", icon: <FiUsers />, label: "Patients" },
+    { path: '/pharmacist', icon: <FiHome />, label: 'Dashboard' },
+    { path: '/pharmacist/patients', icon: <FiHeart />, label: 'Patients' }
   ];
 
   const userLinks = [
-    { path: "/user", icon: <FiHome />, label: "Dashboard" },
-    { path: "/user/catalog", icon: <FiPackage />, label: "Medicine Catalog" },
-    { path: "/user/cart", icon: <FiShoppingCart />, label: "My Cart" },
-    { path: "/user/orders", icon: <FiShoppingCart />, label: "My Orders" },
-    {
-      path: "/user/prescriptions",
-      icon: <FiFileText />,
-      label: "Prescriptions",
-    },
-    { path: "/user/profile", icon: <FiUsers />, label: "Profile" },
-    { path: "/user/support", icon: <FiHelpCircle />, label: "Support" },
+    { path: '/user', icon: <FiHome />, label: 'Dashboard' },
+    { path: '/user/catalog', icon: <FiPackage />, label: 'Medicine Catalog' },
+    { path: '/user/cart', icon: <FiShoppingCart />, label: 'My Cart' },
+    { path: '/user/orders', icon: <FiClipboard />, label: 'My Orders' },
+    { path: '/user/prescriptions', icon: <FiFileText />, label: 'Prescriptions' },
+    { path: '/user/profile', icon: <FiUsers />, label: 'Profile' },
+    { path: '/user/support', icon: <FiHelpCircle />, label: 'Support' }
   ];
 
   const links = isAdmin
@@ -210,12 +192,8 @@ const Sidebar = () => {
         </nav>
 
         <div className="sidebar-footer">
-          <div
-            className={`video-call-controls ${!isOpen ? "collapsed" : ""}`}
-            style={{ padding: "0 0.5rem 0.5rem" }}
-          >
-            {/* When collapsed, ThemeToggle gets full width utility to center and size correctly */}
-            <ThemeToggle className={!isOpen ? "w-full" : ""} />
+          <div className={`video-call-controls ${!isOpen ? 'collapsed' : ''}`} style={{ padding: '0 0.5rem 0.5rem' }}>
+            <ThemeToggle className={!isOpen ? 'w-full' : ''} />
           </div>
 
           <button className="nav-link notification-btn">

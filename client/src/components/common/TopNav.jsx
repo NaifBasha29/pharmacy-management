@@ -4,7 +4,7 @@ import {
     FiHome, FiUsers, FiPackage, FiShoppingCart, FiFileText,
     FiSettings, FiLogOut, FiActivity, FiClipboard, FiHeart
 } from 'react-icons/fi';
-import ThemeToggle from './ThemeToggle';
+
 import './TopNav.css';
 
 const TopNav = () => {
@@ -35,7 +35,8 @@ const TopNav = () => {
     const userLinks = [
         { path: '/user', icon: <FiHome />, label: 'Dashboard' },
         { path: '/user/catalog', icon: <FiPackage />, label: 'Catalog' },
-        { path: '/user/orders', icon: <FiShoppingCart />, label: 'Orders' },
+        { path: '/user/cart', icon: <FiShoppingCart />, label: 'Cart' },
+        { path: '/user/orders', icon: <FiClipboard />, label: 'Orders' },
         { path: '/user/profile', icon: <FiUsers />, label: 'Profile' }
     ];
 
@@ -68,7 +69,7 @@ const TopNav = () => {
 
                 {/* Right: User */}
                 <div className="top-nav-user">
-                    <ThemeToggle />
+
                     <span className="user-name">{user?.name || 'Super Admin'}</span>
                     <div className="user-avatar" onClick={handleLogout} title="Logout">
                         {user?.name?.charAt(0).toUpperCase() || 'SA'}

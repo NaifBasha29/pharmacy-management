@@ -87,6 +87,11 @@ router.post('/verify', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Order not found' });
     }
 
+    // Ownership check
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+
     // Mock verification - always succeeds
     res.json({
       success: true,

@@ -5,6 +5,7 @@ import { useClearAuthOnMount } from '../../hooks/useSecurityHooks';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import './Auth.css';
 import logo from '../../../assets/logo.png';
+import ThemeToggle from '../../components/common/ThemeToggle';
 
 const ClinicLogin = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -41,6 +42,9 @@ const ClinicLogin = () => {
 
     return (
         <div className="auth-page">
+            <div className="auth-theme-toggle">
+                <ThemeToggle />
+            </div>
             <div className="auth-container">
                 <div className="auth-left">
                     <div className="auth-brand">

@@ -10,23 +10,23 @@ const darkColors = {
   primaryLight: '#fb923c',
   primaryMuted: 'rgba(249,115,22,0.15)',
 
-  // Backgrounds
-  background: '#0f0f0f',
-  surface: '#1a1a1a',
-  surfaceHighlight: '#242424',
-  surfaceElevated: '#2a2a2a',
-  card: '#1e1e1e',
+  // Backgrounds — matches web [data-theme="dark"] vars
+  background: '#000000',
+  surface: '#0a0a0a',
+  surfaceHighlight: '#1a1a1a',
+  surfaceElevated: '#1a1a1a',
+  card: '#0a0a0a',
   overlay: 'rgba(0,0,0,0.6)',
 
   // Navigation
-  tabBar: '#141414',
-  navBar: '#0f0f0f',
+  tabBar: '#050505',
+  navBar: '#000000',
 
-  // Text
-  textPrimary: '#f4f4f5',
-  textSecondary: '#a1a1aa',
-  textTertiary: '#71717a',
-  textInverse: '#0f0f0f',
+  // Text — matches web --text-primary / --text-secondary
+  textPrimary: '#ffffff',
+  textSecondary: '#9ca3af',
+  textTertiary: '#6b7280',
+  textInverse: '#000000',
 
   // Status
   success: '#22c55e',
@@ -38,18 +38,18 @@ const darkColors = {
   info: '#3b82f6',
   infoMuted: 'rgba(59,130,246,0.15)',
 
-  // UI
-  border: '#2e2e2e',
+  // UI — border matches web --border-light (dark)
+  border: 'rgba(255,255,255,0.08)',
   borderStrong: '#3f3f46',
-  divider: '#262626',
-  inputBackground: '#1c1c1c',
+  divider: '#1a1a1a',
+  inputBackground: '#111111',
   placeholder: '#52525b',
   buttonText: '#ffffff',
   badge: '#ef4444',
-  chip: '#27272a',
+  chip: '#1a1a1a',
   chipText: '#d4d4d8',
   disabled: '#3f3f46',
-  disabledText: '#71717a',
+  disabledText: '#6b7280',
 
   // Shadow (for elevation effects)
   shadow: '#000000',
@@ -62,10 +62,10 @@ const lightColors = {
   primaryLight: '#fb923c',
   primaryMuted: 'rgba(249,115,22,0.1)',
 
-  // Backgrounds
-  background: '#f4f4f5',
+  // Backgrounds — matches web :root vars
+  background: '#f8fafc',
   surface: '#ffffff',
-  surfaceHighlight: '#f9fafb',
+  surfaceHighlight: '#f1f5f9',
   surfaceElevated: '#ffffff',
   card: '#ffffff',
   overlay: 'rgba(0,0,0,0.5)',
@@ -74,10 +74,10 @@ const lightColors = {
   tabBar: '#ffffff',
   navBar: '#ffffff',
 
-  // Text
-  textPrimary: '#18181b',
-  textSecondary: '#52525b',
-  textTertiary: '#a1a1aa',
+  // Text — matches web --text-primary / --text-secondary
+  textPrimary: '#0f172a',
+  textSecondary: '#64748b',
+  textTertiary: '#94a3b8',
   textInverse: '#ffffff',
 
   // Status
@@ -90,21 +90,21 @@ const lightColors = {
   info: '#2563eb',
   infoMuted: 'rgba(37,99,235,0.1)',
 
-  // UI
-  border: '#e4e4e7',
-  borderStrong: '#d4d4d8',
-  divider: '#f1f1f1',
-  inputBackground: '#f9fafb',
-  placeholder: '#a1a1aa',
+  // UI — border matches web --border-light (light)
+  border: '#e2e8f0',
+  borderStrong: '#cbd5e1',
+  divider: '#f1f5f9',
+  inputBackground: '#f1f5f9',
+  placeholder: '#94a3b8',
   buttonText: '#ffffff',
   badge: '#ef4444',
-  chip: '#f4f4f5',
-  chipText: '#3f3f46',
-  disabled: '#e4e4e7',
-  disabledText: '#a1a1aa',
+  chip: '#f1f5f9',
+  chipText: '#334155',
+  disabled: '#e2e8f0',
+  disabledText: '#94a3b8',
 
   // Shadow
-  shadow: '#71717a',
+  shadow: '#64748b',
 };
 
 // ─── Typography ───────────────────────────────────────────────────────────────

@@ -115,21 +115,11 @@ const PrescriptionCard = ({ rx }) => {
         <Icon name="prescription" size={20} color={theme.primary} />
         <Text style={styles.rxId}>{rx.id}</Text>
       </View>
-      <Text style={styles.rxMedicine}>{rx.medicine}</Text>
-      <Text style={styles.rxDoctor}>{rx.doctor}</Text>
-      <View style={styles.rxDetails}>
-        <View style={styles.rxDetailItem}>
-          <Icon name="clock-outline" size={14} color={theme.textSecondary} />
-          <Text style={styles.rxDetailText}>{rx.dosage}</Text>
-        </View>
-        <View style={styles.rxDetailItem}>
-          <Icon name="refresh" size={14} color={theme.textSecondary} />
-          <Text style={styles.rxDetailText}>{rx.refillsLeft} refills left</Text>
-        </View>
-      </View>
+      <Text style={styles.rxMedicine}>{rx.status}</Text>
+      {rx.note ? <Text style={styles.rxDoctor}>{rx.note}</Text> : null}
       <View style={styles.rxExpiry}>
-        <Icon name="calendar-clock" size={14} color={theme.warning} />
-        <Text style={styles.rxExpiryText}>Expires in {rx.expiresIn}</Text>
+        <Icon name="calendar-clock" size={14} color={theme.textSecondary} />
+        <Text style={styles.rxExpiryText}>Uploaded: {rx.uploadDate}</Text>
       </View>
     </View>
   );
@@ -151,7 +141,7 @@ const RefillCard = ({ refill }) => {
       />
       <View style={styles.refillContent}>
         <Text style={styles.refillMedicine}>{refill.medicine}</Text>
-        <Text style={styles.refillDate}>Due: {refill.dueDate}</Text>
+        <Text style={styles.refillDate}>Expires: {refill.dueDate}</Text>
       </View>
       <View
         style={[styles.refillBadge, { backgroundColor: `${urgencyColor}20` }]}

@@ -25,18 +25,15 @@ const PharmacistDashboard = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  useEffect(() => { fetchData(); }, []);
 
-  const fetchDashboardData = async () => {
+  const fetchData = async () => {
     try {
       const [ordersRes, prescriptionsRes, lowStockRes] = await Promise.all([
         ordersAPI.getAll({ limit: 100 }),
         prescriptionsAPI.getAll({ limit: 100 }),
         medicinesAPI.getLowStock(),
       ]);
-
       const orders = ordersRes.data.data.orders || ordersRes.data.data || [];
       const prescriptions =
         prescriptionsRes.data.data.prescriptions ||
@@ -73,30 +70,24 @@ const PharmacistDashboard = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="dashboard-layout">
-        <Sidebar />
-        <main className="dashboard-main">
-          <div className="loading-overlay">
-            <div className="spinner" />
-            <p>Loading dashboard...</p>
-          </div>
-        </main>
-      </div>
-    );
-  }
+  const getStatusColor = (s) => ({ pending: '#d97706', confirmed: '#1d4ed8', processing: '#4f46e5', dispatched: '#a855f7', delivered: '#16a34a', cancelled: '#dc2626' }[s] || '#6b7280');
+
+  if (loading) return (
+    <div className="dashboard-layout"><Sidebar /><main className="dashboard-main"><div className="loading-overlay"><div className="spinner" /><p>Loading dashboard...</p></div></main></div>
+  );
 
   return (
     <div className="dashboard-layout">
       <Sidebar />
       <main className="dashboard-main">
         <div className="dashboard-header">
-          <h1>Pharmacist Dashboard</h1>
-          <p>Manage orders, prescriptions, and inventory</p>
+          <div>
+            <h1>Pharmacist Dashboard</h1>
+            <p>Manage orders, prescriptions, and dispensing</p>
+          </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* Stats */}
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-icon orange">
@@ -107,7 +98,6 @@ const PharmacistDashboard = () => {
               <div className="stat-label">Pending Orders</div>
             </div>
           </div>
-
           <div className="stat-card">
             <div className="stat-icon blue">
               <FiPackage />
@@ -127,7 +117,6 @@ const PharmacistDashboard = () => {
               <div className="stat-label">Pending Prescriptions</div>
             </div>
           </div>
-
           <div className="stat-card">
             <div className="stat-icon green">
               <FiCheckCircle />

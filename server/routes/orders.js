@@ -82,16 +82,13 @@ router.get(
       });
     }
 
-    // Users can only view their own orders
-    if (
-      ["user", "patient"].includes(req.user.role) &&
-      order.user._id.toString() !== req.user._id.toString()
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized to view this order",
-      });
-    }
+  // Users can only view their own orders
+  if (req.user.role === 'user' && order.user._id.toString() !== req.user._id.toString()) {
+    return res.status(403).json({
+      success: false,
+      message: 'Not authorized to view this order'
+    });
+  }
 
     res.json({
       success: true,
@@ -236,15 +233,22 @@ router.put(
       updatedBy: req.user._id,
     });
 
-    // If dispensed, record who dispatched and time
-    if (status === "dispatched" && previousStatus !== "dispatched") {
-      order.dispensedBy = req.user._id;
-      order.dispensedAt = new Date();
-    }
+  // If dispensed, update stock and record
+  if (status === 'dispatched' && previousStatus !== 'dispatched') {
+    order.dispensedBy = req.user._id;
+    order.dispensedAt = new Date();
 
-    if (status === "delivered") {
-      order.actualDelivery = new Date();
+    // Reduce stock
+    for (const item of order.items) {
+      await Medicine.findByIdAndUpdate(item.medicine, {
+        $inc: { stock: -item.quantity }
+      });
     }
+  }
+
+  if (status === 'delivered') {
+    order.actualDelivery = new Date();
+  }
 
     await order.save();
 
@@ -298,16 +302,13 @@ router.put(
       });
     }
 
-    // Users can only cancel their own orders
-    if (
-      ["user", "patient"].includes(req.user.role) &&
-      order.user.toString() !== req.user._id.toString()
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized to cancel this order",
-      });
-    }
+  // Users can only cancel their own orders
+  if (req.user.role === 'user' && order.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({
+      success: false,
+      message: 'Not authorized to cancel this order'
+    });
+  }
 
     // Can only cancel pending or confirmed orders
     if (!["pending", "confirmed"].includes(order.status)) {
@@ -353,16 +354,16 @@ router.get(
       });
     }
 
-    // Users can only track their own orders
-    if (["user", "patient"].includes(req.user.role)) {
-      const fullOrder = await Order.findById(req.params.id);
-      if (fullOrder.user.toString() !== req.user._id.toString()) {
-        return res.status(403).json({
-          success: false,
-          message: "Not authorized to track this order",
-        });
-      }
+  // Users can only track their own orders
+  if (req.user.role === 'user') {
+    const fullOrder = await Order.findById(req.params.id);
+    if (fullOrder.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to track this order'
+      });
     }
+  }
 
     res.json({
       success: true,
@@ -390,12 +391,12 @@ router.post(
       "items.medicine",
     );
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+  if (!order) {
+    return res.status(404).json({
+      success: false,
+      message: 'Order not found'
+    });
+  }
 
     if (order.status !== "confirmed" && order.status !== "processing") {
       return res.status(400).json({

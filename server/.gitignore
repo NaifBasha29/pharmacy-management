@@ -1,0 +1,10 @@
+node_modules/
+.env
+*.log
+uploads/
+create-admin.js
+debug-*.js
+fix-*.js
+reset-*.js
+test-*.js
+list-*.js

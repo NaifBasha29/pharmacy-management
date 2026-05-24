@@ -492,12 +492,12 @@ Thank you for shopping with RxPlus!
 
 const getStatusColor = (status, theme) => {
   const map = {
-    pending: theme.warning,
-    confirmed: theme.info,
-    processing: theme.info,
-    dispatched: theme.primary,
-    delivered: theme.success,
-    cancelled: theme.error,
+    pending: '#d97706',
+    confirmed: '#1d4ed8',
+    processing: '#4f46e5',
+    dispatched: '#a855f7',
+    delivered: '#16a34a',
+    cancelled: '#dc2626',
   };
   return map[status] || theme.textSecondary;
 };

@@ -5,6 +5,7 @@
     justify-content: center;
     background: var(--bg-primary);
     padding: var(--space-4);
+    position: relative;
 }
 
 .auth-container {
@@ -221,16 +222,36 @@ input:-webkit-autofill:hover {
     }
 
     .auth-left {
-        padding: var(--space-8);
+        padding: var(--space-8) var(--space-4);
+        text-align: center;
+        align-items: center;
+    }
+
+    .brand-logo-img {
+        width: 140px;
+        height: 140px;
     }
 
     .auth-right {
-        padding: var(--space-8);
+        padding: var(--space-8) var(--space-4);
     }
 
     .form-row {
         grid-template-columns: 1fr;
     }
+
+    .auth-theme-toggle {
+        top: var(--space-4);
+        right: var(--space-4);
+    }
+}
+
+/* Theme Toggle positioning on auth page */
+.auth-theme-toggle {
+    position: absolute;
+    top: var(--space-6);
+    right: var(--space-6);
+    z-index: 100;
 }
 
 /* Admin Toggle Styles */

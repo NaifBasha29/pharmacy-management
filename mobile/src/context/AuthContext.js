@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
         await SecureStore.setItemAsync("userData", JSON.stringify(user));
 
         setUser(user);
+        await SecureStore.setItemAsync('userData', JSON.stringify(user));
         return true;
       } else {
         setError(response.data.message || "Login failed");
