@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Management System - Full Technical Documentation</title>
+    <!-- Mermaid JS for Professional UML Diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default', 
+            fontFamily: 'Inter',
+            sequence: { showSequenceNumbers: true },
+            flowchart: { curve: 'basis' }
+        });
+    </script>
+    <style>
+        :root {
+            /* Light Theme Branding */
+            --brand-navy: #ffffff;
+            --brand-navy-accent: #f8fafc;
+            --brand-emerald: #059669;
+            --brand-gold: #b8860b;
+            --brand-gold-muted: rgba(184, 134, 11, 0.1);
+            --bg-outer: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-light: #e2e8f0;
+        }
+
+        @media print {
+            body { background: white !important; }
+            .page { border: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; }
+            .page-break { page-break-before: always; }
+            .no-print { display: none !important; }
+            h1, h2, h3 { color: #0f172a !important; }
+            thead th { background-color: #f1f5f9 !important; color: #0f172a !important; border-bottom: 2px solid #b8860b !important; }
+        }
+
+        body {
+            background-color: var(--bg-outer);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .page {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: var(--brand-navy);
+            padding: 80px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            min-height: 1414px;
+            position: relative;
+            border: 1px solid var(--border-light);
+        }
+
+        /* Title Page */
+        .title-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 1200px;
+        }
+
+        .title-page h1 {
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0;
+            color: var(--text-main);
+            background: linear-gradient(to right, var(--brand-gold), var(--brand-emerald));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-page p.subtitle {
+            font-size: 1.5rem;
+            color: var(--brand-emerald);
+            margin-top: 15px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .divider {
+            width: 200px;
+            height: 4px;
+            background: var(--brand-gold);
+            margin: 40px 0;
+        }
+
+        .section-number {
+            display: inline-block;
+            background: var(--brand-gold);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--brand-emerald);
+            margin-top: 40px;
+            border-bottom: 2px solid var(--brand-gold-muted);
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            color: var(--brand-gold);
+            margin-top: 35px;
+            font-weight: 600;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .diagram-container {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            padding: 40px;
+            border-radius: 12px;
+            margin: 35px 0;
+            text-align: center;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.02);
+        }
+
+        .tag {
+            background: var(--brand-gold-muted);
+            color: var(--brand-gold);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        th {
+            background: var(--brand-navy-accent);
+            color: var(--text-main);
+            padding: 16px;
+            text-align: left;
+            border-bottom: 3px solid var(--brand-gold);
+            font-weight: 700;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .technical-block {
+            background: #f8fafc;
+            padding: 25px;
+            border-left: 5px solid var(--brand-gold);
+            margin: 25px 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #334155;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .footer {
+            margin-top: 80px;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+            padding-top: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc-list li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .toc-list li::before {
+            content: "•";
+            color: var(--brand-gold);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: TITLE PAGE -->
+    <div class="page title-page">
+        <div class="section-number no-print">PHARMACARE SYSTEMS</div>
+        <h1>Full System <br> Documentation</h1>
+        <p class="subtitle">Chapters 4 & 5: Design, Implementation & Testing</p>
+        <div class="divider"></div>
+        <p style="text-align: center; font-size: 1.25rem; color: var(--text-muted);">
+            Prepared for: Super Admin Governance Division <br>
+            Author: Preethika P <br>
+            Date: April 2026
+        </p>
+    </div>
+
+    <!-- PAGE 2: TABLE OF CONTENTS -->
+    <div class="page page-break">
+        <h2>Table of Contents</h2>
+        <ul class="toc-list">
+            <li style="color: var(--brand-gold); font-weight: 700; margin-top: 10px;">4.0 DESIGN AND IMPLEMENTATION</li>
+            <li>&nbsp;&nbsp; 4.1 Architecture Diagram & Technical Topology</li>
+            <li>&nbsp;&nbsp; 4.2 Multi-Level Data Flow Diagrams (DFD)</li>
+            <li>&nbsp;&nbsp; 4.3 Comprehensive Use Case Analysis</li>
+            <li>&nbsp;&nbsp; 4.4 Theoretical Logic & Class Structure</li>
+            <li>&nbsp;&nbsp; 4.5 Sequence Diagrams for Core Workflows</li>
+            <li>&nbsp;&nbsp; 4.6 Collaborative Interaction Models</li>
+            <li>&nbsp;&nbsp; 4.7 Database Design & Entity Relationship Diagram</li>
+            <li style="color: var(--brand-gold); font-weight: 700; margin-top: 30px;">5.0 TESTING AND SYSTEM IMPLEMENTATION</li>
+            <li>&nbsp;&nbsp; 5.1 Quality Assurance Methodologies</li>
+            <li>&nbsp;&nbsp; 5.2 Extensive Test Case Repository</li>
+            <li>&nbsp;&nbsp; 5.3 Technical Implementation Workflow</li>
+            <li>&nbsp;&nbsp; 5.4 System Maintenance & Scalability</li>
+        </ul>
+    </div>
+
+    <!-- PAGE 3: ARCHITECTURE -->
+    <div class="page page-break">
+        <div class="section-number">4.1</div>
+        <h2>Architecture Diagram</h2>
+        <p>
+            The system adheres to a highly decoupled **3-Tier Distributed Architecture**, leveraging the **MERN** application stack. 
+            This design ensures that administrative governance is separated from the operational concerns of clinics and patients, 
+            providing a single point of truth for auditing and data management.
+        </p>
+
+        <h3>Technical Stack Breakdown</h3>
+        <ul>
+            <li><strong>Presentation Tier (React.js):</strong> A single-page application (SPA) that provides a responsive, state-driven interface. It utilizes Tailwind CSS for layout and Framer Motion for high-fidelity interactive elements.</li>
+            <li><strong>Application Tier (Node.js & Express):</strong> A RESTful API gateway that handles complex business rules, role-based access control (RBAC), and session orchestration.</li>
+            <li><strong>Data Tier (MongoDB):</strong> A document-oriented NoSQL database that offers horizontal scalability and schema flexibility for diverse pharmacy records.</li>
+        </ul>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+                graph TB
+                    subgraph Client_Cloud["Internet Layer"]
+                        Admin_V["Admin Browser (React SPA)"]
+                    end
+
+                    subgraph Logic_Layer["Application Tier (VPC)"]
+                        Proxy["Vite Dev/Prod Server"]
+                        Auth_M["JWT Sentinel Middleware"]
+                        API["Express Core Controller"]
+                    end
+
+                    subgraph Persistence_Layer["Data Tier"]
+                        MDB[("MongoDB Atlas Cluster")]
+                        Redis[("Redis Cache (Post-Prod)")]
+                    end
+
+                    Admin_V -- HTTPS/JSON --> Proxy
+                    Proxy -- Proxy Request --> Auth_M
+                    Auth_M -- Verified --> API
+                    API -- Query --> MDB
+                    API -- Cache --> Redis
+            </div>
+            <p><i>Figure 1.1: Physical Deployment and Logic Topology</i></p>
+        </div>
+    </div>
+
+    <!-- PAGE 4: DFD LEVEL 0 & 1 -->
+    <div class="page page-break">
+        <div class="section-number">4.2</div>
+        <h2>Data Flow Diagrams (DFD)</h2>
+        <p>
+            Data flows within the PharmaCare system are categorized by governance levels. The Super Admin acts as the primary 
+            controller of the data pipeline, ensuring that all clinic registrations pass through a strict verification gate 
+            before internal processes can occur.
+        </p>
+
+        <h3>Level 0: Context Diagram</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+                graph LR
+                    Admin((Super Admin))
+                    System{Pharmacy Management System}
+                    External[Clinic / Patient Entities]
+
+                    Admin -- System Config / Approval --> System
+                    System -- Reports / Audit Alerts --> Admin
+                    External -- Data Entry / Orders --> System
+                    System -- Notifications --> External
+            </div>
+            <p><i>Figure 4.2.1: Context Level Data Distribution</i></p>
+        </div>
+
+        <h3>Level 1: Top-Level Process Decomposition</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+                graph TD
+                    Admin[Admin Actor]
+                    P1((Authentication & RBAC))
+                    P2((Clinic Lifecycle Mgmt))
+                    P3((Audit Tracking))
+                    D1[(User/Role Store)]
+                    D2[(Clinic Docs Store)]
+
+                    Admin -- Login Credentials --> P1
+                    P1 -- Token --> Admin
+                    Admin -- Review License --> P2
+                    P2 -- Update Status --> D2
+                    P2 -- Trigger Account --> P1
+                    P1 -- Sync User --> D1
+                    P1 -- Log Success --> P3
+            </div>
+            <p><i>Figure 4.2.2: Level 1 Functional Data Flow</i></p>
+        </div>
+    </div>
+
+    <!-- PAGE 5: DFD LEVEL 2 (DEEP DIVE) -->
+    <div class="page page-break">
+        <h3>Level 2: Clinic Verification Deep-Dive</h3>
+        <p>
+            The Level 2 DFD details the internal logic of the Clinic Enrollment module. This process is critical for 
+            maintaining compliance and ensuring that only licensed pharmacies are onboarded to the platform.
+        </p>
+        <div class="diagram-container">
+            <div class="mermaid">
+                graph TD
+                    Admin[Super Admin]
+                    Input{Validation Gateway}
+                    Upload((Document Store API))
+                    Verify((Status Engine))
+                    DB[(Persistent Store)]
+
+                    Admin -- Provides Docs --> Input
+                    Input -- If Valid --> Upload
+                    Upload -- File Path --> DB
+                    Admin -- Triggers Activation --> Verify
+                    Verify -- Fetch Status --> DB
+                    Verify -- Generate Creds --> Admin
+                    Verify -- Save Account --> DB
+            </div>
+            <p><i>Figure 4.2.3: Level 2 Clinic Verification Flow</i></p>
+        </div>
+        <p>
+            Each transition in the Level 2 DFD is atomic. If the system fails to create the administrative user account 
+            for a clinic, the clinic status is rolled back to 'Draft' to prevent orphaned entities in the database.
+        </p>
+    </div>
+
+    <!-- PAGE 6: USE CASE -->
+    <div class="page page-break">
+        <div class="section-number">4.3</div>
+        <h2>Comprehensive Use Case Analysis</h2>
+        <p>
+            Use Case modeling identifies the boundary between the Super Admin and the system's internal functions. 
+            The focus here is on **High-Privilege Governance**, which includes actions that impact the entire network 
+            of clinics and users.
+        </p>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+                useCaseDiagram
+                    actor "Super Admin" as Admin
+                    actor "External Cloud API" as Cloud
+
+                    package "Governance Module" {
+                        usecase "Review Clinic Registrations" as UC1
+                        usecase "Global System Auditing" as UC2
+                        usecase "Inventory Rule Management" as UC3
+                        usecase "User Role Escalation" as UC4
+                        usecase "System Analytics Export" as UC5
+                    }
+
+                    Admin --> UC1
+                    Admin --> UC2
+                    Admin --> UC3
+                    Admin --> UC4
+                    Admin --> UC5
+                    UC5 ..> Cloud : "Optional Storage"
+            </div>
+            <p><i>Figure 4.3.1: Super Admin High-Privilege Use Cases</i></p>
+        </div>
+
+        <h3>Use Case Descriptions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Use Case ID</th>
+                    <th>Name</th>
+                    <th>Pre-condition</th>
+                    <th>Post-condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>UC-ADMIN-01</td>
+                    <td>Review Clinic</td>
+                    <td>Admin Authenticated</td>
+                    <td>Clinic Activated/Rejected</td>
+                </tr>
+                <tr>
+                    <td>UC-ADMIN-02</td>
+                    <td>Audit Monitor</td>
+                    <td>System Logs Populated</td>
+                    <td>Security Report Generated</td>
+                </tr>
+                <tr>
+                    <td>UC-ADMIN-03</td>
+                    <td>Role Management</td>
+                    <td>Target User Exists</td>
+                    <td>Permissions Updated</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGE 7: SEQUENCE LOGIN -->
+    <div class="page page-break">
+        <div class="section-number">4.5</div>
+        <h2>Sequence Diagrams (Core Workflows)</h2>
+        <p>
+            Sequence diagrams provide a temporal view of the system. We highlight the two most critical paths for 
+            administrative oversight: Secure Authentication and Clinic Onboarding.
+        </p>
+
+        <h3>Sequence Flow: Secure Admin Authentication</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+                sequenceDiagram
+                    participant A as Admin (UI)
+                    participant G as API Gateway
+                    participant S as Security Service
+                    participant D as Database
+
+                    A->>G: POST /api/auth/login {creds}
+                    G->>S: authenticateRequest()
+                    S->>D: findUserByEmail(email)
+                    D-->>S: User Document + Hash
+                    S->>S: compareBcrypt(password, hash)
+                    S->>S: generateJWT(userId, role)
+                    S-->>G: Signed Token
+                    G-->>A: 200 OK + JWT Cookie
+            </div>
+            <p><i>Figure 4.5.1: Sequence - Login & JWT Handshake</i></p>
+        </div>
+    </div>
+
+    <!-- PAGE 8: SEQUENCE CLINIC -->
+    <div class="page page-break">
+        <h3>Sequence Flow: Clinic Approval Lifecycle</h3>
+        <div class="diagram-container">
+            <div class="mermaid">
+                sequenceDiagram
+                    participant Admin as Super Admin
+                    participant Cntrl as ClinicController
+                    participant DB as MongoDB
+                    participant Mail as NotifyService
+
+                    Admin->>Cntrl: PUT /clinics/:id/verify
+                    Cntrl->>DB: update(status: 'verified')
+                    DB-->>Cntrl: Success
+                    Cntrl->>Cntrl: createTempAccount()
+                    Cntrl->>DB: saveNewUser()
+                    Cntrl->>Mail: sendCredentials(email, pass)
+                    Mail-->>Admin: UI Update: 'Verification Complete'
+            </div>
+            <p><i>Figure 4.5.2: Sequence - Clinic Approval & Auto-Generation</i></p>
+        </div>
+        <p>
+            Note: The notification service operates asynchronously using a message queue pattern (simplified in 
+            the diagram) to ensure the Admin UI remains responsive even if the email server experiences latency.
+        </p>
+    </div>
+
+    <!-- PAGE 9: COLLABORATIVE -->
+    <div class="page page-break">
+        <div class="section-number">4.4 & 4.6</div>
+        <h2>Collaborative & Class Logic</h2>
+        <p>
+            The system uses a **Controller-Service-Model** pattern. Objects collaborate through well-defined 
+            interfaces to ensure that business logic is never tightly coupled with technical implementation details.
+        </p>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+                graph LR
+                    UI["React View"] -- triggerAction() --> Ctrl["Express Controller"]
+                    Ctrl -- delegate() --> Service["Business Logic Service"]
+                    Service -- read/write --> Model["Mongoose Schema"]
+                    Model -- event --> Audit["Audit Log Interceptor"]
+                    Audit -- persist --> DB[(Storage)]
+            </div>
+            <p><i>Figure 4.6.1: Object Collaboration and Interception Pattern</i></p>
+        </div>
+
+        <h3>Backend Logic Flow</h3>
+        <div class="technical-block">
+            // Logic Rationale: Audit Logging Interceptor
+            // Every Admin action is wrapped in a middleware that captures:
+            // 1. IP Address of requester
+            // 2. Resource being modified (User/Clinic/Medicine)
+            // 3. New vs. Previous value state
+            // This ensures 100% accountability.
+        </div>
+    </div>
+
+    <!-- PAGE 10: DATABASE / ER -->
+    <div class="page page-break">
+        <div class="section-number">4.7</div>
+        <h2>Database Design - Entity Relationship Diagram</h2>
+        <p>
+            The database is modeled to facilitate high-speed analytical queries while maintaining strict relational 
+            integrity. We use MongoDB's referencing (`$ref`) pattern for large entities like Clinics and Users.
+        </p>
+
+        <div class="diagram-container">
+            <div class="mermaid">
+                erDiagram
+                    USER ||--o{ CLINIC : "manages"
+                    USER ||--o{ AUDIT_LOG : "triggers"
+                    CLINIC ||--|{ MEDICINE : "stocks"
+                    USER ||--o{ ORDER : "oversights"
+                    ORDER ||--|{ MEDICINE : "contains"
+                    
+                    USER {
+                        ObjectId _id
+                        string name
+                        string email
+                        string role "admin|pharmacist|user"
+                        date lastLogin
+                    }
+                    CLINIC {
+                        ObjectId _id
+                        string code "PK"
+                        string status "active|draft"
+                        object regulatoryData
+                    }
+                    AUDIT_LOG {
+                        ObjectId id
+                        string action
+                        string resource
+                        string ipAddress
+                    }
+            </div>
+            <p><i>Figure 4.7.1: Global Entity Relationship Model</i></p>
+        </div>
+    </div>
+
+    <!-- PAGE 11: CHAPTER 5 - TESTING -->
+    <div class="page page-break">
+        <div class="section-number">05</div>
+        <h2>Chapter 5: Testing and System Implementation</h2>
+        <p>
+            A robust system is only as good as its verification. The Super Admin module underwent exhaustive 
+            testing ranging from low-level unit checks to high-level stress simulations.
+        </p>
+
+        <h3>5.1 Quality Assurance Methodologies</h3>
+        <ul>
+            <li><strong>Unit Testing (Jest):</strong> Focused on isolating utility functions such as the automated prescription number generator and password encryption salt variations.</li>
+            <li><strong>Integration Testing (Supertest):</strong> Simulated API calls for the entire Clinic Enrollment life cycle, ensuring the database state remains consistent across multiple collection updates.</li>
+            <li><strong>Security Boundary Tests:</strong> Manual and automated attempts to bypass JWT middleware using expired tokens or unauthorized roles (e.g., Patient attempting Admin routes).</li>
+        </ul>
+
+        <h3>5.2 Extensive Test Case Repository</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Test Scenario</th>
+                    <th>Steps</th>
+                    <th>Expected Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Auth</td>
+                    <td>Brute Force Protection</td>
+                    <td>5 failed attempts</td>
+                    <td>Account lockout for 15 mins</td>
+                </tr>
+                <tr>
+                    <td>Clinic</td>
+                    <td>Validation Bypass</td>
+                    <td>Submit empty license</td>
+                    <td>400 Bad Request error</td>
+                </tr>
+                <tr>
+                    <td>Logs</td>
+                    <td>Mass Export</td>
+                    <td>Request 5000+ logs</td>
+                    <td>Streamed CSV generated</td>
+                </tr>
+                <tr>
+                    <td>RBAC</td>
+                    <td>Horizontal Escalation</td>
+                    <td>User A edits Clinic B</td>
+                    <td>403 Unauthorized result</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PAGE 12: IMPLEMENTATION GUIDE -->
+    <div class="page page-break">
+        <h3>5.3 Technical Implementation Workflow</h3>
+        <p>
+            The system implementation followed a **Blue-Green Deployment Strategy** to ensure zero downtime. The 
+            infrastructure was provisioned using environment-specific configurations.
+        </p>
+
+        <h3>Step-by-Step Installation Guide</h3>
+        <div class="technical-block">
+            1. CLONE REPOSITORY: git clone [remote-url]<br>
+            2. CONFIG ENV: Create .env with MONGODB_URI and JWT_SECRET<br>
+            3. INSTALL DEPS: npm install --prefix server && npm install --prefix client<br>
+            4. SEED ADMIN: node server/utils/create-admin.js<br>
+            5. LAUNCH: npm run dev
+        </div>
+
+        <h3>5.4 System Maintenance & Disaster Recovery</h3>
+        <p>
+            To maintain structural integrity, the system performs an automated "Cleanup" job every 24 hours 
+            that archives expired sessions and compresses Audit Logs older than 6 months into offline storage.
+        </p>
+        <ul>
+            <li><strong>Daily Backups:</strong> MongoDB Atlas auto-backups every 6 hours.</li>
+            <li><strong>Uptime Monitoring:</strong> Health checks via `/api/status` endpoint every 60 seconds.</li>
+            <li><strong>Dependency Patches:</strong> Monthly security audit using `npm audit fix`.</li>
+        </ul>
+    </div>
+
+    <!-- PAGE 13: CONCLUSION -->
+    <div class="page page-break" style="min-height: auto;">
+        <h2>Conclusion</h2>
+        <p>
+            The PharmaCare Super Admin Dashboard is a comprehensive solution for managing the complexities of 
+            modern pharmacy networks. Through the rigorous design of its architecture (Chapter 4) and the 
+            exhaustive verification of its logic (Chapter 5), the system stands ready for enterprise-level 
+            operational deployment.
+        </p>
+        <div class="divider" style="margin: 100px auto;"></div>
+        <p style="text-align: center; font-size: 0.95rem; color: var(--text-muted);">
+            © 2026 PharmaCare Solutions. All Technical Rights Reserved.
+        </p>
+    </div>
+
+    <div class="footer no-print">
+        PHARMACARE SYSTEM DOCUMENTATION - VERSION 2.1 (LIGHT MODE)
+    </div>
+
+</body>
+</html>

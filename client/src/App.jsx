@@ -11,7 +11,7 @@ import { Toaster } from "react-hot-toast";
 import LoadingScreen from "./components/common/LoadingScreen";
 
 // Auth Pages
-import AdminLogin from "./pages/auth/AdminLogin";
+import AdminLogin from "./pages/auth/AdminPortal";
 import ClinicLogin from "./pages/auth/ClinicLogin";
 import PatientLogin from "./pages/auth/PatientLogin";
 
@@ -83,7 +83,11 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/user" replace />;
   }
 
-  return children;
+  return (
+    <div className={user?.role === "admin" ? "theme-admin" : ""}>
+      {children}
+    </div>
+  );
 };
 
 // Public Route - redirect authenticated users to their dashboard

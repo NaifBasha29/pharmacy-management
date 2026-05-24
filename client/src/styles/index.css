@@ -120,6 +120,7 @@
 }
 
 /* Dark Mode - Black & Orange Theme */
+/* Dark Mode - Black & Orange Theme */
 [data-theme="dark"] {
   --bg-primary: #000000;
   --bg-secondary: #050505;
@@ -134,6 +135,80 @@
   --border-default: rgba(249, 115, 22, 0.2);
   --primary-500: #f97316;
   --primary-600: #ea580c;
+}
+
+/* Emerald & Gold Luxury Theme - Applied via .theme-admin class */
+.theme-admin {
+  --bg-primary: #021a1b;
+  --bg-secondary: #042a2b;
+  --bg-tertiary: #011112;
+  --surface: rgba(4, 42, 43, 0.4);
+  --surface-hover: rgba(212, 175, 55, 0.08);
+  
+  --text-primary: #e5e5e5;
+  --text-secondary: #94a3b8;
+  --text-tertiary: rgba(148, 163, 184, 0.6);
+  
+  --primary-500: #059669; /* Emerald */
+  --primary-600: #047857;
+  --primary-700: #064e3b;
+  
+  --secondary-500: #d4af37; /* Gold */
+  --secondary-600: #b8860b;
+  
+  --border-light: rgba(212, 175, 55, 0.15);
+  --border-default: rgba(212, 175, 55, 0.25);
+  
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  
+  --gradient-primary: linear-gradient(135deg, #059669 0%, #064e3b 100%);
+  --gradient-accent: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+}
+
+.theme-admin .dashboard-main {
+    background: #021a1b;
+    background-image: 
+        radial-gradient(circle at 0% 0%, #063d3f 0%, transparent 40%),
+        radial-gradient(circle at 100% 100%, #063d3f 0%, transparent 40%);
+}
+
+.theme-admin .card {
+    background: rgba(4, 42, 43, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.theme-admin .btn-primary {
+    background: linear-gradient(135deg, #059669 0%, #064e3b 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-admin .btn-primary:hover {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.2);
+}
+
+.theme-admin .table th {
+    background: rgba(212, 175, 55, 0.05);
+    color: #d4af37;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.theme-admin .table td {
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.theme-admin .status-badge.active {
+    background: rgba(5, 150, 105, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(5, 150, 105, 0.3);
+}
+
+.theme-admin h1, .theme-admin h2, .theme-admin h3 {
+    color: #ffd700;
 }
 
 /* Reset & Base */

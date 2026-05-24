@@ -52,7 +52,7 @@ const TopNav = () => {
     };
 
     return (
-        <header className="top-nav">
+        <header className={`top-nav ${isAdmin ? "theme-admin" : ""}`}>
             <div className="top-nav-container">
                 {/* Center: Navigation Links */}
                 <nav className="top-nav-links">

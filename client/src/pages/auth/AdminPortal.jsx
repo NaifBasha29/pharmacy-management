@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useClearAuthOnMount } from '../../hooks/useSecurityHooks';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
-import './AdminLogin.css'; // Switch to specialized premium CSS
+import './AdminPortal.css'; // Renamed to break cache
 import logo from '../../../assets/logo.png';
-import ThemeToggle from '../../components/common/ThemeToggle';
 
 const AdminLogin = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -43,37 +42,41 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="auth-page">
-            <div className="auth-theme-toggle">
-                <ThemeToggle />
-            </div>
-            <div className="auth-container">
-                <div className="auth-left">
-                    <div className="auth-brand">
-                        <img src={logo} alt="RxPlus" className="brand-logo-img" />
-                        <h1>RxPlus</h1>
-                        <p>Admin Portal</p>
+        <div className="admin-portal-page">
+            <div className="admin-portal-container">
+                <div className="admin-portal-left">
+                    <div className="crest-bg" />
+                    <div className="wave-decoration">
+                        <svg viewBox="0 0 500 500" preserveAspectRatio="none">
+                            <path d="M0,100 C150,200 350,0 500,100 L500,00 L0,0 Z" fill="rgba(212, 175, 55, 0.05)" />
+                        </svg>
+                    </div>
+                    
+                    <div className="admin-brand">
+                        <div className="brand-logo-container">
+                            <img src={logo} alt="RxPlus" className="brand-logo-img" />
+                        </div>
                     </div>
                 </div>
 
-                <div className="admin-auth-right">
-                    <div className="admin-form-container">
-                        <div className="admin-auth-header">
+                <div className="admin-portal-right">
+                    <div className="admin-portal-form-container">
+                        <div className="admin-portal-header">
                             <h2>Admin Login</h2>
                             <p>Secure access for system administrators</p>
                         </div>
 
-                        {error && <div className="admin-auth-error">{error}</div>}
+                        {error && <div className="admin-portal-error">{error}</div>}
 
-                        <form onSubmit={handleSubmit} className="admin-auth-form">
-                            <div className="admin-form-group">
-                                <label className="admin-form-label">Email Address</label>
-                                <div className="admin-input-wrapper">
-                                    <FiMail className="admin-input-icon" />
+                        <form onSubmit={handleSubmit} className="admin-portal-form">
+                            <div className="admin-portal-form-group">
+                                <label className="admin-portal-form-label">Email Address</label>
+                                <div className="admin-portal-input-wrapper">
+                                    <FiMail className="admin-portal-input-icon" />
                                     <input
                                         type="email"
                                         name="email"
-                                        className="admin-form-input"
+                                        className="admin-portal-input"
                                         placeholder="Enter admin email"
                                         value={formData.email}
                                         onChange={handleChange}
@@ -82,14 +85,14 @@ const AdminLogin = () => {
                                 </div>
                             </div>
 
-                            <div className="admin-form-group">
-                                <label className="admin-form-label">Password</label>
-                                <div className="admin-input-wrapper">
-                                    <FiLock className="admin-input-icon" />
+                            <div className="admin-portal-form-group">
+                                <label className="admin-portal-form-label">Password</label>
+                                <div className="admin-portal-input-wrapper">
+                                    <FiLock className="admin-portal-input-icon" />
                                     <input
                                         type={showPassword ? 'text' : 'password'}
                                         name="password"
-                                        className="admin-form-input"
+                                        className="admin-portal-input"
                                         placeholder="Enter password"
                                         value={formData.password}
                                         onChange={handleChange}
@@ -97,7 +100,7 @@ const AdminLogin = () => {
                                     />
                                     <button
                                         type="button"
-                                        className="admin-password-toggle"
+                                        className="admin-portal-password-toggle"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
                                         {showPassword ? <FiEyeOff /> : <FiEye />}
@@ -105,8 +108,8 @@ const AdminLogin = () => {
                                 </div>
                             </div>
 
-                            <button type="submit" className="admin-btn-primary" disabled={loading}>
-                                {loading ? <span className="admin-spinner" /> : 'Sign In as Admin'}
+                            <button type="submit" className="admin-portal-btn-primary" disabled={loading}>
+                                {loading ? <span className="admin-portal-spinner" /> : 'Sign In as Admin'}
                             </button>
                         </form>
                     </div>
@@ -117,8 +120,3 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
-
-
-
-
-
