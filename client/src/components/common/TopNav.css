@@ -148,47 +148,50 @@
 /* =========================================
    Emerald & Gold Luxury Theme — Admin
    ========================================= */
-.top-nav.theme-admin {
+/* Admin styling is now applied via the document-level .theme-admin class
+   (set by ThemeProvider). These selectors remain for compatibility but the
+   header should not carry its own .theme-admin class. */
+.theme-admin .top-nav {
     background: #021a1b;
     border-bottom: 1px solid rgba(212, 175, 55, 0.18);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.45);
 }
 
-.top-nav.theme-admin .brand-text {
+.theme-admin .top-nav .brand-text {
     color: #d4af37;
 }
 
-.top-nav.theme-admin .brand-icon {
+.theme-admin .top-nav .brand-icon {
     background: linear-gradient(135deg, #d4af37, #b8860b);
     color: #021a1b;
 }
 
-.top-nav.theme-admin .nav-item {
+.theme-admin .top-nav .nav-item {
     color: rgba(212, 175, 55, 0.65);
 }
 
-.top-nav.theme-admin .nav-item:hover {
+.theme-admin .top-nav .nav-item:hover {
     color: #ffd700;
     background: rgba(212, 175, 55, 0.08);
 }
 
-.top-nav.theme-admin .nav-item.active {
+.theme-admin .top-nav .nav-item.active {
     background: linear-gradient(135deg, #059669 0%, #042a2b 100%);
     color: #ffd700;
     border: 1px solid rgba(212, 175, 55, 0.25);
 }
 
-.top-nav.theme-admin .user-name {
+.theme-admin .top-nav .user-name {
     color: rgba(212, 175, 55, 0.55);
 }
 
-.top-nav.theme-admin .user-avatar {
+.theme-admin .top-nav .user-avatar {
     background: linear-gradient(135deg, #d4af37, #b8860b);
     color: #021a1b;
     border-color: rgba(212, 175, 55, 0.25);
     border-radius: 8px;
 }
 
-.top-nav.theme-admin .user-avatar:hover {
+.theme-admin .top-nav .user-avatar:hover {
     box-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
 }

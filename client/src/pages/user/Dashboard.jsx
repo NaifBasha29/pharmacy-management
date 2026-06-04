@@ -196,7 +196,7 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-layout no-top-nav theme-admin">
+    <div className="dashboard-layout no-top-nav">
         <Sidebar forceAdminTheme />
         <main className="dashboard-main user-dashboard-page">
           <div

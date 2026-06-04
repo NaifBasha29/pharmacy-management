@@ -18,3 +18,27 @@
     border-color: var(--primary-500);
     transform: translateY(-1px);
 }
+
+/* Admin toggle styles (small badge) */
+.admin-toggle {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 6px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-default);
+    background: transparent;
+}
+
+.admin-toggle.active {
+    background: var(--gradient-accent);
+    color: #111827;
+    border-color: rgba(0,0,0,0.06);
+}
+
+.admin-toggle:hover {
+    transform: translateY(-1px);
+}

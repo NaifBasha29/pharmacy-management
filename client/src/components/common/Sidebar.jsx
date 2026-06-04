@@ -23,14 +23,17 @@ import {
   FiCrosshair, // Using an icon instead of logo for now
 } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
+import { useTheme } from '../../context/ThemeContext';
 import "./Sidebar.css";
 
 const Sidebar = ({ forceAdminTheme = true }) => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
+  const { setAdminTheme } = useTheme();
   const { unreadCount } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
   const isAdminTheme = isAdmin || forceAdminTheme;
+  const { setAdminTheme } = useTheme();
   // Sidebar open state: controls visual open (hover or pinned)
   const [isOpen, setIsOpen] = useState(false);
   // When true the sidebar stays open (pin). Clicking the toggle pins/unpins.
@@ -61,8 +64,11 @@ const Sidebar = ({ forceAdminTheme = true }) => {
   };
 
   useEffect(() => {
+    // Keep the global admin theme in sync when user role or prop changes
+    setAdminTheme(isAdminTheme);
+
     return () => clearTimeout(leaveTimeoutRef.current);
-  }, []);
+  }, [isAdminTheme, setAdminTheme]);
 
   // Keep sidebar open on keyboard focus within the sidebar, and collapse when focus leaves
   useEffect(() => {
@@ -182,7 +188,7 @@ const Sidebar = ({ forceAdminTheme = true }) => {
         />
       )}
 
-      <aside
+    <aside
         ref={asideRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -192,7 +198,7 @@ const Sidebar = ({ forceAdminTheme = true }) => {
         onBlur={() => {
           if (!isPinned) setIsOpen(false);
         }}
-        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isPinned ? "pinned" : ""} ${isMobileOpen ? "mobile-open" : ""} ${isAdminTheme ? "theme-admin" : ""}`}
+        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isPinned ? "pinned" : ""} ${isMobileOpen ? "mobile-open" : ""}`}
         tabIndex={-1}
       >
         <div className="sidebar-header">

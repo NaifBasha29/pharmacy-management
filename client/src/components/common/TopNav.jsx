@@ -5,6 +5,7 @@ import {
     FiSettings, FiLogOut, FiActivity, FiClipboard, FiHeart
 } from 'react-icons/fi';
 import ThemeToggle from './ThemeToggle';
+import { useTheme } from '../../context/ThemeContext';
 import './TopNav.css';
 
 const TopNav = () => {
@@ -50,8 +51,16 @@ const TopNav = () => {
         return location.pathname.startsWith(path);
     };
 
+    const { setAdminTheme } = useTheme();
+
+    // Keep the global admin class in sync with the logged-in user's role
+    useEffect(() => {
+        setAdminTheme(Boolean(isAdmin));
+        return () => setAdminTheme(false);
+    }, [isAdmin, setAdminTheme]);
+
     return (
-        <header className={`top-nav ${isAdmin ? "theme-admin" : ""}`}>
+        <header className={`top-nav`}>
             <div className="top-nav-container">
                 {/* Center: Navigation Links */}
                 <nav className="top-nav-links">
