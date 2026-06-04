@@ -171,10 +171,38 @@ function AppRoutes() {
         }
       />
 
-      <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-      <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-      <Route path="/verify-otp" element={<PublicRoute><VerifyOTP /></PublicRoute>} />
-      <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/verify-otp"
+        element={
+          <PublicRoute>
+            <VerifyOTP />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/reset-password"
+        element={
+          <PublicRoute>
+            <ResetPassword />
+          </PublicRoute>
+        }
+      />
 
       {/* Legacy Login Redirect */}
       <Route path="/login" element={<Navigate to="/user/login" replace />} />
@@ -496,7 +524,9 @@ function AppRoutes() {
       <Route
         path="/medicines/:id"
         element={
-          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["user", "patient", "pharmacist", "admin"]}
+          >
             <MedicineDetail />
           </ProtectedRoute>
         }
@@ -504,7 +534,9 @@ function AppRoutes() {
       <Route
         path="/orders/:id"
         element={
-          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["user", "patient", "pharmacist", "admin"]}
+          >
             <OrderDetail />
           </ProtectedRoute>
         }
@@ -512,7 +544,9 @@ function AppRoutes() {
       <Route
         path="/favorites"
         element={
-          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["user", "patient", "pharmacist", "admin"]}
+          >
             <Favorites />
           </ProtectedRoute>
         }
@@ -520,7 +554,9 @@ function AppRoutes() {
       <Route
         path="/medicine-cabinet"
         element={
-          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["user", "patient", "pharmacist", "admin"]}
+          >
             <HomeMedicineCabinet />
           </ProtectedRoute>
         }
@@ -528,7 +564,9 @@ function AppRoutes() {
       <Route
         path="/symptom-checker"
         element={
-          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["user", "patient", "pharmacist", "admin"]}
+          >
             <SymptomChecker />
           </ProtectedRoute>
         }
@@ -536,7 +574,9 @@ function AppRoutes() {
       <Route
         path="/recommendations"
         element={
-          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["user", "patient", "pharmacist", "admin"]}
+          >
             <Recommendations />
           </ProtectedRoute>
         }
@@ -544,7 +584,9 @@ function AppRoutes() {
       <Route
         path="/chatbot"
         element={
-          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+          <ProtectedRoute
+            allowedRoles={["user", "patient", "pharmacist", "admin"]}
+          >
             <Chatbot />
           </ProtectedRoute>
         }

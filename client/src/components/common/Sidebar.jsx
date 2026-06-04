@@ -141,9 +141,21 @@ const Sidebar = ({ forceAdminTheme = true }) => {
     { path: "/user/support", icon: <FiHelpCircle />, label: "Support" },
     // Additional user utilities
     { path: "/favorites", icon: <FiHeart />, label: "Favorites" },
-    { path: "/medicine-cabinet", icon: <FiCrosshair />, label: "Medicine Cabinet" },
-    { path: "/symptom-checker", icon: <FiAlertCircle />, label: "Symptom Checker" },
-    { path: "/recommendations", icon: <FiTrendingUp />, label: "Recommendations" },
+    {
+      path: "/medicine-cabinet",
+      icon: <FiCrosshair />,
+      label: "Medicine Cabinet",
+    },
+    {
+      path: "/symptom-checker",
+      icon: <FiAlertCircle />,
+      label: "Symptom Checker",
+    },
+    {
+      path: "/recommendations",
+      icon: <FiTrendingUp />,
+      label: "Recommendations",
+    },
     { path: "/chatbot", icon: <FiBell />, label: "Chatbot" },
   ];
 
@@ -190,9 +202,9 @@ const Sidebar = ({ forceAdminTheme = true }) => {
             {isOpen && <span className="logo-text">Pharma Care</span>}
           </div>
           <button
-            className={`sidebar-toggle ${isPinned ? 'pinned' : ''}`}
+            className={`sidebar-toggle ${isPinned ? "pinned" : ""}`}
             onClick={() => setIsPinned((p) => !p)}
-            title={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+            title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
             aria-pressed={isPinned}
           >
             {isPinned ? <FiX /> : <FiMenu />}
@@ -236,7 +248,11 @@ const Sidebar = ({ forceAdminTheme = true }) => {
             <ThemeToggle className={!isOpen ? "w-full" : ""} />
           </div>
 
-          <button className="nav-link notification-btn" title="Notifications" aria-label="Notifications">
+          <button
+            className="nav-link notification-btn"
+            title="Notifications"
+            aria-label="Notifications"
+          >
             <span className="nav-icon">
               <FiBell />
               {unreadCount > 0 && (
@@ -246,7 +262,12 @@ const Sidebar = ({ forceAdminTheme = true }) => {
             {isOpen && <span className="nav-label">Notifications</span>}
           </button>
 
-          <button className="nav-link logout-btn" onClick={handleLogout} title="Logout" aria-label="Logout">
+          <button
+            className="nav-link logout-btn"
+            onClick={handleLogout}
+            title="Logout"
+            aria-label="Logout"
+          >
             <span className="nav-icon">
               <FiLogOut />
             </span>

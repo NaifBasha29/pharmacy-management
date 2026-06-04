@@ -1,58 +1,65 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { FiUser, FiMail, FiLock, FiPhone, FiEye, FiEyeOff } from 'react-icons/fi';
-import './Auth.css';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import {
+  FiUser,
+  FiMail,
+  FiLock,
+  FiPhone,
+  FiEye,
+  FiEyeOff,
+} from "react-icons/fi";
+import "./Auth.css";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phone: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     const result = await register({
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      phone: formData.phone
+      phone: formData.phone,
     });
-    
+
     if (result.success) {
       // After registration send user to login page
-      navigate('/login');
+      navigate("/login");
     } else {
       setError(result.error);
     }
-    
+
     setLoading(false);
   };
 
@@ -144,7 +151,7 @@ const Register = () => {
                   <div className="input-wrapper">
                     <FiLock className="input-icon" />
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       className="form-input"
                       placeholder="Create password"
@@ -160,7 +167,7 @@ const Register = () => {
                   <div className="input-wrapper">
                     <FiLock className="input-icon" />
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       name="confirmPassword"
                       className="form-input"
                       placeholder="Confirm password"
@@ -179,13 +186,19 @@ const Register = () => {
                 </div>
               </div>
 
-              <button type="submit" className="btn btn-primary btn-lg w-full" disabled={loading}>
-                {loading ? <span className="spinner" /> : 'Create Account'}
+              <button
+                type="submit"
+                className="btn btn-primary btn-lg w-full"
+                disabled={loading}
+              >
+                {loading ? <span className="spinner" /> : "Create Account"}
               </button>
             </form>
 
             <div className="auth-footer">
-              <p>Already have an account? <Link to="/login">Sign In</Link></p>
+              <p>
+                Already have an account? <Link to="/login">Sign In</Link>
+              </p>
             </div>
           </div>
         </div>
@@ -195,8 +208,3 @@ const Register = () => {
 };
 
 export default Register;
-
-
-
-
-

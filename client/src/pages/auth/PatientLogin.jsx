@@ -28,7 +28,10 @@ const PatientLogin = () => {
     setError("");
 
     // API expects { identifier, password } where identifier can be email or patientId
-    const payload = { identifier: formData.identifier, password: formData.password };
+    const payload = {
+      identifier: formData.identifier,
+      password: formData.password,
+    };
     const result = await loginPatient(payload);
 
     if (result.success) {
@@ -100,12 +103,24 @@ const PatientLogin = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <FiEyeOff /> : <FiEye />}
-              </button>
-              </div>
+                  </button>
+                </div>
               </div>
 
-              <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '0.75rem' }}>
-                <a href="/forgot-password" className="text-sm" style={{ color: '#f97316' }}>Forgot password?</a>
+              <div
+                style={{
+                  textAlign: "right",
+                  marginTop: "-0.5rem",
+                  marginBottom: "0.75rem",
+                }}
+              >
+                <a
+                  href="/forgot-password"
+                  className="text-sm"
+                  style={{ color: "#f97316" }}
+                >
+                  Forgot password?
+                </a>
               </div>
 
               <button
@@ -117,9 +132,15 @@ const PatientLogin = () => {
               </button>
             </form>
             <div className="demo-credentials">
-              <p><strong>Demo Patient Login</strong></p>
-              <p>Patient ID: <strong>PAT001</strong></p>
-              <p>Password: <strong>Patient@123</strong></p>
+              <p>
+                <strong>Demo Patient Login</strong>
+              </p>
+              <p>
+                Patient ID: <strong>PAT001</strong>
+              </p>
+              <p>
+                Password: <strong>Patient@123</strong>
+              </p>
             </div>
           </div>
         </div>

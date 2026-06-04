@@ -236,8 +236,9 @@ export const adminAPI = {
 export const aiAPI = {
   chat: (payload) => {
     // Accept either a string (single message) or an object { message, history }
-    if (typeof payload === 'string') return api.post('/ai/chat', { message: payload });
-    return api.post('/ai/chat', payload);
+    if (typeof payload === "string")
+      return api.post("/ai/chat", { message: payload });
+    return api.post("/ai/chat", payload);
   },
   symptomCheck: (symptoms) => api.post("/ai/symptom-check", { symptoms }),
   recommendations: () => api.get("/ai/recommendations"),
