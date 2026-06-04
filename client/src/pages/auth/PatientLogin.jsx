@@ -135,10 +135,10 @@ const PatientLogin = () => {
                 <strong>Demo Patient Login</strong>
               </p>
               <p>
-                Patient ID: <strong>PAT001</strong>
+                Patient ID: <strong>Psycbaka@gmail.com</strong>
               </p>
               <p>
-                Password: <strong>Patient@123</strong>
+                Password: <strong>Password@123</strong>
               </p>
             </div>
           </div>
