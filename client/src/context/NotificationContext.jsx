@@ -1,3 +1,4 @@
+// @refresh reset
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
@@ -115,7 +116,6 @@ export const NotificationProvider = ({ children }) => {
   );
 };
 
-export default NotificationContext;
 
 
 

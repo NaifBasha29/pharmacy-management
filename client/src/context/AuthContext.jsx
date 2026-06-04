@@ -1,3 +1,4 @@
+// @refresh reset
 import { createContext, useContext, useState, useEffect } from "react";
 import { authAPI } from "../services/api";
 
@@ -157,5 +158,3 @@ export const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-
-export default AuthContext;

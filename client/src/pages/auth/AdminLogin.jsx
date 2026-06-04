@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useClearAuthOnMount } from '../../hooks/useSecurityHooks';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import './AdminLogin.css'; // Switch to specialized premium CSS
-import logo from '../../../assets/logo.png';
 
 const AdminLogin = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -54,7 +53,8 @@ const AdminLogin = () => {
                     
                     <div className="admin-brand">
                         <div className="brand-logo-container">
-                            <img src={logo} alt="Pharma Care" className="brand-logo-img" />
+                            <div className="brand-icon-mark">⚕</div>
+                            <h2 className="brand-name-text">Pharma Care</h2>
                         </div>
                     </div>
                 </div>

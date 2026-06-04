@@ -4,7 +4,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useClearAuthOnMount } from "../../hooks/useSecurityHooks";
 import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import "./Auth.css";
-import logo from "../../../assets/logo.png";
 
 const PatientLogin = () => {
   const [formData, setFormData] = useState({ identifier: "", password: "" });
@@ -52,7 +51,7 @@ const PatientLogin = () => {
       <div className="auth-container">
         <div className="auth-left">
           <div className="auth-brand">
-            <img src={logo} alt="Pharma Care" className="brand-logo-img" />
+            <div className="brand-icon-mark">⚕</div>
             <h1>Pharma Care</h1>
             <p>Patient Portal</p>
           </div>

@@ -68,7 +68,7 @@ const Register = () => {
       <div className="auth-container">
         <div className="auth-left">
           <div className="auth-brand">
-            <div className="brand-logo">💊</div>
+            <div className="brand-icon-mark">⚕</div>
             <h1>Pharma Care</h1>
             <p>Your trusted pharmacy management solution</p>
           </div>

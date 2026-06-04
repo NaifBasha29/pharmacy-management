@@ -94,7 +94,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/user" replace />;
   }
 
-  return <div className="theme-admin">{children}</div>;
+  return children;
 };
 
 // Public Route - redirect authenticated users to their dashboard

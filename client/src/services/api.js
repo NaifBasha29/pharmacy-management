@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5005/api";
+  import.meta.env.VITE_API_URL || "/api";
 
 // Create axios instance
 const api = axios.create({
@@ -246,16 +246,16 @@ export const aiAPI = {
 
 // User favorites API (wishlist)
 export const favoritesAPI = {
-  getAll: () => api.get("/user/favorites"),
-  add: (data) => api.post("/user/favorites", data),
-  remove: (medicineId) => api.delete(`/user/favorites/${medicineId}`),
+  getAll: () => api.get("/favorites"),
+  add: (data) => api.post("/favorites", data),
+  remove: (medicineId) => api.delete(`/favorites/${medicineId}`),
 };
 
 // Home medicine cabinet API
 export const homeMedicinesAPI = {
-  getAll: () => api.get("/user/home-medicines"),
-  create: (data) => api.post("/user/home-medicines", data),
-  delete: (id) => api.delete(`/user/home-medicines/${id}`),
+  getAll: () => api.get("/home-medicines"),
+  create: (data) => api.post("/home-medicines", data),
+  delete: (id) => api.delete(`/home-medicines/${id}`),
 };
 
 export default api;
