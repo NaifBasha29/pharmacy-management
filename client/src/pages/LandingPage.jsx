@@ -1,373 +1,398 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
     FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn,
     FaPills, FaClipboardList, FaUserMd, FaChartLine,
     FaShieldAlt, FaHeadset, FaCheckCircle, FaMapMarkerAlt,
-    FaPhone, FaEnvelope, FaClock, FaArrowRight
+    FaPhone, FaEnvelope, FaClock, FaArrowRight, FaStar,
+    FaBell, FaBoxes, FaLock, FaRocket, FaMobile
 } from 'react-icons/fa';
+import { FiZap, FiTrendingUp, FiUsers, FiPackage, FiShield, FiPhone } from 'react-icons/fi';
 import './LandingPage.css';
 import landingImage from '../../assets/lp.png';
 import logo from '../../assets/logo.png';
 
 const LandingPage = () => {
-    const [contactForm, setContactForm] = useState({
-        name: '',
-        email: '',
-        message: ''
-    });
-
-    const handleContactChange = (e) => {
-        setContactForm({
-            ...contactForm,
-            [e.target.name]: e.target.value
-        });
-    };
-
     const [activeSection, setActiveSection] = useState('home');
+    const [scrolled, setScrolled] = useState(false);
+    const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
 
-    const handleContactSubmit = (e) => {
-        e.preventDefault();
-        alert('Thank you for contacting us! We will get back to you shortly.');
-        setContactForm({ name: '', email: '', message: '' });
-    };
-
-    React.useEffect(() => {
+    useEffect(() => {
         const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
             const sections = ['home', 'features', 'about', 'contact'];
-            const scrollPosition = window.scrollY + 200; // Offset for header
-
-            for (const section of sections) {
-                const element = document.getElementById(section);
-                if (element) {
-                    const offsetTop = element.offsetTop;
-                    const offsetHeight = element.offsetHeight;
-                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                        setActiveSection(section);
-                    }
+            const scrollPos = window.scrollY + 160;
+            for (const s of sections) {
+                const el = document.getElementById(s);
+                if (el && scrollPos >= el.offsetTop && scrollPos < el.offsetTop + el.offsetHeight) {
+                    setActiveSection(s);
                 }
             }
         };
-
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    return (
-        <div className="landing-page">
-            {/* Navigation */}
-            <nav className="landing-nav">
-                <div className="nav-container">
-                    <Link to="/" className="nav-brand">
-                        <img src={logo} alt="Pharma Care" className="brand-logo-img" />
+    const handleContactChange = (e) => setContactForm({ ...contactForm, [e.target.name]: e.target.value });
+    const handleContactSubmit = (e) => {
+        e.preventDefault();
+        alert('Thank you! We will get back to you shortly.');
+        setContactForm({ name: '', email: '', message: '' });
+    };
 
+    const features = [
+        { icon: <FiPackage />, color: 'cyan', title: 'Smart Inventory', desc: 'Real-time stock tracking, automated reordering triggers, and expiry date alerts — all in one place.', tag: 'Popular', size: 'large' },
+        { icon: <FiUsers />, color: 'violet', title: 'Patient Profiles', desc: 'Full medication history, interaction checks, and care notes for safer prescribing.', size: 'small' },
+        { icon: <FiShield />, color: 'emerald', title: 'HIPAA Compliant', desc: 'Bank-grade encryption and role-based access controls.', size: 'small' },
+        { icon: <FiTrendingUp />, color: 'orange', title: 'Analytics', desc: 'Live sales dashboards, inventory turnover reports, and financial insights — automatically generated.', tag: 'New', size: 'large' },
+        { icon: <FiZap />, color: 'gold', title: 'E-Prescribing', desc: 'Receive and process electronic prescriptions instantly.', size: 'small' },
+        { icon: <FiPhone />, color: 'rose', title: '24/7 Support', desc: 'Our team is always on standby to help you succeed.', size: 'small' },
+    ];
+
+    const testimonials = [
+        { name: 'Dr. Sarah Chen', role: 'Chief Pharmacist, MedPlus', text: 'PharmaCare reduced our dispensing errors by 87% in the first month. The analytics alone were worth switching.' },
+        { name: 'Marcus Williams', role: 'Owner, Williams Pharmacy', text: 'Setup was done in under 24 hours. The inventory automation has saved us thousands every quarter.' },
+        { name: 'Priya Sharma', role: 'Operations Lead, HealthHub', text: 'The patient profiles feature is remarkable. Our staff resolved care questions 3x faster.' },
+    ];
+
+    return (
+        <div className="lp">
+            {/* ── NAV ── */}
+            <nav className={`lp-nav ${scrolled ? 'lp-nav--scrolled' : ''}`}>
+                <div className="lp-nav__inner">
+                    <Link to="/" className="lp-nav__brand">
+                        <img src={logo} alt="Pharma Care" className="lp-nav__logo" />
+                        <span className="lp-nav__name">PharmaCare</span>
                     </Link>
-                    <div className="nav-links">
-                        <a href="#home" className={`nav-link ${activeSection === 'home' ? 'active' : ''}`} onClick={() => setActiveSection('home')}>Home</a>
-                        <a href="#features" className={`nav-link ${activeSection === 'features' ? 'active' : ''}`} onClick={() => setActiveSection('features')}>Features</a>
-                        <a href="#about" className={`nav-link ${activeSection === 'about' ? 'active' : ''}`} onClick={() => setActiveSection('about')}>About</a>
-                        <a href="#contact" className={`nav-link ${activeSection === 'contact' ? 'active' : ''}`} onClick={() => setActiveSection('contact')}>Contact</a>
+                    <div className="lp-nav__links">
+                        {['home','features','about','contact'].map(s => (
+                            <a key={s} href={`#${s}`} className={`lp-nav__link ${activeSection === s ? 'lp-nav__link--active' : ''}`}
+                               onClick={() => setActiveSection(s)}>
+                                {s.charAt(0).toUpperCase() + s.slice(1)}
+                            </a>
+                        ))}
                     </div>
-                    <div className="nav-actions">
-                        <Link to="/user/login" className="btn-cta">Sign In</Link>
+                    <div className="lp-nav__actions">
+                        <Link to="/user/login" className="lp-btn lp-btn--ghost lp-btn--sm">Sign in</Link>
+                        <Link to="/user/login" className="lp-btn lp-btn--primary lp-btn--sm">Get Started <FaArrowRight /></Link>
                     </div>
                 </div>
             </nav>
 
-            {/* Hero Section */}
-            <section id="home" className="hero">
-                <div className="hero-bg-shapes">
-                    <div className="shape shape-1"></div>
-                    <div className="shape shape-2"></div>
-                    <div className="shape shape-3"></div>
-                </div>
-                <div className="hero-container">
-                    <div className="hero-content">
-                        <div className="hero-badge">
-                            <span className="badge-dot"></span>
-                            Trusted by 5,000+ Pharmacies
-                        </div>
-                        <h1 className="hero-title">
-                            Next-Gen <span className="gradient-text">Pharmacy</span> Management
-                        </h1>
-                        <p className="hero-subtitle">
-                            Streamline operations, boost efficiency, and deliver exceptional patient care
-                            with our all-in-one cloud platform designed for modern pharmacies.
-                        </p>
-                        <div className="hero-buttons">
-                            <Link to="/user/login" className="btn-primary">
-                                Sign In
-                                <FaArrowRight className="btn-icon" />
-                            </Link>
-                            <a href="#features" className="btn-secondary">Learn More</a>
-                        </div>
-                        <div className="hero-stats">
-                            <div className="stat">
-                                <span className="stat-value">99.9%</span>
-                                <span className="stat-label">Uptime</span>
-                            </div>
-                            <div className="stat-divider"></div>
-                            <div className="stat">
-                                <span className="stat-value">10M+</span>
-                                <span className="stat-label">Prescriptions</span>
-                            </div>
-                            <div className="stat-divider"></div>
-                            <div className="stat">
-                                <span className="stat-value">24/7</span>
-                                <span className="stat-label">Support</span>
-                            </div>
-                        </div>
+            {/* ── HERO ── */}
+            <section id="home" className="lp-hero">
+                <div className="lp-hero__glow lp-hero__glow--1" />
+                <div className="lp-hero__glow lp-hero__glow--2" />
+                <div className="lp-hero__glow lp-hero__glow--3" />
+
+                <div className="lp-hero__inner">
+                    <div className="lp-hero__pill">
+                        <span className="lp-pill__dot" />
+                        Trusted by 5,000+ pharmacies worldwide
                     </div>
-                    <div className="hero-visual">
-                        <div className="hero-image-container">
-                            <img src={landingImage} alt="Pharma Care Dashboard" className="hero-image" />
+
+                    <h1 className="lp-hero__title">
+                        The smarter way to<br />
+                        <span className="lp-text--gradient">run your pharmacy</span>
+                    </h1>
+
+                    <p className="lp-hero__sub">
+                        Automate inventory, serve patients faster, and grow your business — with the only pharmacy platform built for the modern age.
+                    </p>
+
+                    <div className="lp-hero__ctas">
+                        <Link to="/user/login" className="lp-btn lp-btn--primary lp-btn--lg">
+                            Start for free <FaArrowRight />
+                        </Link>
+                        <a href="#features" className="lp-btn lp-btn--outline lp-btn--lg">
+                            See how it works
+                        </a>
+                    </div>
+
+                    <div className="lp-hero__trust">
+                        <div className="lp-trust__stars">
+                            {[...Array(5)].map((_, i) => <FaStar key={i} />)}
                         </div>
-                        <div className="floating-card card-orders">
-                            <div className="card-icon green"><FaCheckCircle /></div>
-                            <div className="card-info">
-                                <span className="card-title">Orders Processed</span>
-                                <span className="card-value">1,234</span>
+                        <span className="lp-trust__text"><strong>4.9/5</strong> from 2,400+ reviews</span>
+                    </div>
+
+                    {/* Dashboard mockup */}
+                    <div className="lp-hero__mockup">
+                        <div className="lp-mockup__browser">
+                            <div className="lp-mockup__bar">
+                                <span /><span /><span />
+                                <div className="lp-mockup__url">app.pharmacare.io/dashboard</div>
+                            </div>
+                            <img src={landingImage} alt="PharmaCare Dashboard" className="lp-mockup__img" />
+                        </div>
+
+                        <div className="lp-float lp-float--orders">
+                            <div className="lp-float__icon lp-float__icon--green"><FaCheckCircle /></div>
+                            <div>
+                                <div className="lp-float__label">Orders today</div>
+                                <div className="lp-float__val">1,234</div>
+                            </div>
+                            <div className="lp-float__badge">+12%</div>
+                        </div>
+
+                        <div className="lp-float lp-float--revenue">
+                            <div className="lp-float__icon lp-float__icon--violet"><FaChartLine /></div>
+                            <div>
+                                <div className="lp-float__label">Revenue today</div>
+                                <div className="lp-float__val">$12,450</div>
                             </div>
                         </div>
-                        <div className="floating-card card-revenue">
-                            <div className="card-icon blue"><FaChartLine /></div>
-                            <div className="card-info">
-                                <span className="card-title">Revenue Today</span>
-                                <span className="card-value">$12,450</span>
+
+                        <div className="lp-float lp-float--alert">
+                            <div className="lp-float__icon lp-float__icon--orange"><FaBell /></div>
+                            <div>
+                                <div className="lp-float__label">Stock alert</div>
+                                <div className="lp-float__val lp-float__val--sm">Amoxicillin low</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Features Section */}
-            <section id="features" className="features">
-                <div className="section-container">
-                    <div className="section-header">
-                        <span className="section-tag">Features</span>
-                        <h2 className="section-title">Everything You Need to Succeed</h2>
-                        <p className="section-desc">
-                            Powerful tools designed to help you manage inventory, serve patients, and grow your business.
-                        </p>
-                    </div>
-                    <div className="features-grid">
-                        <div className="feature-card">
-                            <div className="feature-icon blue">
-                                <FaClipboardList />
-                            </div>
-                            <h3>Smart Inventory</h3>
-                            <p>Real-time tracking with automated reordering and expiry alerts.</p>
-                        </div>
-                        <div className="feature-card">
-                            <div className="feature-icon green">
-                                <FaUserMd />
-                            </div>
-                            <h3>Patient Profiles</h3>
-                            <p>Complete medication history and interaction checks for safer care.</p>
-                        </div>
-                        <div className="feature-card">
-                            <div className="feature-icon purple">
-                                <FaShieldAlt />
-                            </div>
-                            <h3>HIPAA Compliant</h3>
-                            <p>Bank-level encryption with role-based access controls.</p>
-                        </div>
-                        <div className="feature-card">
-                            <div className="feature-icon orange">
-                                <FaChartLine />
-                            </div>
-                            <h3>Analytics Dashboard</h3>
-                            <p>Insightful reports on sales, inventory, and financial performance.</p>
-                        </div>
-                        <div className="feature-card">
-                            <div className="feature-icon pink">
-                                <FaPills />
-                            </div>
-                            <h3>E-Prescribing</h3>
-                            <p>Seamlessly receive and process electronic prescriptions.</p>
-                        </div>
-                        <div className="feature-card">
-                            <div className="feature-icon teal">
-                                <FaHeadset />
-                            </div>
-                            <h3>24/7 Support</h3>
-                            <p>Dedicated team ready to assist you whenever you need help.</p>
-                        </div>
+            {/* ── LOGOS / SOCIAL PROOF ── */}
+            <section className="lp-logos">
+                <div className="lp-logos__inner">
+                    <p className="lp-logos__label">Trusted by leading pharmacy chains</p>
+                    <div className="lp-logos__row">
+                        {['MedPlus Network','HealthFirst','CityRx Group','WellCare Pharmacy','QuickMeds','PharmaHub'].map(name => (
+                            <div key={name} className="lp-logos__item">{name}</div>
+                        ))}
                     </div>
                 </div>
             </section>
 
-            {/* About Section */}
-            <section id="about" className="about">
-                <div className="section-container">
-                    <div className="about-grid">
-                        <div className="about-content">
-                            <span className="section-tag">About Us</span>
-                            <h2 className="section-title left">Empowering Pharmacies Since 2024</h2>
-                            <p className="about-text">
-                                At Pharma Care, we understand the daily challenges of running a pharmacy.
-                                From managing complex inventories to ensuring patient safety, the demands
-                                are high. That's why we built a solution that puts you back in control.
+            {/* ── FEATURES ── */}
+            <section id="features" className="lp-section">
+                <div className="lp-section__inner">
+                    <div className="lp-section__head">
+                        <div className="lp-tag">Platform Features</div>
+                        <h2 className="lp-section__title">Everything your pharmacy needs</h2>
+                        <p className="lp-section__sub">One platform to manage operations, patients, inventory, and analytics — with zero complexity.</p>
+                    </div>
+
+                    <div className="lp-features">
+                        {features.map((f, i) => (
+                            <div key={i} className={`lp-feature lp-feature--${f.size} lp-feature--${f.color}`}>
+                                {f.tag && <span className="lp-feature__tag">{f.tag}</span>}
+                                <div className="lp-feature__icon">{f.icon}</div>
+                                <h3 className="lp-feature__title">{f.title}</h3>
+                                <p className="lp-feature__desc">{f.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── STATS BAND ── */}
+            <section className="lp-stats">
+                <div className="lp-stats__inner">
+                    {[
+                        { num: '99.9%', label: 'Platform uptime' },
+                        { num: '10M+', label: 'Prescriptions filled' },
+                        { num: '87%', label: 'Fewer errors' },
+                        { num: '24hr', label: 'Onboarding time' },
+                    ].map((s, i) => (
+                        <div key={i} className="lp-stat">
+                            <span className="lp-stat__num">{s.num}</span>
+                            <span className="lp-stat__label">{s.label}</span>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ── ABOUT ── */}
+            <section id="about" className="lp-section lp-section--alt">
+                <div className="lp-section__inner">
+                    <div className="lp-about">
+                        <div className="lp-about__content">
+                            <div className="lp-tag">About PharmaCare</div>
+                            <h2 className="lp-section__title lp-section__title--left">
+                                Built by pharmacists,<br />for pharmacists
+                            </h2>
+                            <p className="lp-about__text">
+                                We've lived the challenges of running a busy pharmacy — the manual stock counts, the prescription backlogs, the missed expiry dates. PharmaCare was built to eliminate all of it, so you can focus on what actually matters: your patients.
                             </p>
-                            <ul className="about-list">
-                                <li><FaCheckCircle /> Streamlined daily operations</li>
-                                <li><FaCheckCircle /> Reduce medication errors by 90%</li>
-                                <li><FaCheckCircle /> Increase profitability and efficiency</li>
-                                <li><FaCheckCircle /> Enterprise-grade security</li>
+                            <ul className="lp-checklist">
+                                {[
+                                    'Reduce dispensing errors by up to 90%',
+                                    'Automate reordering — never go out of stock',
+                                    'Full audit trail for every prescription',
+                                    'Multi-branch support with one login',
+                                ].map((item, i) => (
+                                    <li key={i}><FaCheckCircle className="lp-check__icon" /> {item}</li>
+                                ))}
                             </ul>
-                            <Link to="/user/login" className="btn-primary">
-                                Sign In to Your Account
-                                <FaArrowRight className="btn-icon" />
+                            <Link to="/user/login" className="lp-btn lp-btn--primary lp-btn--lg">
+                                Get started free <FaArrowRight />
                             </Link>
                         </div>
-                        <div className="about-stats">
-                            <div className="stat-card">
-                                <span className="stat-number">98%</span>
-                                <span className="stat-text">Customer Satisfaction</span>
+
+                        <div className="lp-about__cards">
+                            <div className="lp-acard lp-acard--highlight">
+                                <span className="lp-acard__num">98%</span>
+                                <span className="lp-acard__label">Customer satisfaction</span>
                             </div>
-                            <div className="stat-card highlight">
-                                <span className="stat-number">24hr</span>
-                                <span className="stat-text">Quick Onboarding</span>
+                            <div className="lp-acard">
+                                <span className="lp-acard__num">24hr</span>
+                                <span className="lp-acard__label">Quick onboarding</span>
                             </div>
-                            <div className="stat-card">
-                                <span className="stat-number">50+</span>
-                                <span className="stat-text">Integrations</span>
+                            <div className="lp-acard">
+                                <span className="lp-acard__num">50+</span>
+                                <span className="lp-acard__label">Integrations</span>
                             </div>
-                            <div className="stat-card">
-                                <span className="stat-number">5K+</span>
-                                <span className="stat-text">Active Users</span>
+                            <div className="lp-acard lp-acard--dark">
+                                <span className="lp-acard__num">5K+</span>
+                                <span className="lp-acard__label">Active pharmacies</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Contact Section */}
-            <section id="contact" className="contact">
-                <div className="section-container">
-                    <div className="section-header">
-                        <span className="section-tag">Contact</span>
-                        <h2 className="section-title">Get in Touch</h2>
-                        <p className="section-desc">
-                            Have questions? Our team is ready to help you get started.
-                        </p>
+            {/* ── TESTIMONIALS ── */}
+            <section className="lp-section">
+                <div className="lp-section__inner">
+                    <div className="lp-section__head">
+                        <div className="lp-tag">Testimonials</div>
+                        <h2 className="lp-section__title">Loved by pharmacy professionals</h2>
                     </div>
-                    <div className="contact-grid">
-                        <div className="contact-info-cards">
-                            <div className="info-card">
-                                <div className="info-icon"><FaMapMarkerAlt /></div>
-                                <h4>Visit Us</h4>
-                                <p>123 Health Tech Blvd<br />Silicon Valley, CA 94025</p>
-                            </div>
-                            <div className="info-card">
-                                <div className="info-icon"><FaPhone /></div>
-                                <h4>Call Us</h4>
-                                <p>+1 (555) 123-4567</p>
-                            </div>
-                            <div className="info-card">
-                                <div className="info-icon"><FaEnvelope /></div>
-                                <h4>Email Us</h4>
-                                <p>support@pharmacare.com</p>
-                            </div>
-                            <div className="info-card">
-                                <div className="info-icon"><FaClock /></div>
-                                <h4>Business Hours</h4>
-                                <p>Mon - Fri: 9AM - 6PM</p>
-                            </div>
-                        </div>
-                        <div className="contact-form-card">
-                            <form onSubmit={handleContactSubmit} className="contact-form">
-                                <h3>Send a Message</h3>
-                                <div className="form-row">
-                                    <div className="form-group">
-                                        <label>Full Name</label>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={contactForm.name}
-                                            onChange={handleContactChange}
-                                            required
-                                            placeholder="John Doe"
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Email</label>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={contactForm.email}
-                                            onChange={handleContactChange}
-                                            required
-                                            placeholder="john@example.com"
-                                        />
+                    <div className="lp-testimonials">
+                        {testimonials.map((t, i) => (
+                            <div key={i} className="lp-tcard">
+                                <div className="lp-tcard__stars">
+                                    {[...Array(5)].map((_, j) => <FaStar key={j} />)}
+                                </div>
+                                <p className="lp-tcard__text">"{t.text}"</p>
+                                <div className="lp-tcard__author">
+                                    <div className="lp-tcard__avatar">{t.name[0]}</div>
+                                    <div>
+                                        <div className="lp-tcard__name">{t.name}</div>
+                                        <div className="lp-tcard__role">{t.role}</div>
                                     </div>
                                 </div>
-                                <div className="form-group">
-                                    <label>Message</label>
-                                    <textarea
-                                        name="message"
-                                        rows="4"
-                                        value={contactForm.message}
-                                        onChange={handleContactChange}
-                                        required
-                                        placeholder="How can we help you?"
-                                    ></textarea>
-                                </div>
-                                <button type="submit" className="btn-primary btn-full">
-                                    Send Message
-                                    <FaArrowRight className="btn-icon" />
-                                </button>
-                            </form>
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="footer">
-                <div className="footer-container">
-                    <div className="footer-main">
-                        <div className="footer-brand">
-                            <Link to="/" className="nav-brand">
-                                <img src={logo} alt="Pharma Care" className="brand-logo-img" />
-                                <span className="brand-name">Pharma Care</span>
-                            </Link>
-                            <p>Modern pharmacy management for the digital age.</p>
-                            <div className="footer-socials">
-                                <a href="#"><FaFacebookF /></a>
-                                <a href="#"><FaTwitter /></a>
-                                <a href="#"><FaInstagram /></a>
-                                <a href="#"><FaLinkedinIn /></a>
+            {/* ── CONTACT ── */}
+            <section id="contact" className="lp-section lp-section--alt">
+                <div className="lp-section__inner">
+                    <div className="lp-contact">
+                        <div className="lp-contact__info">
+                            <div className="lp-tag">Contact us</div>
+                            <h2 className="lp-section__title lp-section__title--left">Let's talk</h2>
+                            <p className="lp-about__text">
+                                Whether you're ready to get started or just have questions, our team is here to help — no pushy sales tactics.
+                            </p>
+                            <div className="lp-cinfo">
+                                {[
+                                    { icon: <FaPhone />, label: 'Call us', val: '+1 (555) 123-4567' },
+                                    { icon: <FaEnvelope />, label: 'Email us', val: 'support@pharmacare.com' },
+                                    { icon: <FaMapMarkerAlt />, label: 'Office', val: '123 Health Tech Blvd, CA 94025' },
+                                    { icon: <FaClock />, label: 'Hours', val: 'Mon–Fri, 9AM–6PM PST' },
+                                ].map((item, i) => (
+                                    <div key={i} className="lp-cinfo__row">
+                                        <div className="lp-cinfo__icon">{item.icon}</div>
+                                        <div>
+                                            <div className="lp-cinfo__label">{item.label}</div>
+                                            <div className="lp-cinfo__val">{item.val}</div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                        <div className="footer-links-group">
-                            <div className="footer-col">
+
+                        <form onSubmit={handleContactSubmit} className="lp-contact__form">
+                            <h3 className="lp-form__title">Send a message</h3>
+                            <div className="lp-form__row">
+                                <div className="lp-form__group">
+                                    <label>Full name</label>
+                                    <input type="text" name="name" value={contactForm.name} onChange={handleContactChange} required placeholder="Jane Smith" />
+                                </div>
+                                <div className="lp-form__group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" value={contactForm.email} onChange={handleContactChange} required placeholder="jane@pharmacy.com" />
+                                </div>
+                            </div>
+                            <div className="lp-form__group">
+                                <label>Message</label>
+                                <textarea name="message" rows="5" value={contactForm.message} onChange={handleContactChange} required placeholder="Tell us about your pharmacy and what you're looking for..." />
+                            </div>
+                            <button type="submit" className="lp-btn lp-btn--primary lp-btn--full">
+                                Send message <FaArrowRight />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── CTA BAND ── */}
+            <section className="lp-cta">
+                <div className="lp-cta__inner">
+                    <h2 className="lp-cta__title">Ready to transform your pharmacy?</h2>
+                    <p className="lp-cta__sub">Join 5,000+ pharmacies running smarter with PharmaCare.</p>
+                    <div className="lp-cta__btns">
+                        <Link to="/user/login" className="lp-btn lp-btn--white lp-btn--lg">Start for free</Link>
+                        <a href="#contact" className="lp-btn lp-btn--outline-white lp-btn--lg">Talk to sales</a>
+                    </div>
+                </div>
+            </section>
+
+            {/* ── FOOTER ── */}
+            <footer className="lp-footer">
+                <div className="lp-footer__inner">
+                    <div className="lp-footer__top">
+                        <div className="lp-footer__brand">
+                            <Link to="/" className="lp-footer__logo-wrap">
+                                <img src={logo} alt="PharmaCare" className="lp-nav__logo" />
+                                <span className="lp-footer__name">PharmaCare</span>
+                            </Link>
+                            <p>Modern pharmacy management for the digital age. Trusted by 5,000+ professionals worldwide.</p>
+                            <div className="lp-footer__socials">
+                                <a href="#" aria-label="Facebook"><FaFacebookF /></a>
+                                <a href="#" aria-label="Twitter"><FaTwitter /></a>
+                                <a href="#" aria-label="Instagram"><FaInstagram /></a>
+                                <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
+                            </div>
+                        </div>
+
+                        <div className="lp-footer__cols">
+                            <div className="lp-footer__col">
                                 <h4>Product</h4>
                                 <a href="#features">Features</a>
                                 <a href="#">Pricing</a>
                                 <a href="#">Integrations</a>
-                                <a href="#">API Docs</a>
+                                <a href="#">Changelog</a>
                             </div>
-                            <div className="footer-col">
+                            <div className="lp-footer__col">
                                 <h4>Company</h4>
-                                <a href="#about">About Us</a>
+                                <a href="#about">About</a>
                                 <a href="#">Careers</a>
                                 <a href="#">Blog</a>
                                 <a href="#contact">Contact</a>
                             </div>
-                            <div className="footer-col">
+                            <div className="lp-footer__col">
                                 <h4>Legal</h4>
-                                <a href="#">Privacy Policy</a>
-                                <a href="#">Terms of Service</a>
-                                <a href="#">HIPAA Compliance</a>
+                                <a href="#">Privacy</a>
+                                <a href="#">Terms</a>
+                                <a href="#">HIPAA</a>
+                                <a href="#">Security</a>
                             </div>
                         </div>
                     </div>
-                    <div className="footer-bottom">
-                        <p>&copy; {new Date().getFullYear()} Pharma Care Solutions. All rights reserved.</p>
-                        <div className="staff-portal-link">
-                            <Link to="/admin/login">Admin</Link>
-                            <span className="divider">|</span>
+
+                    <div className="lp-footer__bottom">
+                        <p>&copy; {new Date().getFullYear()} PharmaCare Solutions. All rights reserved.</p>
+                        <div className="lp-footer__portals">
+                            <Link to="/admin/login">Admin Portal</Link>
+                            <span>·</span>
                             <Link to="/clinic/login">Clinic Staff</Link>
                         </div>
                     </div>
@@ -378,8 +403,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
-
-
-
-
