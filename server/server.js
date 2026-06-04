@@ -77,11 +77,15 @@ const allowedOrigins = [
   "http://localhost:4173",
 ].filter(Boolean);
 
+// Replit dev domain pattern
+const replitDomainPattern = /\.replit\.dev$/;
+
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // Allow non-browser requests
       if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (replitDomainPattern.test(origin)) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
