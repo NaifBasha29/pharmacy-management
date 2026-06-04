@@ -68,26 +68,9 @@ app.use(
   }),
 );
 
-// CORS configuration with sensible dev fallbacks
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  process.env.MOBILE_URL,
-  "http://localhost:5000",
-  "http://localhost:5173",
-  "http://localhost:4173",
-].filter(Boolean);
-
-// Replit dev domain pattern
-const replitDomainPattern = /\.replit\.dev$/;
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // Allow non-browser requests
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      if (replitDomainPattern.test(origin)) return callback(null, true);
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
