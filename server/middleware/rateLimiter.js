@@ -3,16 +3,15 @@ import rateLimit from 'express-rate-limit';
 // Rate limiter for login attempts - prevents brute force attacks
 export const loginRateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 50, // 50 attempts per window (increased for testing)
+    max: 50,
     message: {
         success: false,
         message: 'Too many login attempts. Please try again after 15 minutes.'
     },
     standardHeaders: true,
     legacyHeaders: false,
-    // Skip rate limiting for successful requests
     skipSuccessfulRequests: false,
-    // Key generator - use IP + email/username for more precise limiting
+    validate: { xForwardedForHeader: false },
     keyGenerator: (req) => {
         const identifier = req.body.email || req.body.username || req.body.patientId || '';
         return `${req.ip}-${identifier}`;

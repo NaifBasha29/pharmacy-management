@@ -48,6 +48,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const httpServer = createServer(app);
 
+// Trust Replit's reverse proxy so X-Forwarded-For is read correctly
+app.set("trust proxy", 1);
+
 // Initialize Socket.io
 initSocket(httpServer);
 
@@ -79,12 +82,13 @@ app.use(
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: {
     success: false,
     message: "Too many requests, please try again later.",
   },
+  validate: { xForwardedForHeader: false },
 });
 
 // Apply rate limiting to auth routes
