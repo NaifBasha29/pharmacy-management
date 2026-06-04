@@ -24,7 +24,6 @@ import {
 } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import "./Sidebar.css";
-import logo from "../../../assets/logo.png";
 
 const Sidebar = ({ forceAdminTheme = true }) => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
@@ -198,7 +197,7 @@ const Sidebar = ({ forceAdminTheme = true }) => {
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <img src={logo} alt="Pharma Care" className="sidebar-brand-logo" />
+            <span className="sidebar-brand-icon">⚕</span>
             {isOpen && <span className="logo-text">Pharma Care</span>}
           </div>
           <button

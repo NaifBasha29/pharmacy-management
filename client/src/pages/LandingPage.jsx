@@ -10,7 +10,6 @@ import {
 import { FiZap, FiTrendingUp, FiUsers, FiPackage, FiShield, FiPhone } from 'react-icons/fi';
 import './LandingPage.css';
 import landingImage from '../../assets/lp.png';
-import logo from '../../assets/logo.png';
 
 const LandingPage = () => {
     const [activeSection, setActiveSection] = useState('home');
@@ -61,8 +60,8 @@ const LandingPage = () => {
             <nav className={`lp-nav ${scrolled ? 'lp-nav--scrolled' : ''}`}>
                 <div className="lp-nav__inner">
                     <Link to="/" className="lp-nav__brand">
-                        <img src={logo} alt="Pharma Care" className="lp-nav__logo" />
-                        <span className="lp-nav__name">PharmaCare</span>
+                        <span className="lp-nav__icon">⚕</span>
+                        <span className="lp-nav__name">Pharma Care</span>
                     </Link>
                     <div className="lp-nav__links">
                         {['home','features','about','contact'].map(s => (
@@ -351,8 +350,8 @@ const LandingPage = () => {
                     <div className="lp-footer__top">
                         <div className="lp-footer__brand">
                             <Link to="/" className="lp-footer__logo-wrap">
-                                <img src={logo} alt="PharmaCare" className="lp-nav__logo" />
-                                <span className="lp-footer__name">PharmaCare</span>
+                                <span className="lp-nav__icon">⚕</span>
+                                <span className="lp-footer__name">Pharma Care</span>
                             </Link>
                             <p>Modern pharmacy management for the digital age. Trusted by 5,000+ professionals worldwide.</p>
                             <div className="lp-footer__socials">
