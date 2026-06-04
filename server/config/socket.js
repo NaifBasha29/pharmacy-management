@@ -11,8 +11,9 @@ export const initSocket = (server) => {
     "http://localhost:4173",
     "http://localhost:8081", // Expo
     "http://192.168.6.88:8081",
-    // Deployed frontend (Pharmacy Management Vercel)
+    // Deployed frontend (Pharmacy Management Vercel) - include both legacy and current
     "https://pharmacy-management-9azhcenbb-bakas-projects-f87b4320.vercel.app",
+    "https://pharmacy-management-rho.vercel.app",
   ].filter(Boolean);
 
   io = new Server(server, {

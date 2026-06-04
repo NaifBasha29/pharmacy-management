@@ -71,12 +71,10 @@ app.use(
   }),
 );
 
-// CORS configuration: allow the configured frontend URL and common local dev origins
+// Strict CORS configuration: only allow the explicit frontend origins and localhost dev
 const allowedOrigins = [
-  process.env.CLIENT_URL,
-  process.env.FRONTEND_URL,
+  'https://pharmacy-management-rho.vercel.app',
   'http://localhost:5173',
-  'http://localhost:5000',
 ].filter(Boolean);
 
 app.use(
@@ -90,8 +88,13 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   }),
 );
+
+// Handle preflight for all routes
+app.options('*', cors({ origin: allowedOrigins, credentials: true }));
 
 // Rate limiting
 const limiter = rateLimit({
