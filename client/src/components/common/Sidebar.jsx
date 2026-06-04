@@ -26,11 +26,12 @@ import ThemeToggle from "./ThemeToggle";
 import "./Sidebar.css";
 import logo from "../../../assets/logo.png";
 
-const Sidebar = () => {
+const Sidebar = ({ forceAdminTheme = true }) => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
   const { unreadCount } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
+  const isAdminTheme = isAdmin || forceAdminTheme;
   // Sidebar open state: controls visual open (hover or pinned)
   const [isOpen, setIsOpen] = useState(false);
   // When true the sidebar stays open (pin). Clicking the toggle pins/unpins.
@@ -138,6 +139,12 @@ const Sidebar = () => {
     },
     { path: "/user/profile", icon: <FiUsers />, label: "Profile" },
     { path: "/user/support", icon: <FiHelpCircle />, label: "Support" },
+    // Additional user utilities
+    { path: "/favorites", icon: <FiHeart />, label: "Favorites" },
+    { path: "/medicine-cabinet", icon: <FiCrosshair />, label: "Medicine Cabinet" },
+    { path: "/symptom-checker", icon: <FiAlertCircle />, label: "Symptom Checker" },
+    { path: "/recommendations", icon: <FiTrendingUp />, label: "Recommendations" },
+    { path: "/chatbot", icon: <FiBell />, label: "Chatbot" },
   ];
 
   const links = isAdmin
@@ -174,13 +181,22 @@ const Sidebar = () => {
         onBlur={() => {
           if (!isPinned) setIsOpen(false);
         }}
-        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isPinned ? "pinned" : ""} ${isMobileOpen ? "mobile-open" : ""} ${isAdmin ? "theme-admin" : ""}`}
+        className={`sidebar ${isOpen ? "open" : "collapsed"} ${isPinned ? "pinned" : ""} ${isMobileOpen ? "mobile-open" : ""} ${isAdminTheme ? "theme-admin" : ""}`}
         tabIndex={-1}
       >
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <img src={logo} alt="RxPlus" className="brand-logo-img" />
+            <img src={logo} alt="Pharma Care" className="sidebar-brand-logo" />
+            {isOpen && <span className="logo-text">Pharma Care</span>}
           </div>
+          <button
+            className={`sidebar-toggle ${isPinned ? 'pinned' : ''}`}
+            onClick={() => setIsPinned((p) => !p)}
+            title={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+            aria-pressed={isPinned}
+          >
+            {isPinned ? <FiX /> : <FiMenu />}
+          </button>
         </div>
 
         <div className="sidebar-user">
@@ -200,6 +216,8 @@ const Sidebar = () => {
             <Link
               key={link.path}
               to={link.path}
+              title={link.label}
+              aria-label={link.label}
               className={`nav-link ${location.pathname === link.path ? "active" : ""}`}
               onClick={() => setIsMobileOpen(false)}
             >
@@ -218,7 +236,7 @@ const Sidebar = () => {
             <ThemeToggle className={!isOpen ? "w-full" : ""} />
           </div>
 
-          <button className="nav-link notification-btn">
+          <button className="nav-link notification-btn" title="Notifications" aria-label="Notifications">
             <span className="nav-icon">
               <FiBell />
               {unreadCount > 0 && (
@@ -228,11 +246,11 @@ const Sidebar = () => {
             {isOpen && <span className="nav-label">Notifications</span>}
           </button>
 
-          <button className="nav-link logout-btn" onClick={handleLogout}>
+          <button className="nav-link logout-btn" onClick={handleLogout} title="Logout" aria-label="Logout">
             <span className="nav-icon">
               <FiLogOut />
             </span>
-            <span className="nav-label">Logout</span>
+            {isOpen && <span className="nav-label">Logout</span>}
           </button>
         </div>
       </aside>

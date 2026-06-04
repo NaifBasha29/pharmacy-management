@@ -196,8 +196,8 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="dashboard-layout no-top-nav">
-        <Sidebar />
+      <div className="dashboard-layout no-top-nav theme-admin">
+        <Sidebar forceAdminTheme />
         <main className="dashboard-main user-dashboard-page">
           <div
             style={{
@@ -223,8 +223,8 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className="dashboard-layout no-top-nav">
-      <Sidebar />
+    <div className="dashboard-layout no-top-nav theme-admin">
+      <Sidebar forceAdminTheme />
       <main className="dashboard-main user-dashboard-page">
         {/* Header */}
         <div className="ud-header">

@@ -47,7 +47,8 @@ const Register = () => {
     });
     
     if (result.success) {
-      navigate('/user');
+      // After registration send user to login page
+      navigate('/login');
     } else {
       setError(result.error);
     }
@@ -61,7 +62,7 @@ const Register = () => {
         <div className="auth-left">
           <div className="auth-brand">
             <div className="brand-logo">💊</div>
-            <h1>RxPlus</h1>
+            <h1>Pharma Care</h1>
             <p>Your trusted pharmacy management solution</p>
           </div>
           <div className="auth-features">
@@ -84,7 +85,7 @@ const Register = () => {
           <div className="auth-form-container">
             <div className="auth-header">
               <h2>Create Account</h2>
-              <p>Join RxPlus today</p>
+              <p>Join Pharma Care today</p>
             </div>
 
             {error && <div className="auth-error">{error}</div>}

@@ -45,12 +45,12 @@ const PatientLogin = () => {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page theme-admin">
       <div className="auth-container">
         <div className="auth-left">
           <div className="auth-brand">
-            <img src={logo} alt="RxPlus" className="brand-logo-img" />
-            <h1>RxPlus</h1>
+            <img src={logo} alt="Pharma Care" className="brand-logo-img" />
+            <h1>Pharma Care</h1>
             <p>Patient Portal</p>
           </div>
         </div>
@@ -100,8 +100,12 @@ const PatientLogin = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <FiEyeOff /> : <FiEye />}
-                  </button>
-                </div>
+              </button>
+              </div>
+              </div>
+
+              <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '0.75rem' }}>
+                <a href="/forgot-password" className="text-sm" style={{ color: '#f97316' }}>Forgot password?</a>
               </div>
 
               <button
@@ -112,6 +116,11 @@ const PatientLogin = () => {
                 {loading ? <span className="spinner" /> : "Sign In as Patient"}
               </button>
             </form>
+            <div className="demo-credentials">
+              <p><strong>Demo Patient Login</strong></p>
+              <p>Patient ID: <strong>PAT001</strong></p>
+              <p>Password: <strong>Patient@123</strong></p>
+            </div>
           </div>
         </div>
       </div>

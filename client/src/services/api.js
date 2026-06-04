@@ -89,6 +89,10 @@ export const authAPI = {
   getMe: () => api.get("/auth/me"), // Alias for backward compatibility
   logout: () => api.post("/auth/logout"),
   changePassword: (data) => api.put("/auth/change-password", data),
+  // Password reset flow
+  forgotPassword: (data) => api.post("/auth/forgot-password", data),
+  verifyOTP: (data) => api.post("/auth/verify-otp", data),
+  resetPassword: (data) => api.post("/auth/reset-password", data),
   refreshToken: (token) =>
     api.post("/auth/refresh-token", { refreshToken: token }),
 };
@@ -230,9 +234,27 @@ export const adminAPI = {
 
 // AI API
 export const aiAPI = {
-  chat: (message) => api.post("/ai/chat", { message }),
+  chat: (payload) => {
+    // Accept either a string (single message) or an object { message, history }
+    if (typeof payload === 'string') return api.post('/ai/chat', { message: payload });
+    return api.post('/ai/chat', payload);
+  },
   symptomCheck: (symptoms) => api.post("/ai/symptom-check", { symptoms }),
   recommendations: () => api.get("/ai/recommendations"),
+};
+
+// User favorites API (wishlist)
+export const favoritesAPI = {
+  getAll: () => api.get("/user/favorites"),
+  add: (data) => api.post("/user/favorites", data),
+  remove: (medicineId) => api.delete(`/user/favorites/${medicineId}`),
+};
+
+// Home medicine cabinet API
+export const homeMedicinesAPI = {
+  getAll: () => api.get("/user/home-medicines"),
+  create: (data) => api.post("/user/home-medicines", data),
+  delete: (id) => api.delete(`/user/home-medicines/${id}`),
 };
 
 export default api;

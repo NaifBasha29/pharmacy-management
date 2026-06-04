@@ -30,7 +30,12 @@ const STATUS_CONFIG = {
   delivered: {
     color: "#10b981",
     icon: "package-variant-closed-check",
-    label: "Delivered",
+    label: "Delivery Completed",
+  },
+  refunded: {
+    color: "#ef4444",
+    icon: "cash-refund",
+    label: "Refunded",
   },
   cancelled: {
     color: "#ef4444",
@@ -45,6 +50,24 @@ const TABS = [
   { key: "completed", label: "Completed" },
   { key: "cancelled", label: "Cancelled" },
 ];
+
+const normalizeOrderStatus = (status, order = {}) => {
+  if (order?.actualDelivery) return "delivered";
+
+  const normalized = String(status || "").toLowerCase().trim();
+  const aliases = {
+    completed: "delivered",
+    complete: "delivered",
+    delivery_completed: "delivered",
+    shipped: "dispatched",
+    in_transit: "dispatched",
+    out_for_delivery: "dispatched",
+  };
+
+  return aliases[normalized] || normalized || "pending";
+};
+
+const getOrderStatus = (order) => normalizeOrderStatus(order?.status, order);
 
 export default function OrdersScreen({ navigation }) {
   const { theme } = useTheme();
@@ -93,12 +116,16 @@ export default function OrdersScreen({ navigation }) {
   const filteredOrders = (() => {
     if (activeTab === "active")
       return orders.filter((o) =>
-        ["pending", "confirmed", "processing", "dispatched"].includes(o.status),
+        ["pending", "confirmed", "processing", "dispatched"].includes(
+          getOrderStatus(o),
+        ),
       );
     if (activeTab === "completed")
-      return orders.filter((o) => o.status === "delivered");
+      return orders.filter((o) => getOrderStatus(o) === "delivered");
     if (activeTab === "cancelled")
-      return orders.filter((o) => o.status === "cancelled");
+      return orders.filter((o) =>
+        ["cancelled", "refunded"].includes(getOrderStatus(o)),
+      );
     return orders;
   })();
 
@@ -110,8 +137,9 @@ export default function OrdersScreen({ navigation }) {
     });
 
   const renderOrderItem = ({ item }) => {
-    const status = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
-    const canCancel = ["pending", "confirmed"].includes(item.status);
+    const normalizedStatus = getOrderStatus(item);
+    const status = STATUS_CONFIG[normalizedStatus] || STATUS_CONFIG.pending;
+    const canCancel = ["pending", "confirmed"].includes(normalizedStatus);
 
     return (
       <TouchableOpacity

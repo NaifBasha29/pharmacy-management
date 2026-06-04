@@ -8,10 +8,10 @@ import './AdminSettings.css';
 const AdminSettings = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [settings, setSettings] = useState({
+        const [settings, setSettings] = useState({
         general: {
-            siteName: 'RxPlus',
-            siteEmail: 'admin@RxPlus.com',
+            siteName: 'Pharma Care',
+            siteEmail: 'admin@pharmacare.com',
             timezone: 'Asia/Kolkata',
             currency: 'INR'
         },

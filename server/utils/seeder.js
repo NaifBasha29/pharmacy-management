@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import User from '../models/User.js';
+import Patient from '../models/Patient.js';
 import Category from '../models/Category.js';
 import Supplier from '../models/Supplier.js';
 import Medicine from '../models/Medicine.js';
@@ -229,6 +230,24 @@ const seedData = async () => {
     console.log('   Admin: admin@pharmacy.com / Admin@123');
     console.log('   Pharmacist: pharmacist1@pharmacy.com / Pharma@123');
     console.log('   User: user1@example.com / User@123\n');
+
+    // Create a test patient with deterministic credentials if not exists
+    const existingTestPatient = await Patient.findOne({ patientId: 'PAT001' });
+    if (!existingTestPatient) {
+      const testPatient = await Patient.create({
+        patientId: 'PAT001',
+        password: 'Patient@123',
+        name: 'Demo Patient',
+        email: 'patient@test.com',
+        phone: '+919876543210',
+        gender: 'male',
+        age: 30,
+        isActive: true
+      });
+      console.log('👥 Created demo patient: PAT001 / Patient@123');
+    } else {
+      console.log('👥 Demo patient already exists: PAT001');
+    }
 
     process.exit(0);
   } catch (error) {

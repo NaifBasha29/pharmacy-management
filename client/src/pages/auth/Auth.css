@@ -320,3 +320,13 @@ input:-webkit-autofill:hover {
 .back-to-user-btn:hover {
     color: var(--primary-600);
 }
+
+/* Patient login uses the global emerald/gold app theme */
+.theme-admin.auth-page .auth-container {
+    border: 1px solid var(--border-light);
+    box-shadow: 0 25px 50px -12px rgba(5, 150, 105, 0.22);
+}
+
+.theme-admin.auth-page .input-wrapper .form-input:focus {
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.24);
+}

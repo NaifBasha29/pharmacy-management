@@ -54,7 +54,7 @@ const AdminLogin = () => {
                     
                     <div className="admin-brand">
                         <div className="brand-logo-container">
-                            <img src={logo} alt="RxPlus" className="brand-logo-img" />
+                            <img src={logo} alt="Pharma Care" className="brand-logo-img" />
                         </div>
                     </div>
                 </div>

@@ -24,6 +24,43 @@ const STATUS_STEPS = [
   "delivered",
 ];
 
+const STATUS_STEP_LABELS = {
+  pending: "Order Placed",
+  confirmed: "Confirmed",
+  processing: "Processing",
+  dispatched: "Out for Delivery",
+  delivered: "Delivery Completed",
+};
+
+const normalizeOrderStatus = (status, order = {}) => {
+  if (order?.actualDelivery) return "delivered";
+
+  const normalized = String(status || "").toLowerCase().trim();
+  const aliases = {
+    completed: "delivered",
+    complete: "delivered",
+    delivery_completed: "delivered",
+    shipped: "dispatched",
+    in_transit: "dispatched",
+    out_for_delivery: "dispatched",
+  };
+
+  return aliases[normalized] || normalized || "pending";
+};
+
+const getStatusLabel = (status) => {
+  const labels = {
+    delivered: "Delivery Completed",
+    cancelled: "Cancelled",
+    refunded: "Refunded",
+  };
+
+  return (
+    labels[status] ||
+    `${status?.charAt(0)?.toUpperCase() || ""}${status?.slice(1) || ""}`
+  );
+};
+
 const formatCurrency = (value = 0) =>
   `₹${(value || 0).toLocaleString("en-IN")}`;
 
@@ -69,7 +106,11 @@ export default function OrderDetailScreen({ route, navigation }) {
   };
 
   const handleCancel = () => {
-    if (!order || !["pending", "confirmed"].includes(order.status)) return;
+    const normalizedStatus = normalizeOrderStatus(order?.status, order);
+    if (!order || !["pending", "confirmed"].includes(normalizedStatus)) {
+      return;
+    }
+
     Alert.alert("Cancel Order", "Are you sure you want to cancel this order?", [
       { text: "No", style: "cancel" },
       {
@@ -145,6 +186,7 @@ export default function OrderDetailScreen({ route, navigation }) {
 
   const handleShareReceipt = async () => {
     if (!order) return;
+    const normalizedStatus = normalizeOrderStatus(order.status, order);
     const items =
       order.items
         ?.map(
@@ -153,11 +195,11 @@ export default function OrderDetailScreen({ route, navigation }) {
         )
         .join("\n") || "";
     const receipt = `
-📋 RxPlus Order Receipt
+📋 Pharma Care Order Receipt
 ━━━━━━━━━━━━━━━━━━━━━━
 Order: ${order.orderNumber || order._id}
 Date: ${new Date(order.createdAt).toLocaleDateString()}
-Status: ${order.status?.toUpperCase()}
+Status: ${getStatusLabel(normalizedStatus).toUpperCase()}
 
 Items:
 ${items}
@@ -169,7 +211,7 @@ ${items}
   Total: ${formatCurrency(order.total)}
 Payment: ${order.paymentMethod || "N/A"}
 ━━━━━━━━━━━━━━━━━━━━━━
-Thank you for shopping with RxPlus!
+Thank you for shopping with Pharma Care!
     `.trim();
 
     try {
@@ -191,9 +233,21 @@ Thank you for shopping with RxPlus!
 
   if (!order) return null;
 
-  const currentStep = STATUS_STEPS.indexOf(order.status);
-  const isCancelled = order.status === "cancelled";
-  const isDelivered = order.status === "delivered";
+  const normalizedStatus = normalizeOrderStatus(order.status, order);
+  const latestTrackingStatus = normalizeOrderStatus(
+    order.trackingHistory?.[order.trackingHistory.length - 1]?.status,
+    order,
+  );
+  const currentStep = Math.max(
+    STATUS_STEPS.indexOf(normalizedStatus),
+    STATUS_STEPS.indexOf(latestTrackingStatus),
+  );
+  const isCancelled = ["cancelled", "refunded"].includes(normalizedStatus);
+  const displayStatus =
+    !isCancelled && currentStep === STATUS_STEPS.length - 1
+      ? "delivered"
+      : normalizedStatus;
+  const isDelivered = displayStatus === "delivered";
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -227,16 +281,16 @@ Thank you for shopping with RxPlus!
             <View
               style={[
                 styles.statusBadge,
-                { backgroundColor: getStatusColor(order.status, theme) + "20" },
+                { backgroundColor: getStatusColor(displayStatus, theme) + "20" },
               ]}
             >
               <Text
                 style={[
                   styles.statusText,
-                  { color: getStatusColor(order.status, theme) },
+                  { color: getStatusColor(displayStatus, theme) },
                 ]}
               >
-                {order.status}
+                {getStatusLabel(displayStatus)}
               </Text>
             </View>
           </View>
@@ -282,7 +336,8 @@ Thank you for shopping with RxPlus!
                           isActive && styles.activeStepLabel,
                         ]}
                       >
-                        {step.charAt(0).toUpperCase() + step.slice(1)}
+                        {STATUS_STEP_LABELS[step] ||
+                          (step.charAt(0).toUpperCase() + step.slice(1))}
                       </Text>
                       {isCurrent && order.trackingHistory && (
                         <Text style={styles.stepNote}>
@@ -414,7 +469,7 @@ Thank you for shopping with RxPlus!
 
         {/* Actions */}
         <View style={styles.actionsSection}>
-          {["pending", "confirmed"].includes(order.status) && (
+          {["pending", "confirmed"].includes(normalizedStatus) && (
             <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel}>
               <Icon name="cancel" size={18} color={theme.error} />
               <Text style={styles.cancelBtnText}>Cancel Order</Text>
@@ -496,8 +551,10 @@ const getStatusColor = (status, theme) => {
     confirmed: theme.info,
     processing: theme.info,
     dispatched: theme.primary,
+    completed: theme.success,
     delivered: theme.success,
     cancelled: theme.error,
+    refunded: theme.error,
   };
   return map[status] || theme.textSecondary;
 };

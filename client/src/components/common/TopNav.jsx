@@ -40,7 +40,7 @@ const TopNav = () => {
     ];
 
     const links = isAdmin ? adminLinks : isPharmacist ? pharmacistLinks : userLinks;
-    const brandName = isAdmin ? 'Pharma Admin' : isPharmacist ? 'Pharmacist' : 'RxPlus';
+    const brandName = isAdmin ? 'Pharma Admin' : isPharmacist ? 'Pharmacist' : 'Pharma Care';
 
     // Check if current path starts with a link path (for nested routes)
     const isActiveLink = (path) => {

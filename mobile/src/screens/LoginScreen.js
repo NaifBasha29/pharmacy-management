@@ -38,7 +38,7 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.logoWrap}>
               <Icon name="pill" size={36} color={theme.primary} />
             </View>
-            <Text style={styles.appName}>RxPlus</Text>
+            <Text style={styles.appName}>Pharma Care</Text>
             <Text style={styles.tagline}>Your health, delivered</Text>
           </View>
 
@@ -114,6 +114,14 @@ export default function LoginScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
+          <View style={styles.demoBox}>
+            <Text style={styles.demoTitle}>Demo Credentials</Text>
+            <Text style={styles.demoLine}>Admin: admin@pharmacy.com / Admin@123</Text>
+            <Text style={styles.demoLine}>Pharmacist: pharmacist1@pharmacy.com / Pharma@123</Text>
+            <Text style={styles.demoLine}>User: user1@example.com / User@123</Text>
+            <Text style={styles.demoLine}>Patient (mobile): PAT001 / Patient@123</Text>
+          </View>
+
           <View style={styles.footer}>
             <Text style={styles.footerHint}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Register')} activeOpacity={0.7}>
@@ -143,6 +151,16 @@ const createStyles = (theme) => StyleSheet.create({
     shadowColor: theme.shadow, shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1, shadowRadius: 16, elevation: 6,
   },
+  demoBox: {
+    marginTop: 18,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: theme.cardMuted,
+    borderWidth: 1,
+    borderColor: theme.border,
+  },
+  demoTitle: { fontSize: 14, fontWeight: '700', color: theme.textPrimary, marginBottom: 6 },
+  demoLine: { fontSize: 13, color: theme.textSecondary, marginBottom: 2 },
   cardTitle: { fontSize: 22, fontWeight: '700', color: theme.textPrimary, letterSpacing: -0.3, marginBottom: 4 },
   cardSubtitle: { fontSize: 14, color: theme.textSecondary, marginBottom: 24 },
   errorBanner: {

@@ -7,13 +7,14 @@ import {
   FiActivity,
   FiShield,
   FiLock,
+  FiLogOut,
   FiX,
   FiHeart,
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 const Profile = () => {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("personal");
 
@@ -231,10 +232,19 @@ const Profile = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      toast.error("Logout failed");
+    }
+  };
+
   const page = {
     background: "var(--bg-primary)",
     minHeight: "100vh",
     padding: "2rem",
+    color: "var(--text-primary)",
   };
   const card = {
     background: "var(--bg-secondary)",
@@ -248,6 +258,7 @@ const Profile = () => {
     border: "1px solid var(--border-light)",
     borderRadius: "0.75rem",
     background: "var(--bg-tertiary)",
+    color: "var(--text-primary)",
     outline: "none",
   };
   const label = {
@@ -264,6 +275,21 @@ const Profile = () => {
     background: "linear-gradient(135deg, #f97316, #ea580c)",
     border: "none",
     borderRadius: "0.75rem",
+    cursor: "pointer",
+  };
+  const logoutBtn = {
+    width: "100%",
+    marginTop: "1rem",
+    padding: "0.625rem 0.875rem",
+    borderRadius: "0.75rem",
+    border: "1px solid var(--status-error)",
+    background: "var(--status-error-bg)",
+    color: "var(--status-error)",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.5rem",
+    fontWeight: 600,
     cursor: "pointer",
   };
 
@@ -408,6 +434,13 @@ const Profile = () => {
                 ></span>{" "}
                 Active
               </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  style={logoutBtn}
+                >
+                  <FiLogOut size={16} /> Logout
+                </button>
             </div>
           </div>
 

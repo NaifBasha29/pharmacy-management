@@ -14,6 +14,10 @@ import LoadingScreen from "./components/common/LoadingScreen";
 import AdminLogin from "./pages/auth/AdminPortal";
 import ClinicLogin from "./pages/auth/ClinicLogin";
 import PatientLogin from "./pages/auth/PatientLogin";
+import Register from "./pages/auth/Register";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import VerifyOTP from "./pages/auth/VerifyOTP";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 // Landing Page
 import LandingPage from "./pages/LandingPage";
@@ -58,6 +62,13 @@ import Profile from "./pages/user/Profile";
 import Support from "./pages/user/Support";
 import Cart from "./pages/user/Cart";
 import Checkout from "./pages/user/Checkout";
+import MedicineDetail from "./pages/user/MedicineDetail";
+import OrderDetail from "./pages/user/OrderDetail";
+import Favorites from "./pages/user/Favorites";
+import HomeMedicineCabinet from "./pages/user/HomeMedicineCabinet";
+import SymptomChecker from "./pages/user/SymptomChecker";
+import Recommendations from "./pages/user/Recommendations";
+import Chatbot from "./pages/user/Chatbot";
 
 // Protected Route Component - Only allows authenticated users
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -83,11 +94,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/user" replace />;
   }
 
-  return (
-    <div className={user?.role === "admin" ? "theme-admin" : ""}>
-      {children}
-    </div>
-  );
+  return <div className="theme-admin">{children}</div>;
 };
 
 // Public Route - redirect authenticated users to their dashboard
@@ -164,15 +171,13 @@ function AppRoutes() {
         }
       />
 
+      <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+      <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+      <Route path="/verify-otp" element={<PublicRoute><VerifyOTP /></PublicRoute>} />
+      <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+
       {/* Legacy Login Redirect */}
       <Route path="/login" element={<Navigate to="/user/login" replace />} />
-
-      {/* Redirect register to login - patients get credentials from clinic admin */}
-      <Route path="/register" element={<Navigate to="/user/login" replace />} />
-      <Route
-        path="/register/*"
-        element={<Navigate to="/user/login" replace />}
-      />
 
       <Route
         path="/admin/clinics"
@@ -483,6 +488,64 @@ function AppRoutes() {
             allowedRoles={["user", "patient", "pharmacist", "admin"]}
           >
             <UserDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* User extra routes */}
+      <Route
+        path="/medicines/:id"
+        element={
+          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+            <MedicineDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/orders/:id"
+        element={
+          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+            <OrderDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/favorites"
+        element={
+          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+            <Favorites />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/medicine-cabinet"
+        element={
+          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+            <HomeMedicineCabinet />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/symptom-checker"
+        element={
+          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+            <SymptomChecker />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recommendations"
+        element={
+          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+            <Recommendations />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/chatbot"
+        element={
+          <ProtectedRoute allowedRoles={["user", "patient", "pharmacist", "admin"]}>
+            <Chatbot />
           </ProtectedRoute>
         }
       />

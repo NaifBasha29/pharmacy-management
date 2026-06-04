@@ -62,8 +62,8 @@ const Login = () => {
       <div className="auth-container">
         <div className="auth-left">
           <div className="auth-brand">
-            <img src={logo} alt="RxPlus" className="brand-logo-img" />
-            <h1>RxPlus</h1>
+            <img src={logo} alt="Pharma Care" className="brand-logo-img" />
+            <h1>Pharma Care</h1>
             <p>Your trusted pharmacy management solution</p>
           </div>
           <div className="auth-features">
@@ -159,11 +159,27 @@ const Login = () => {
                   </button>
                 </div>
               </div>
+              {!isAdminMode && (
+                <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '0.75rem' }}>
+                  <Link to="/forgot-password" className="text-sm text-orange-600">Forgot password?</Link>
+                </div>
+              )}
 
               <button type="submit" className="btn btn-primary btn-lg w-full" disabled={loading}>
                 {loading ? <span className="spinner" /> : 'Sign In'}
               </button>
             </form>
+
+            {/* Demo credentials panel - visible for non-admin user login to speed manual testing */}
+            {!isAdminMode && (
+              <div className="demo-credentials" aria-hidden={false}>
+                <p><strong>Demo Credentials</strong></p>
+                <p>Admin: <strong>admin@pharmacy.com</strong> / <strong>Admin@123</strong></p>
+                <p>Pharmacist: <strong>pharmacist1@pharmacy.com</strong> / <strong>Pharma@123</strong></p>
+                <p>User: <strong>user1@example.com</strong> / <strong>User@123</strong></p>
+                <p>Patient (use Patient Login): <strong>PAT001</strong> / <strong>Patient@123</strong></p>
+              </div>
+            )}
 
             {!isAdminMode && (
               <div className="auth-footer">

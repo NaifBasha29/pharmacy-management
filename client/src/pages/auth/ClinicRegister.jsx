@@ -72,7 +72,7 @@ function ClinicRegister() {
         <div className="auth-left" style={{ background: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)' }}>
           <div className="auth-brand">
             <div className="brand-logo">🏥</div>
-            <h1>RxPlus Clinic</h1>
+            <h1>Pharma Care Clinic</h1>
             <p>Pharmacist & Clinic Portal</p>
           </div>
           <div className="auth-features">

@@ -204,11 +204,11 @@ const Support = () => {
               <div style={{ fontWeight: 700, color: "var(--text-primary)" }}>
                 Email
               </div>
-              <div
-                style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}
-              >
-                support@RxPlus.com
-              </div>
+                <div
+                  style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}
+                >
+                  support@pharmacare.com
+                </div>
               <div style={{ fontSize: "0.75rem", color: "#f59e0b" }}>
                 Response in 24hrs
               </div>

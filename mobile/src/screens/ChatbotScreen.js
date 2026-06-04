@@ -20,7 +20,7 @@ export default function ChatbotScreen({ navigation }) {
   const [messages, setMessages] = useState([
     {
       id: "0",
-      text: "Hello! I'm your RxPlus assistant. I can help you find medicines, check order status, or answer health questions. How can I help?",
+      text: "Hello! I'm your Pharma Care assistant. I can help you find medicines, check order status, or answer health questions. How can I help?",
       isBot: true,
       timestamp: new Date(),
     },
@@ -189,7 +189,7 @@ export default function ChatbotScreen({ navigation }) {
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Icon name="robot" size={22} color={theme.primary} />
-          <Text style={styles.headerTitle}>RxPlus AI</Text>
+          <Text style={styles.headerTitle}>Pharma Care AI</Text>
         </View>
         <View style={{ width: 24 }} />
       </View>

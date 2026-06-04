@@ -44,8 +44,8 @@ const ClinicLogin = () => {
             <div className="auth-container">
                 <div className="auth-left">
                     <div className="auth-brand">
-                        <img src={logo} alt="RxPlus" className="brand-logo-img" />
-                        <h1>RxPlus</h1>
+                        <img src={logo} alt="Pharma Care" className="brand-logo-img" />
+                        <h1>Pharma Care</h1>
                         <p>Clinic Portal</p>
                     </div>
                 </div>
