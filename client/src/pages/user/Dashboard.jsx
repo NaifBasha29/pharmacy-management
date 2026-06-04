@@ -194,10 +194,10 @@ const UserDashboard = () => {
     day: "numeric",
   });
 
-  if (loading) {
+    if (loading) {
     return (
     <div className="dashboard-layout no-top-nav">
-        <Sidebar forceAdminTheme />
+        <Sidebar forceAdminTheme={false} />
         <main className="dashboard-main user-dashboard-page">
           <div
             style={{
@@ -223,8 +223,8 @@ const UserDashboard = () => {
   }
 
   return (
-    <div className="dashboard-layout no-top-nav theme-admin">
-      <Sidebar forceAdminTheme />
+    <div className="dashboard-layout no-top-nav">
+      <Sidebar forceAdminTheme={false} />
       <main className="dashboard-main user-dashboard-page">
         {/* Header */}
         <div className="ud-header">

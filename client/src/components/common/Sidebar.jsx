@@ -26,14 +26,13 @@ import ThemeToggle from "./ThemeToggle";
 import { useTheme } from '../../context/ThemeContext';
 import "./Sidebar.css";
 
-const Sidebar = ({ forceAdminTheme = true }) => {
+const Sidebar = ({ forceAdminTheme = false }) => {
   const { user, logout, isAdmin, isPharmacist, isUser } = useAuth();
   const { setAdminTheme } = useTheme();
   const { unreadCount } = useNotifications();
   const location = useLocation();
   const navigate = useNavigate();
   const isAdminTheme = isAdmin || forceAdminTheme;
-  const { setAdminTheme } = useTheme();
   // Sidebar open state: controls visual open (hover or pinned)
   const [isOpen, setIsOpen] = useState(false);
   // When true the sidebar stays open (pin). Clicking the toggle pins/unpins.

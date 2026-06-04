@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
     FiHome, FiUsers, FiPackage, FiShoppingCart, FiFileText,
