@@ -71,10 +71,12 @@ app.use(
   }),
 );
 
-// Strict CORS configuration: only allow the explicit frontend origins and localhost dev
+// CORS configuration: allow Replit dev domains, localhost, and configured CLIENT_URL
 const allowedOrigins = [
+  process.env.CLIENT_URL,
   'https://pharmacy-management-rho.vercel.app',
   'http://localhost:5173',
+  'http://localhost:5000',
 ].filter(Boolean);
 
 app.use(
@@ -82,6 +84,8 @@ app.use(
     origin: (origin, callback) => {
       // Allow non-browser requests (curl, server-to-server) with no origin
       if (!origin) return callback(null, true);
+      // Allow any Replit dev domain
+      if (origin && origin.endsWith('.replit.dev')) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
       return callback(new Error('CORS not allowed by server'), false);
     },
@@ -94,7 +98,15 @@ app.use(
 );
 
 // Handle preflight for all routes
-app.options('*', cors({ origin: allowedOrigins, credentials: true }));
+app.options('/{*splat}', cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (origin && origin.endsWith('.replit.dev')) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('CORS not allowed'), false);
+  },
+  credentials: true
+}));
 
 // Rate limiting
 const limiter = rateLimit({

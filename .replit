@@ -26,33 +26,33 @@ args = "Backend API"
 name = "Start application"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "webview"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd client && npm run dev"
 waitForPort = 5000
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow]]
 name = "Backend API"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd server && npm run dev"
-waitForPort = 5005
-
 [workflows.workflow.metadata]
 outputType = "console"
 
-[[ports]]
-localPort = 5000
-externalPort = 5000
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node server/server.js"
+waitForPort = 8000
 
 [[ports]]
-localPort = 5005
+localPort = 5000
 externalPort = 80
+
+[[ports]]
+localPort = 8000
+externalPort = 8000
 
 [deployment]
 deploymentTarget = "vm"
@@ -62,5 +62,13 @@ run = ["bash", "-c", "cd server && node server.js & cd client && npm run build &
 
 [userenv.shared]
 NODE_ENV = "development"
-PORT = "5005"
+PORT = "8000"
 DEV_SEND_OTP_IN_TERMINAL = "true"
+MONGODB_URI = "mongodb+srv://Pharmacy_cluster:Pharma092025@cluster0.yxlffrz.mongodb.net/?appName=Cluster0"
+JWT_SECRET = "pharma_jwt_secret_replit_2025"
+JWT_REFRESH_SECRET = "pharma_refresh_secret_replit_2025"
+JWT_EXPIRE = "15m"
+JWT_REFRESH_EXPIRE = "7d"
+CLIENT_URL = "https://bbc67e1b-e4a7-4bff-bcf2-f2ad7a47794f-00-29scu0mhsmcuc.sisko.replit.dev"
+UPLOAD_PATH = "uploads"
+MAX_FILE_SIZE = "5242880"

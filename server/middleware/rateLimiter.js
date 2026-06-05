@@ -1,4 +1,6 @@
-import rateLimit from 'express-rate-limit';
+import * as expressRateLimit from 'express-rate-limit';
+const rateLimit = expressRateLimit.default || expressRateLimit.rateLimit;
+const ipKeyGenerator = expressRateLimit.ipKeyGenerator;
 
 // Rate limiter for login attempts - prevents brute force attacks
 export const loginRateLimiter = rateLimit({
@@ -14,7 +16,7 @@ export const loginRateLimiter = rateLimit({
     validate: { xForwardedForHeader: false },
     keyGenerator: (req) => {
         const identifier = req.body.email || req.body.username || req.body.patientId || '';
-        return `${req.ip}-${identifier}`;
+        return `${ipKeyGenerator(req)}-${identifier}`;
     }
 });
 
