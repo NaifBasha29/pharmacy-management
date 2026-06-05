@@ -1,572 +1,328 @@
-
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { medicinesAPI, categoriesAPI } from '../../services/api';
 import { useCart } from '../../context/CartContext';
-import Sidebar from '../../components/common/Sidebar';
-import { FiSearch, FiFilter, FiShoppingCart, FiPlus, FiMinus, FiTag, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import AppLayout from '../../components/layout/AppLayout';
+import { FiSearch, FiShoppingCart, FiPlus, FiMinus, FiTag, FiChevronLeft, FiChevronRight, FiFilter, FiX } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 const Catalog = () => {
-    const [medicines, setMedicines] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [filters, setFilters] = useState({
-        search: '',
-        category: '',
-        minPrice: '',
-        maxPrice: ''
-    });
-    const [pagination, setPagination] = useState({
-        page: 1,
-        limit: 12,
-        total: 0,
-        pages: 1
-    });
+  const [medicines, setMedicines] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filters, setFilters] = useState({ search: '', category: '', minPrice: '', maxPrice: '' });
+  const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0, pages: 1 });
+  const [quantities, setQuantities] = useState({});
 
-    const { addToCart } = useCart();
+  const { addToCart } = useCart();
 
-    useEffect(() => {
-        fetchCategories();
-    }, []);
+  useEffect(() => { fetchCategories(); }, []);
+  useEffect(() => { fetchMedicines(); }, [filters, pagination.page]);
 
-    useEffect(() => {
-        fetchMedicines();
-    }, [filters, pagination.page]);
+  const fetchCategories = async () => {
+    try {
+      const response = await categoriesAPI.getAll();
+      setCategories(response.data.data.categories || []);
+    } catch (e) { console.error('Categories fetch error:', e); }
+  };
 
-    const fetchCategories = async () => {
-        try {
-            const response = await categoriesAPI.getAll();
-            setCategories(response.data.data.categories);
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-        }
-    };
+  const fetchMedicines = async () => {
+    try {
+      setLoading(true);
+      const params = { page: pagination.page, limit: pagination.limit };
+      if (filters.search) params.search = filters.search;
+      if (filters.category) params.category = filters.category;
+      if (filters.minPrice) params.minPrice = filters.minPrice;
+      if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+      const response = await medicinesAPI.getAll(params);
+      setMedicines(response.data.data.medicines || []);
+      setPagination(prev => ({
+        ...prev,
+        total: response.data.data.pagination?.total || 0,
+        pages: response.data.data.pagination?.pages || 1,
+      }));
+    } catch (e) {
+      console.error('Medicines fetch error:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const fetchMedicines = async () => {
-        try {
-            setLoading(true);
-            const params = {
-                page: pagination.page,
-                limit: pagination.limit,
-                search: filters.search,
-                category: filters.category,
-                minPrice: filters.minPrice,
-                maxPrice: filters.maxPrice
-            };
-            
-            Object.keys(params).forEach(key => params[key] === '' && delete params[key]);
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
 
-            const response = await medicinesAPI.getAll(params);
-            setMedicines(response.data.data.medicines);
-            setPagination(prev => ({
-                ...prev,
-                total: response.data.data.pagination.total,
-                pages: response.data.data.pagination.pages
-            }));
-        } catch (error) {
-            console.error('Error fetching medicines:', error);
-            toast.error('Failed to load medicines');
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleCategorySelect = (catId) => {
+    setFilters(prev => ({ ...prev, category: prev.category === catId ? '' : catId }));
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
 
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prev => ({ ...prev, [name]: value }));
-        setPagination(prev => ({ ...prev, page: 1 }));
-    };
+  const handleSearch = (e) => {
+    setFilters(prev => ({ ...prev, search: e.target.value }));
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
 
-    const handleCategorySelect = (categoryId) => {
-        setFilters(prev => ({ ...prev, category: prev.category === categoryId ? '' : categoryId }));
-        setPagination(prev => ({ ...prev, page: 1 }));
-    };
+  const setQty = (id, delta) => {
+    setQuantities(prev => ({ ...prev, [id]: Math.max(1, (prev[id] || 1) + delta) }));
+  };
 
-    const handleAddToCart = (medicine) => {
-        addToCart(medicine, 1);
-        toast.success(`Added ${medicine.name} to cart`);
-    };
+  const handleAddToCart = (medicine) => {
+    const qty = quantities[medicine._id] || 1;
+    addToCart(medicine, qty);
+  };
 
-    // Inline styles
-    const styles = {
-        page: {
-            background: 'var(--bg-primary)',
-            minHeight: '100vh',
-            padding: '1rem 2rem'
-        },
-        header: {
-            marginBottom: '1.5rem'
-        },
-        title: {
-            fontSize: '1.875rem',
-            fontWeight: '700',
-            color: 'var(--text-primary)',
-            marginBottom: '0.5rem'
-        },
-        gradientText: {
-            background: 'linear-gradient(135deg, #f97316, #ea580c)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-        },
-        subtitle: {
-            color: 'var(--text-secondary)',
-            fontSize: '1rem'
-        },
-        /* Search bar */
-        searchBar: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            background: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: '0.875rem',
-            padding: '0.25rem 1.25rem',
-            marginBottom: '1rem',
-            transition: 'border-color 0.2s'
-        },
-        searchIcon: {
-            color: 'var(--text-secondary)',
-            fontSize: '1.125rem',
-            flexShrink: 0
-        },
-        searchInput: {
-            flex: 1,
-            padding: '0.875rem 0',
-            fontSize: '0.9375rem',
-            color: 'var(--text-primary)',
-            background: 'transparent',
-            border: 'none',
-            outline: 'none'
-        },
-        /* Filter chips row */
-        chipsRow: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            marginBottom: '1.5rem',
-            overflowX: 'auto',
-            paddingBottom: '4px',
-            scrollbarWidth: 'none',
-        },
-        chip: {
-            padding: '0.5rem 1.125rem',
-            fontSize: '0.8125rem',
-            fontWeight: '500',
-            color: 'var(--text-secondary)',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: '9999px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            flexShrink: 0,
-        },
-        chipActive: {
-            padding: '0.5rem 1.125rem',
-            fontSize: '0.8125rem',
-            fontWeight: '600',
-            color: 'var(--text-primary)',
-            background: 'linear-gradient(135deg, #f97316, #ea580c)',
-            border: '1px solid transparent',
-            borderRadius: '9999px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-            flexShrink: 0,
-            boxShadow: '0 2px 8px rgba(249,115,22,0.3)',
-        },
-        /* Price filter row */
-        priceRow: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            marginBottom: '1.5rem',
-        },
-        priceLabel: {
-            fontSize: '0.8125rem',
-            fontWeight: '500',
-            color: 'var(--text-secondary)',
-            flexShrink: 0
-        },
-        priceInput: {
-            width: '110px',
-            padding: '0.5rem 0.75rem',
-            fontSize: '0.875rem',
-            color: 'var(--text-primary)',
-            background: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: '0.5rem',
-            outline: 'none',
-            transition: 'border-color 0.2s',
-        },
-        priceDash: {
-            color: 'var(--border-light)',
-            fontSize: '0.875rem'
-        },
-        grid: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '1.5rem'
-        },
-        card: {
-            background: 'var(--bg-secondary)',
-            borderRadius: '1rem',
-            overflow: 'hidden',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-            border: '1px solid var(--bg-tertiary)',
-            display: 'flex',
-            flexDirection: 'column',
-            transition: 'all 0.3s ease'
-        },
-        cardImage: {
-            height: '180px',
-            background: 'linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-            overflow: 'hidden'
-        },
-        cardBody: {
-            padding: '1.25rem',
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1
-        },
-        categoryBadge: {
-            display: 'inline-block',
-            fontSize: '0.7rem',
-            fontWeight: '600',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em',
-            padding: '0.25rem 0.625rem',
-            background: 'rgba(249,115,22,0.15)',
-            color: '#fb923c',
-            borderRadius: '9999px',
-            marginBottom: '0.75rem'
-        },
-        cardTitle: {
-            fontSize: '1.0625rem',
-            fontWeight: '700',
-            color: 'var(--text-primary)',
-            marginBottom: '0.5rem',
-            lineHeight: '1.3'
-        },
-        cardDesc: {
-            fontSize: '0.875rem',
-            color: 'var(--text-secondary)',
-            marginBottom: '1rem',
-            flex: 1,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-            lineHeight: '1.5'
-        },
-        cardFooter: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingTop: '1rem',
-            borderTop: '1px solid var(--border-light)'
-        },
-        price: {
-            fontSize: '1.375rem',
-            fontWeight: '800',
-            color: 'var(--text-primary)'
-        },
-        addBtn: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            padding: '0.625rem 1rem',
-            fontSize: '0.875rem',
-            fontWeight: '600',
-            color: 'white',
-            background: 'linear-gradient(135deg, #f97316, #ea580c)',
-            border: 'none',
-            borderRadius: '0.625rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            boxShadow: '0 2px 6px rgba(16,185,129,0.3)'
-        },
-        addBtnDisabled: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            padding: '0.625rem 1rem',
-            fontSize: '0.875rem',
-            fontWeight: '600',
-            color: 'var(--text-secondary)',
-            background: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: '0.625rem',
-            cursor: 'not-allowed'
-        },
-        lowStockBadge: {
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-            color: 'white',
-            fontSize: '0.6875rem',
-            fontWeight: '700',
-            padding: '0.25rem 0.625rem',
-            borderRadius: '9999px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
-        },
-        emptyState: {
-            textAlign: 'center',
-            padding: '4rem 2rem',
-            background: 'var(--bg-secondary)',
-            borderRadius: '1rem',
-            border: '1px solid var(--bg-tertiary)'
-        },
-        emptyIcon: {
-            width: '80px',
-            height: '80px',
-            background: 'var(--bg-secondary)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 1.5rem',
-            fontSize: '2.5rem'
-        },
-        pagination: {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '0.75rem',
-            marginTop: '2.5rem'
-        },
-        pageBtn: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            padding: '0.625rem 1.25rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: 'var(--text-primary)',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: '0.625rem',
-            cursor: 'pointer',
-            transition: 'all 0.2s'
-        },
-        pageBtnDisabled: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.375rem',
-            padding: '0.625rem 1.25rem',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            color: 'var(--text-secondary)',
-            background: 'var(--bg-tertiary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: '0.625rem',
-            cursor: 'not-allowed'
-        },
-        pageInfo: {
-            padding: '0.625rem 1rem',
-            fontSize: '0.875rem',
-            fontWeight: '600',
-            color: 'var(--text-primary)',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: '0.625rem'
-        }
-    };
+  const clearFilters = () => {
+    setFilters({ search: '', category: '', minPrice: '', maxPrice: '' });
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
 
-    return (
-        <div className="dashboard-layout no-top-nav">
-            <Sidebar />
-            <main className="dashboard-main" style={styles.page}>
-                {/* Header */}
-                <div style={styles.header}>
-                    <h1 style={styles.title}>
-                        Medicine <span style={styles.gradientText}>Catalog</span>
-                    </h1>
-                    <p style={styles.subtitle}>Browse and shop for medicines you need</p>
-                </div>
+  const hasFilters = !!(filters.category || filters.minPrice || filters.maxPrice);
 
-                {/* Search Bar */}
-                <div style={styles.searchBar}>
-                    <FiSearch style={styles.searchIcon} />
-                    <input
-                        type="text"
-                        name="search"
-                        value={filters.search}
-                        onChange={handleFilterChange}
-                        placeholder="Search medicines, symptoms..."
-                        style={styles.searchInput}
-                    />
-                    {filters.search && (
-                        <button
-                            onClick={() => { setFilters(prev => ({ ...prev, search: '' })); setPagination(prev => ({ ...prev, page: 1 })); }}
-                            style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '1.25rem', padding: '0.25rem' }}
-                        >×</button>
-                    )}
-                </div>
+  return (
+    <AppLayout title="Medicine Catalog">
+      <div className="flex h-full">
+        {/* Desktop Sidebar Filters */}
+        <aside className="hidden lg:flex flex-col w-56 flex-shrink-0 border-r border-gray-100 bg-white p-4 overflow-y-auto">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-gray-900">Filters</h3>
+            {hasFilters && (
+              <button onClick={clearFilters} className="text-xs text-blue-600 hover:text-blue-700 font-medium">Clear all</button>
+            )}
+          </div>
 
-                {/* Category Chips */}
-                <div style={styles.chipsRow} className="catalog-chips-row">
-                    <button
-                        onClick={() => handleCategorySelect('')}
-                        style={filters.category === '' ? styles.chipActive : styles.chip}
-                    >
-                        All
-                    </button>
-                    {categories.map(cat => (
-                        <button
-                            key={cat._id}
-                            onClick={() => handleCategorySelect(cat._id)}
-                            style={filters.category === cat._id ? styles.chipActive : styles.chip}
-                        >
-                            {cat.name}
-                        </button>
-                    ))}
-                </div>
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Category</p>
+            <div className="space-y-1">
+              <button
+                onClick={() => handleCategorySelect('')}
+                className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${!filters.category ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+              >
+                All Categories
+              </button>
+              {categories.map(cat => (
+                <button
+                  key={cat._id}
+                  onClick={() => handleCategorySelect(cat._id)}
+                  className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors truncate ${filters.category === cat._id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+          </div>
 
-                {/* Price Filters */}
-                <div style={styles.priceRow}>
-                    <span style={styles.priceLabel}>Price:</span>
-                    <input
-                        type="number"
-                        name="minPrice"
-                        value={filters.minPrice}
-                        onChange={handleFilterChange}
-                        placeholder="Min"
-                        style={styles.priceInput}
-                    />
-                    <span style={styles.priceDash}>—</span>
-                    <input
-                        type="number"
-                        name="maxPrice"
-                        value={filters.maxPrice}
-                        onChange={handleFilterChange}
-                        placeholder="Max"
-                        style={styles.priceInput}
-                    />
-                </div>
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Price Range (₹)</p>
+            <div className="space-y-2">
+              <input
+                type="number"
+                name="minPrice"
+                placeholder="Min price"
+                value={filters.minPrice}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <input
+                type="number"
+                name="maxPrice"
+                placeholder="Max price"
+                value={filters.maxPrice}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </aside>
 
-                {/* Content */}
-                {loading ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px' }}>
-                        <div className="spinner" style={{ width: 48, height: 48, marginBottom: '1rem' }} />
-                        <p style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Loading catalog...</p>
-                    </div>
-                ) : medicines.length > 0 ? (
-                    <>
-                        <div style={styles.grid} className="catalog-grid">
-                            {medicines.map(medicine => (
-                                <div key={medicine._id} style={styles.card}>
-                                    <div style={styles.cardImage}>
-                                        {medicine.image ? (
-                                            <img 
-                                                src={medicine.image} 
-                                                alt={medicine.name} 
-                                                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '1rem' }}
-                                            />
-                                        ) : (
-                                            <span style={{ fontSize: '4rem', opacity: 0.5 }}>💊</span>
-                                        )}
-                                        {medicine.stock <= 10 && medicine.stock > 0 && (
-                                            <span style={styles.lowStockBadge}>Low Stock</span>
-                                        )}
-                                        {medicine.stock === 0 && (
-                                            <span style={{ ...styles.lowStockBadge, background: 'var(--text-secondary)' }}>Out of Stock</span>
-                                        )}
-                                    </div>
-                                    
-                                    <div style={styles.cardBody}>
-                                        <span style={styles.categoryBadge}>
-                                            {medicine.category?.name || 'General'}
-                                        </span>
-                                        
-                                        <h3 style={styles.cardTitle}>{medicine.name}</h3>
-                                        
-                                        <p style={styles.cardDesc}>
-                                            {medicine.description || 'No description available'}
-                                        </p>
-                                        
-                                        <div style={styles.cardFooter}>
-                                            <span style={styles.price}>₹{medicine.price}</span>
-                                            
-                                            <button
-                                                onClick={() => handleAddToCart(medicine)}
-                                                disabled={medicine.stock === 0}
-                                                style={medicine.stock > 0 ? styles.addBtn : styles.addBtnDisabled}
-                                            >
-                                                <FiShoppingCart />
-                                                {medicine.stock > 0 ? 'Add' : 'Out'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+          {/* Search Bar */}
+          <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+            <div className="flex-1 relative">
+              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <input
+                type="text"
+                placeholder="Search medicines..."
+                value={filters.search}
+                onChange={handleSearch}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-300 transition-colors bg-gray-50 focus:bg-white"
+              />
+            </div>
+            <button
+              onClick={() => setFiltersOpen(true)}
+              className={`lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors ${hasFilters ? 'border-blue-300 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+            >
+              <FiFilter size={15} /> Filters
+            </button>
+          </div>
 
-                        {/* Pagination */}
-                        {pagination.pages > 1 && (
-                            <div style={styles.pagination}>
-                                <button
-                                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
-                                    disabled={pagination.page === 1}
-                                    style={pagination.page === 1 ? styles.pageBtnDisabled : styles.pageBtn}
-                                >
-                                    <FiChevronLeft /> Previous
-                                </button>
-                                <span style={styles.pageInfo}>
-                                    Page {pagination.page} of {pagination.pages}
-                                </span>
-                                <button
-                                    onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-                                    disabled={pagination.page === pagination.pages}
-                                    style={pagination.page === pagination.pages ? styles.pageBtnDisabled : styles.pageBtn}
-                                >
-                                    Next <FiChevronRight />
-                                </button>
-                            </div>
+          {!loading && (
+            <div className="px-4 pt-3 pb-1 flex items-center justify-between">
+              <p className="text-xs text-gray-500">{pagination.total} results{filters.search ? ` for "${filters.search}"` : ''}</p>
+              {hasFilters && (
+                <button onClick={clearFilters} className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 lg:hidden">
+                  <FiX size={12} /> Clear filters
+                </button>
+              )}
+            </div>
+          )}
+
+          <div className="p-4 pb-24 lg:pb-8">
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <div key={i} className="bg-white rounded-2xl border border-gray-100 p-5 space-y-3 animate-pulse">
+                    <div className="h-32 bg-gray-100 rounded-xl" />
+                    <div className="h-4 bg-gray-100 rounded-lg w-3/4" />
+                    <div className="h-3 bg-gray-100 rounded w-1/2" />
+                    <div className="h-8 bg-gray-100 rounded-xl" />
+                  </div>
+                ))}
+              </div>
+            ) : medicines.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center text-3xl mb-4">💊</div>
+                <h3 className="text-base font-semibold text-gray-800 mb-1">No medicines found</h3>
+                <p className="text-sm text-gray-500 mb-5">Try adjusting your search or filters</p>
+                <button onClick={clearFilters} className="text-sm bg-blue-600 text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-colors">Clear filters</button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                {medicines.map(medicine => {
+                  const qty = quantities[medicine._id] || 1;
+                  const isOutOfStock = medicine.stock <= 0;
+                  return (
+                    <div key={medicine._id} className={`bg-white rounded-2xl border shadow-sm flex flex-col transition-all duration-150 hover:shadow-md hover:-translate-y-0.5 ${isOutOfStock ? 'border-gray-100 opacity-75' : 'border-gray-100'}`}>
+                      <div className="h-32 bg-gradient-to-br from-blue-50 to-blue-100 rounded-t-2xl flex items-center justify-center relative overflow-hidden">
+                        {medicine.imageUrl ? (
+                          <img src={medicine.imageUrl} alt={medicine.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <span className="text-5xl">💊</span>
                         )}
-                    </>
-                ) : (
-                    <div style={styles.emptyState}>
-                        <div style={styles.emptyIcon}>🔍</div>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-                            No medicines found
-                        </h3>
-                        <p style={{ color: 'var(--text-secondary)' }}>
-                            Try adjusting your search or filter criteria
-                        </p>
-                    </div>
-                )}
-            </main>
+                        {isOutOfStock && (
+                          <div className="absolute inset-0 bg-gray-900/40 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold bg-gray-900/60 px-2.5 py-1 rounded-full">Out of Stock</span>
+                          </div>
+                        )}
+                        {medicine.requiresPrescription && (
+                          <span className="absolute top-2 right-2 bg-amber-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">Rx</span>
+                        )}
+                      </div>
 
-            <style>{`
-                .catalog-chips-row::-webkit-scrollbar { display: none; }
-                .catalog-chips-row button:hover {
-                    background: var(--border-light);
-                    border-color: var(--border-light);
-                    color: var(--text-primary);
-                }
-                @media (max-width: 1280px) {
-                    .dashboard-main .catalog-grid { grid-template-columns: repeat(3, 1fr) !important; }
-                }
-                @media (max-width: 1024px) {
-                    .dashboard-main .catalog-grid { grid-template-columns: repeat(2, 1fr) !important; }
-                }
-                @media (max-width: 640px) {
-                    .dashboard-main .catalog-grid { grid-template-columns: 1fr !important; }
-                }
-            `}</style>
+                      <div className="p-4 flex flex-col flex-1">
+                        {medicine.category?.name && (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 mb-1">
+                            <FiTag size={11} /> {medicine.category.name}
+                          </span>
+                        )}
+                        <Link to={`/user/medicines/${medicine._id}`} className="font-semibold text-gray-900 text-sm leading-snug hover:text-blue-600 transition-colors line-clamp-2 mb-0.5">
+                          {medicine.name}
+                        </Link>
+                        {medicine.manufacturer && (
+                          <p className="text-xs text-gray-400 mb-2">{medicine.manufacturer}</p>
+                        )}
+
+                        <div className="mt-auto pt-2 space-y-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold text-gray-900">₹{medicine.price}</span>
+                            {medicine.originalPrice && medicine.originalPrice > medicine.price && (
+                              <span className="text-xs text-gray-400 line-through">₹{medicine.originalPrice}</span>
+                            )}
+                          </div>
+
+                          {!isOutOfStock ? (
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
+                                <button onClick={() => setQty(medicine._id, -1)} className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 transition-colors">
+                                  <FiMinus size={13} />
+                                </button>
+                                <span className="w-8 text-center text-sm font-semibold text-gray-900">{qty}</span>
+                                <button onClick={() => setQty(medicine._id, 1)} className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 transition-colors">
+                                  <FiPlus size={13} />
+                                </button>
+                              </div>
+                              <button
+                                onClick={() => handleAddToCart(medicine)}
+                                className="flex-1 flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 rounded-xl transition-colors"
+                              >
+                                <FiShoppingCart size={14} /> Add
+                              </button>
+                            </div>
+                          ) : (
+                            <button disabled className="w-full bg-gray-100 text-gray-400 text-sm font-semibold py-2 rounded-xl cursor-not-allowed">
+                              Out of Stock
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {pagination.pages > 1 && !loading && (
+              <div className="flex items-center justify-center gap-3 mt-8">
+                <button
+                  onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))}
+                  disabled={pagination.page === 1}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  <FiChevronLeft size={15} /> Prev
+                </button>
+                <span className="text-sm text-gray-500">
+                  Page <span className="font-semibold text-gray-900">{pagination.page}</span> of <span className="font-semibold text-gray-900">{pagination.pages}</span>
+                </span>
+                <button
+                  onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))}
+                  disabled={pagination.page === pagination.pages}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next <FiChevronRight size={15} />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-    );
+      </div>
+
+      {/* Mobile Filter Sheet */}
+      {filtersOpen && (
+        <div className="lg:hidden fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setFiltersOpen(false)} />
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-5 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="font-semibold text-gray-900">Filters</h3>
+              <button onClick={() => setFiltersOpen(false)} className="p-1 rounded-lg text-gray-400 hover:bg-gray-100"><FiX size={18} /></button>
+            </div>
+            <div className="mb-5">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Category</p>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => { handleCategorySelect(''); setFiltersOpen(false); }} className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${!filters.category ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>All</button>
+                {categories.map(cat => (
+                  <button key={cat._id} onClick={() => { handleCategorySelect(cat._id); setFiltersOpen(false); }} className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${filters.category === cat._id ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>{cat.name}</button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-3 mb-5">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Price Range (₹)</p>
+              <div className="grid grid-cols-2 gap-3">
+                <input type="number" name="minPrice" placeholder="Min price" value={filters.minPrice} onChange={handleFilterChange} className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+                <input type="number" name="maxPrice" placeholder="Max price" value={filters.maxPrice} onChange={handleFilterChange} className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={() => { clearFilters(); setFiltersOpen(false); }} className="py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">Clear</button>
+              <button onClick={() => setFiltersOpen(false)} className="py-3 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors">Apply</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </AppLayout>
+  );
 };
 
 export default Catalog;
-
-
-
-

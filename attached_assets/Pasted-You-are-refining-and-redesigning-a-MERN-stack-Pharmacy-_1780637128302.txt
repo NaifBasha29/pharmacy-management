@@ -1,0 +1,262 @@
+You are refining and redesigning a MERN stack Pharmacy Management System.
+Stack: React 18 + Vite (frontend), Node.js + Express (backend), MongoDB Atlas (database).
+Mobile app (Expo/React Native) exists separately — DO NOT touch it.
+
+Your goals:
+1. Fix all backend API errors and broken responses
+2. Redesign the frontend to be professional, user-friendly, and fully responsive
+3. Make the web app a hybrid responsive design (mobile web + tablet + desktop)
+
+---
+
+## PHASE 1 — BACKEND FIXES
+
+### 1.1 Global Error Handling
+- Add a global error handler middleware in server.js / app.js:
+  - Catch unhandled promise rejections
+  - Return consistent JSON: { success: false, message: "...", error: "..." }
+  - Never expose stack traces in production (check NODE_ENV)
+- Add a 404 handler for undefined routes
+
+### 1.2 MongoDB Atlas Connection
+- In db.js or mongoose connect file, ensure:
+  - mongoose.connect uses proper options: useNewUrlParser, useUnifiedTopology
+  - Add connection error logging
+  - Add retry logic on disconnect (mongoose reconnect on error event)
+  - Wrap in try/catch and log meaningful errors
+
+### 1.3 Auth Routes (/api/auth)
+- Fix register: hash password with bcrypt before saving, return { success, token, user }
+- Fix login: compare bcrypt hash, return JWT token + user object
+- Fix /me route: verify JWT from Authorization header, return current user
+- Fix forgot-password: generate OTP, store in user document with expiry (10 min), return success
+- Fix verify-otp: compare OTP + check expiry, return reset token
+- Fix reset-password: validate token, hash new password, clear OTP fields
+- All responses must follow: { success: true/false, data: {}, message: "" }
+
+### 1.4 Medicine Routes (/api/medicines)
+- Fix GET /api/medicines: support query params: search, category, page, limit
+  - Return: { success, data: { medicines, total, page, totalPages } }
+- Fix GET /api/medicines/:id: populate category, return full medicine object
+- Fix POST /api/medicines: validate required fields, return created medicine
+- Fix PUT /api/medicines/:id: partial update support
+- Fix DELETE /api/medicines/:id: soft delete (set isActive: false) or hard delete
+
+### 1.5 Order Routes (/api/orders)
+- Fix POST /api/orders: validate cart items, check stock, deduct stock on order creation
+- Fix GET /api/orders: filter by user role (user sees own orders, pharmacist/admin sees all)
+- Fix GET /api/orders/:id: populate medicines, user details
+- Fix PUT /api/orders/:id/status: update status with timestamp, notify via response
+- Fix order cancellation: restore stock on cancel
+
+### 1.6 User Routes (/api/user)
+- Fix GET /api/user/favorites: return populated medicine list
+- Fix POST /api/user/favorites: add medicine to favorites array
+- Fix DELETE /api/user/favorites/:id: remove from favorites
+- Fix GET /api/user/home-medicines: return user's personal cabinet
+- Fix POST /api/user/home-medicines: add entry with name, quantity, expiryDate
+- Fix DELETE /api/user/home-medicines/:id: remove entry
+
+### 1.7 AI Routes (/api/ai)
+- Fix POST /api/ai/symptom-check: accept { symptoms } array/string, return conditions + suggested categories
+- Fix GET /api/ai/recommendations: use user order history to return relevant medicines
+- Fix POST /api/ai/chat: accept { message, history }, return { reply } string
+
+### 1.8 Middleware
+- Ensure auth middleware (protect) correctly:
+  - Extracts Bearer token from Authorization header
+  - Verifies JWT with correct secret
+  - Attaches req.user to request
+  - Returns 401 with { success: false, message: "Not authorized" } on failure
+- Ensure role middleware (authorize) blocks wrong roles with 403
+
+### 1.9 CORS
+- In app.js/server.js, configure CORS to allow:
+  - http://localhost:5173 (Vite dev)
+  - Your production domain
+  - Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+  - Headers: Content-Type, Authorization
+
+---
+
+## PHASE 2 — FRONTEND REDESIGN
+
+### 2.1 Design System (apply globally)
+Use these CSS variables in index.css or a global theme file:
+```css
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #eff6ff;
+  --secondary: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --border: #e5e7eb;
+  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+}
+```
+Apply Tailwind utility classes consistently. All pages must use this palette.
+
+### 2.2 Layout System
+Create a responsive layout in client/src/components/layout/AppLayout.jsx:
+- Desktop (lg+): Fixed sidebar left (240px) + main content area
+- Tablet (md): Collapsible sidebar with hamburger toggle
+- Mobile web (sm): Bottom navigation bar (5 icons) + full-width content
+- Top navbar: logo, search bar, notification bell, user avatar dropdown
+- Sidebar: role-based navigation links with icons
+
+### 2.3 Responsive Breakpoints (Tailwind)
+- Mobile: default styles (< 640px)
+- Tablet: sm: and md: (640px - 1024px)
+- Desktop: lg: and xl: (1024px+)
+Every page must be usable at all three sizes.
+
+### 2.4 Component Library
+Create reusable components in client/src/components/ui/:
+
+Button.jsx — variants: primary, secondary, danger, ghost; sizes: sm, md, lg; loading state
+Input.jsx — label, error message, icon support, consistent border/focus style
+Card.jsx — white background, rounded-xl, shadow-sm, optional header/footer slots
+Badge.jsx — variants: success, warning, danger, info, default
+Modal.jsx — centered overlay, close on backdrop click, ESC key support
+Spinner.jsx — centered loading indicator, size variants
+Table.jsx — responsive table with mobile card fallback
+Toast.jsx — top-right notification system, auto-dismiss after 3s
+EmptyState.jsx — icon + title + description + optional action button
+
+### 2.5 Auth Pages Redesign
+Redesign all auth pages (Login, Register, ForgotPassword, VerifyOTP, ResetPassword):
+- Split layout: left side brand panel (pharmacy illustration + tagline), right side form
+- On mobile: full-width form only, brand panel hidden
+- Form fields: floating label style or clear label above input
+- Password field: show/hide toggle
+- Submit button: full width, primary color, loading state on submit
+- Error messages: red text below each field (field-level validation)
+- Success messages: green banner
+- Consistent card container: max-w-md, centered, white background, rounded-xl, shadow
+
+### 2.6 User Dashboard Redesign
+Redesign client/src/pages/user/ pages:
+
+#### Home/Dashboard (UserDashboard.jsx)
+- Stats row: Total Orders, Pending, Delivered, Favorites count
+- Quick action cards: Browse Medicines, My Orders, Symptom Checker, Medicine Cabinet
+- Recent orders table (last 5)
+- Featured/recommended medicines carousel or grid (3-4 cards)
+
+#### Medicines Catalog (Catalog.jsx / Medicines.jsx)
+- Top: search bar + category filter pills + sort dropdown
+- Grid layout: 2 cols mobile, 3 cols tablet, 4 cols desktop
+- Medicine card: image placeholder, name, category badge, price, stock status, Add to Cart + Favorite buttons
+- Pagination or infinite scroll
+- Filter sidebar on desktop, bottom sheet on mobile
+
+#### Medicine Detail (MedicineDetail.jsx)
+- Left: medicine image (large), image gallery if multiple
+- Right: name, category, price (large), stock badge, description, manufacturer, expiry
+- Add to Cart (quantity selector), Add to Favorites (heart toggle)
+- Related medicines section below (horizontal scroll on mobile)
+
+#### Cart & Checkout
+- Cart: slide-over panel or dedicated page, item list with quantity controls, subtotal
+- Checkout: address form, prescription upload if required, order summary, place order button
+
+#### Orders (Orders.jsx + OrderDetail.jsx)
+- Orders list: filterable by status (tabs: All, Pending, Processing, Delivered, Cancelled)
+- Each row: order ID, date, items count, total, status badge, View button
+- OrderDetail: full breakdown, prescription image, cancel button if pending, timeline of status changes
+
+#### Favorites (Favorites.jsx)
+- Grid of saved medicines with remove (heart filled) and add to cart actions
+- Empty state with CTA to browse medicines
+
+#### Medicine Cabinet (HomeMedicineCabinet.jsx)
+- List view with expiry color coding (red/yellow/green)
+- Inline add form at top
+- Sort by expiry date (soonest first)
+
+#### AI Features
+- SymptomChecker: tag-style symptom input (type and press enter to add tags), results in cards
+- Recommendations: grid of medicine cards with "Why recommended" tag
+- Chatbot: full-height chat UI, message bubbles (user right blue, assistant left gray), typing dots animation
+
+### 2.7 Pharmacist Dashboard Redesign
+- Orders queue: filterable table with status update dropdown per row
+- Low stock alerts panel
+- Prescription review modal
+
+### 2.8 Admin Dashboard Redesign
+- Summary stats cards (total users, medicines, orders, revenue)
+- Charts: orders over time (line), revenue by category (bar) — use recharts (already installed)
+- User management table with role badges
+- Medicine management with inline edit
+
+### 2.9 Navigation
+#### Sidebar (desktop/tablet):
+- Logo at top
+- Role-based nav links with react-icons
+- User section at bottom: avatar, name, role, logout button
+- Active link: primary color background pill
+
+#### Bottom nav (mobile web only, user role):
+- 5 icons: Home, Medicines, Cart (with badge), Orders, Profile
+- Active icon: primary color
+
+#### Top navbar:
+- Hamburger (tablet/mobile) to toggle sidebar
+- Search bar (desktop), search icon (mobile — expands)
+- Notification bell with unread count badge
+- User avatar → dropdown: Profile, Settings, Logout
+
+### 2.10 Error States & Loading
+- Every data-fetching page must show:
+  - Skeleton loaders (not spinners) while loading for main content
+  - Error card with retry button on API failure
+  - Empty state component when no data
+- Use React Query or keep useState/useEffect but add proper error boundaries
+
+### 2.11 Form Validation
+- All forms must validate on submit AND on blur
+- Required fields, min/max length, email format, password strength
+- Show inline error messages under each field
+- Disable submit button while loading
+
+### 2.12 Toast Notifications
+- Replace all alert() calls with toast notifications
+- Success: green, Error: red, Warning: yellow
+- Show on: login success, order placed, item added to cart, form errors
+
+---
+
+## PHASE 3 — INTEGRATION & API WIRING
+
+### 3.1 Axios Config (client/src/services/api.js)
+- Set baseURL from import.meta.env.VITE_API_URL or fallback to http://localhost:5000/api
+- Add request interceptor: attach Authorization: Bearer <token> from localStorage
+- Add response interceptor:
+  - On 401: clear token, redirect to /login
+  - On any error: extract error.response.data.message for toast
+  - Return response.data directly so callers get { success, data, message }
+
+### 3.2 Auth State (AuthContext)
+- On app load: call /api/auth/me to validate stored token
+- Store: token, user object, isAuthenticated, isLoading
+- Expose: login(), logout(), register() functions
+- Handle token expiry gracefully
+
+### 3.3 Cart State (CartContext)
+- Persist cart to localStorage
+- Expose: items, addToCart(), removeFromCart(), updateQuantity(), clearCart(), totalItems, totalPrice
+
+---
+
+## PHASE 4 — ENVIRONMENT & CONFIG
+
+### 4.1 Backend .env
+Ensure server uses these env vars:
