@@ -77,6 +77,7 @@ const allowedOrigins = [
   'https://pharmacy-management-rho.vercel.app',
   'http://localhost:5173',
   'http://localhost:5000',
+  'http://localhost:5000',
 ].filter(Boolean);
 
 app.use(
@@ -92,8 +93,6 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
   }),
 );
 
